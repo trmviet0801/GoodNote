@@ -7,13 +7,14 @@ data class Boundary(
     var y: Float,
     var w: Float,
     var h: Float,
-    var actualWidth: Float?,
-    var actualHeight: Float?
+    var actualWidth: Float = 0f,
+    var actualHeight: Float = 0f
 )
 
-fun Boundary.calActualSize() {
+fun Boundary.calActualSize(): Boundary {
     actualWidth = x + w
     actualHeight = y + h
+    return this
 }
 
 fun Boundary.contains(dot: Dot): Boolean {
@@ -41,33 +42,25 @@ fun Boundary.extractSubDivines(): List<Boundary> {
         this.x - (this.w / 2),
         this.y - (this.h / 2),
         this.w / 2,
-        this.h / 2,
-        null,
-        null
-    ))
+        this.h / 2
+    ).calActualSize())
     result.add(Boundary(
         this.x + (this.w / 2),
         this.y - (this.h / 2),
         this.w / 2,
         this.h / 2,
-        null,
-        null
-    ))
+    ).calActualSize())
     result.add(Boundary(
         this.x - (this.w / 2),
         this.y + (this.h / 2),
         this.w / 2,
         this.h / 2,
-        null,
-        null
-    ))
+    ).calActualSize())
     result.add(Boundary(
         this.x + (this.w / 2),
         this.y + (this.h / 2),
         this.w / 2,
         this.h / 2,
-        null,
-        null
-    ))
+    ).calActualSize())
     return result.toList()
 }
