@@ -9,7 +9,6 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.goodnote.domain.Page
 import com.example.goodnote.note.domain.Boundary
 import com.example.goodnote.note.domain.Dot
 import com.example.goodnote.note.domain.Region
@@ -31,7 +30,7 @@ class EditorViewModel(): ViewModel() {
         )
 
     fun adjustPageSize(layoutCoordinates: LayoutCoordinates) {
-        if (_state.value.page.rootRegion == null) {
+        if (_state.value.rootRegion == null) {
             val boundary = boundaryFromPositionAndSize(
                 layoutCoordinates.positionOnScreen(),
                 layoutCoordinates.size.width,
@@ -40,9 +39,8 @@ class EditorViewModel(): ViewModel() {
             val region: Region = Region(boundary = boundary)
             region.isRoot = true
             _state.update { it ->
-                val currentPage = it.page.copy(rootRegion = region)
                 it.copy(
-                    page = currentPage
+                    rootRegion = region
                 )
             }
         }
@@ -70,43 +68,38 @@ class EditorViewModel(): ViewModel() {
         when (action) {
             MotionEvent.ACTION_DOWN -> {
                 _state.update { it ->
-                    val currentStroke = it.page.latestStroke
+                    val currentStroke = it.latestStroke
                     var currentDots = currentStroke.dots.toMutableList()
                     currentDots = mutableListOf<Dot>()
 
-                    val currentPage = it.page.copy(latestStroke = Stroke(dots = currentDots.toList()))
                     it.copy(
-                        page = currentPage
+                        latestStroke =  Stroke(dots = currentDots.toList())
                     )
                 }
             }
             MotionEvent.ACTION_MOVE -> {
                 _state.update { it ->
-                    val currentStroke = it.page.latestStroke
+                    val currentStroke = it.latestStroke
                     val currentDots = currentStroke.dots.toMutableList()
                     currentDots.add(Dot(motionEvent.x, motionEvent.y))
 
-                    val currentPage = it.page.copy(latestStroke = Stroke(dots = currentDots.toList()))
                     it.copy(
-                        page = currentPage
+                        latestStroke = Stroke(dots = currentDots.toList())
                     )
                 }
             }
             MotionEvent.ACTION_UP -> {
                 _state.update { it ->
-                    var currentLatestStroke = it.page.latestStroke
-                    val currentRootRegion = it.page.rootRegion
-                    var currentPage = it.page
+                    var currentLatestStroke = it.latestStroke
+                    val currentRootRegion = it.rootRegion
+                    var currentPage = it
 
                     currentRootRegion!!.insert(currentLatestStroke)
                     currentLatestStroke = Stroke()
-                    currentPage = currentPage.copy(
-                        latestStroke = currentLatestStroke,
-                        rootRegion = currentRootRegion
-                    )
 
                     it.copy(
-                        page = currentPage
+                        latestStroke = currentLatestStroke,
+                        rootRegion = currentRootRegion
                     )
                 }
             }
@@ -115,13 +108,13 @@ class EditorViewModel(): ViewModel() {
 
     private fun adjustScale(isIncrease: Boolean) {
         _state.update { it ->
-            var currentScale = it.page.scale
+            var currentScale = it.scale
             if (isIncrease) currentScale += AppConst.SCALE_LEVEL else currentScale -= AppConst.SCALE_LEVEL
-            val currentRegion = it.page.rootRegion
-            currentRegion!!.scaleStrokes(it.page.scale)
-            val currentPage = it.page.copy(scale = currentScale, rootRegion = currentRegion)
+            val currentRegion = it.rootRegion
+            currentRegion!!.scaleStrokes(it.scale)
             it.copy(
-                page = currentPage
+                scale = currentScale,
+                rootRegion = currentRegion
             )
         }
     }
@@ -133,11 +126,11 @@ class EditorViewModel(): ViewModel() {
         if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
 
 //        _state.update { it ->
-//            val currentRegion = it.page.rootRegion
-//            currentRegion!!.scaleStrokes(it.page.scale)
-//            val currentBoundary = currentRegion.boundary!!.calActualSize(it.page.scale)
+//            val currentRegion = it.rootRegion
+//            currentRegion!!.scaleStrokes(it.scale)
+//            val currentBoundary = currentRegion.boundary!!.calActualSize(it.scale)
 //            currentRegion.boundary = currentBoundary
-//            val currentPage = it.page.copy(rootRegion = currentRegion)
+//            val currentPage = it.copy(rootRegion = currentRegion)
 //            it.copy(
 //                page = currentPage
 //            )

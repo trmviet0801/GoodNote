@@ -57,7 +57,7 @@ fun EditorScreen(innerPadding: PaddingValues) {
             }
     ) {
         Text(
-            text = if (state.value.page.rootRegion == null) "null" else "${AppConvertor.pxToDp(state.value.page.rootRegion?.boundary?.actualWidth ?: 0f)}",
+            text = if (state.value.rootRegion == null) "null" else "${AppConvertor.pxToDp(state.value.rootRegion?.boundary?.actualWidth ?: 0f)}",
             modifier = Modifier.padding(top = 50.dp)
         )
         Canvas(
@@ -69,29 +69,29 @@ fun EditorScreen(innerPadding: PaddingValues) {
                 }
                 .width(
                     AppConvertor.pxToDp(
-                        state.value.page.rootRegion?.boundary?.actualWidth ?: 100f
-                    ) * state.value.page.scale
+                        state.value.rootRegion?.boundary?.actualWidth ?: 100f
+                    ) * state.value.scale
                 )
                 .height(
                     AppConvertor.pxToDp(
-                        state.value.page.rootRegion?.boundary?.actualHeight ?: 100f
-                    ) * state.value.page.scale
+                        state.value.rootRegion?.boundary?.actualHeight ?: 100f
+                    ) * state.value.scale
                 )
                 .background(Color.Blue)
         ) {
             drawPath(
-                path = state.value.page.latestStroke.toPath(),
+                path = state.value.latestStroke.toPath(),
                 color = Color.White,
                 style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
 
             drawPath(
-                path = (state.value.page.rootRegion?.primaryStroke?.toPath() ?: Path()),
+                path = (state.value.rootRegion?.primaryStroke?.toPath() ?: Path()),
                 color = Color.White,
                 style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
 
-            state.value.page.rootRegion?.overlapsStrokes?.forEach { stroke ->
+            state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
                 drawPath(
                     path = stroke.toPath(),
                     color = Color.White,
