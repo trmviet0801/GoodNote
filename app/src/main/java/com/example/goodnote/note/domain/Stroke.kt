@@ -10,12 +10,30 @@ data class Stroke(
     var timestamp: Long = System.currentTimeMillis()
 )
 
-fun Stroke.toPath(): Path {
+fun Stroke.toPath(scale: Float): Path {
+    updateScaledPositions(scale)
     if (dots.isEmpty()) return Path()
     val result = Path()
-    result.moveTo(dots[0].x, dots[0].y)
+    result.moveTo(dots[0].scaledX, dots[0].scaledY)
     dots.forEach { dot ->
-        result.lineTo(dot.x, dot.y)
+        result.lineTo(dot.scaledX, dot.scaledY)
     }
     return result
+}
+
+fun Stroke.toPath(): Path {
+    if (dots.isEmpty()) return Path()
+    updateScaledPositions(1f)
+    val result = Path()
+    result.moveTo(dots[0].scaledX, dots[0].scaledY)
+    dots.forEach { dot ->
+        result.lineTo(dot.scaledX, dot.scaledY)
+    }
+    return result
+}
+
+fun Stroke.updateScaledPositions(scale: Float) {
+    dots.forEach { dot ->
+        dot.calScaledPosition(scale)
+    }
 }

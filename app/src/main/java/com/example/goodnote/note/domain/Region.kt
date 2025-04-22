@@ -56,4 +56,10 @@ data class Region(
         currentOverlapsStrokes.add(stroke)
         overlapsStrokes = currentOverlapsStrokes.toList()
     }
+
+    fun scaleStrokes(scale: Float): Region {
+        primaryStroke?.updateScaledPositions(scale)
+        overlapsStrokes.forEach { stroke -> stroke.updateScaledPositions(scale) }
+        return this
+    }
 }

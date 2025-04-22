@@ -2,6 +2,7 @@ package com.example.goodnote.note.presentation.Editor
 
 import android.util.Log
 import android.view.MotionEvent
+import android.view.ScaleGestureDetector
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionInRoot
@@ -14,6 +15,7 @@ import com.example.goodnote.note.domain.Dot
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
 import com.example.goodnote.note.domain.calActualSize
+import com.example.goodnote.note.utils.AppConst
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -77,7 +79,6 @@ class EditorViewModel(): ViewModel() {
                         page = currentPage
                     )
                 }
-                Log.d("scalee", "down")
             }
             MotionEvent.ACTION_MOVE -> {
                 _state.update { it ->
@@ -98,7 +99,6 @@ class EditorViewModel(): ViewModel() {
                     var currentPage = it.page
 
                     currentRootRegion!!.insert(currentLatestStroke)
-                    Log.d("scalee 1", currentLatestStroke.toString())
                     currentLatestStroke = Stroke()
                     currentPage = currentPage.copy(
                         latestStroke = currentLatestStroke,
@@ -111,5 +111,36 @@ class EditorViewModel(): ViewModel() {
                 }
             }
         }
+    }
+
+    private fun adjustScale(isIncrease: Boolean) {
+        _state.update { it ->
+            var currentScale = it.page.scale
+            if (isIncrease) currentScale += AppConst.SCALE_LEVEL else currentScale -= AppConst.SCALE_LEVEL
+            val currentRegion = it.page.rootRegion
+            currentRegion!!.scaleStrokes(it.page.scale)
+            val currentPage = it.page.copy(scale = currentScale, rootRegion = currentRegion)
+            it.copy(
+                page = currentPage
+            )
+        }
+    }
+
+    fun scaling(detector: ScaleGestureDetector) {
+        val scaleFactor = detector.scaleFactor
+        if (scaleFactor == 1f) return
+        //zoom in
+        if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
+
+//        _state.update { it ->
+//            val currentRegion = it.page.rootRegion
+//            currentRegion!!.scaleStrokes(it.page.scale)
+//            val currentBoundary = currentRegion.boundary!!.calActualSize(it.page.scale)
+//            currentRegion.boundary = currentBoundary
+//            val currentPage = it.page.copy(rootRegion = currentRegion)
+//            it.copy(
+//                page = currentPage
+//            )
+//        }
     }
 }

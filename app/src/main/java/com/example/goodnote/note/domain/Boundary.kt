@@ -11,6 +11,12 @@ data class Boundary(
     var actualHeight: Float = 0f
 )
 
+fun Boundary.calActualSize(scale: Float): Boundary {
+    actualWidth = (x + w) * scale
+    actualHeight = (y + h) * scale
+    return this
+}
+
 fun Boundary.calActualSize(): Boundary {
     actualWidth = x + w
     actualHeight = y + h

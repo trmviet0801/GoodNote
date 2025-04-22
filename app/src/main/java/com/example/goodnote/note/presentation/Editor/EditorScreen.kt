@@ -43,7 +43,7 @@ fun EditorScreen(innerPadding: PaddingValues) {
     val scaleGestureDetector = ScaleGestureDetector(context, object :
         ScaleGestureDetector.SimpleOnScaleGestureListener() {
         override fun onScale(detector: ScaleGestureDetector): Boolean {
-            Log.d("scalee", "hererer")
+            editorViewModel.scaling(detector)
             return true
         }
     })
