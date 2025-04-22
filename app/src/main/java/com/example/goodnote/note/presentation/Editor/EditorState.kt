@@ -12,7 +12,8 @@ data class EditorState(
     var name: String = AppConst.PAGE_NAME,
     var scale: Float = 1f,
     var size: List<Offset> = emptyList(),
-    var currentViewOffsets: List<Offset> = emptyList(),
+    var scrollOffset: Offset = Offset.Zero,
     var rootRegion: Region? = null,
-    var latestStroke: Stroke = Stroke()
+    var latestStroke: Stroke = Stroke(),
+    var translate: Offset = Offset.Zero
 )

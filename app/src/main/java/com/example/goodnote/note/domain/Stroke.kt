@@ -1,5 +1,6 @@
 package com.example.goodnote.note.domain
 
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 
@@ -19,6 +20,12 @@ fun Stroke.toPath(scale: Float): Path {
         result.lineTo(dot.scaledX, dot.scaledY)
     }
     return result
+}
+
+fun Stroke.scroll(amount: Offset): Stroke {
+    return this.copy(
+        dots = dots.map { dot -> dot.scroll(amount) }
+    )
 }
 
 fun Stroke.toPath(): Path {

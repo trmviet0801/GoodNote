@@ -4,6 +4,8 @@ import android.util.Log
 import android.view.ScaleGestureDetector
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,6 +13,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -22,6 +26,9 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.draw
+import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.layout.onSizeChanged
@@ -79,25 +86,25 @@ fun EditorScreen(innerPadding: PaddingValues) {
                 )
                 .background(Color.Blue)
         ) {
-            drawPath(
-                path = state.value.latestStroke.toPath(),
-                color = Color.White,
-                style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
-            )
-
-            drawPath(
-                path = (state.value.rootRegion?.primaryStroke?.toPath() ?: Path()),
-                color = Color.White,
-                style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
-            )
-
-            state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
                 drawPath(
-                    path = stroke.toPath(),
+                    path = state.value.latestStroke.toPath(),
                     color = Color.White,
                     style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
-            }
+
+                drawPath(
+                    path = (state.value.rootRegion?.primaryStroke?.toPath() ?: Path()),
+                    color = Color.White,
+                    style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+                )
+
+                state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
+                    drawPath(
+                        path = stroke.toPath(),
+                        color = Color.White,
+                        style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+                    )
+                }
         }
     }
 }

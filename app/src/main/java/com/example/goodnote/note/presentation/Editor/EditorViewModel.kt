@@ -9,11 +9,13 @@ import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.goodnote.note.action.ScrollAction
 import com.example.goodnote.note.domain.Boundary
 import com.example.goodnote.note.domain.Dot
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
 import com.example.goodnote.note.domain.calActualSize
+import com.example.goodnote.note.domain.scroll
 import com.example.goodnote.note.domain.updateScaledPositions
 import com.example.goodnote.note.utils.AppConst
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -60,8 +62,76 @@ class EditorViewModel() : ViewModel() {
         for (i in 0 until motionEvent.pointerCount) {
             when (motionEvent.getToolType(i)) {
                 MotionEvent.TOOL_TYPE_STYLUS -> stylusHandle(motionEvent)
+                MotionEvent.TOOL_TYPE_FINGER -> fingerHandle(motionEvent, i)
                 else -> {}
             }
+        }
+    }
+
+    private fun fingerHandle(event: MotionEvent, index: Int) {
+        val action = event.actionMasked
+        if (event.pointerCount == 1) {
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    _state.update { it ->
+                        it.copy(
+                            scrollOffset = Offset(
+                                event.getX(index),
+                                event.getY(index)
+                            )
+                        )
+                    }
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val amountOffset = Offset(
+                        event.getX(index) - _state.value.scrollOffset.x,
+                        event.getY(index) - _state.value.scrollOffset.y
+                    )
+                    scroll(amountOffset, Offset(event.getX(index), event.getY(index)))
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    _state.update { it ->
+                        it.copy(
+                            scrollOffset = Offset.Zero
+                        )
+                    }
+                    true
+                }
+            }
+        }
+    }
+
+    private fun scroll(amount: Offset, previousPosition: Offset) {
+        var vertical: ScrollAction = ScrollAction.NONE
+        var horizontal: ScrollAction = ScrollAction.NONE
+        if (amount.x > 0) horizontal = ScrollAction.LEFT
+        if (amount.x < 0) horizontal = ScrollAction.RIGHT
+        if (amount.y > 0) vertical = ScrollAction.UP
+        if (amount.y < 0) vertical = ScrollAction.DOWN
+        if (horizontal != ScrollAction.NONE) moveStrokes(horizontal, previousPosition)
+        if (vertical != ScrollAction.NONE) moveStrokes(vertical, previousPosition)
+    }
+
+    private fun moveStrokes(scrollAction: ScrollAction, previousPosition: Offset) {
+        when (scrollAction) {
+            ScrollAction.RIGHT -> {
+                Log.d("scroll", "======")
+                _state.update { it ->
+                    val newRegion = it.rootRegion?.scroll(Offset(-AppConst.SCROLL_LEVEL, 0f))
+                    it.copy(
+                        rootRegion = newRegion,
+                        scrollOffset = previousPosition
+                    )
+                }
+            }
+
+            ScrollAction.LEFT -> {}
+            ScrollAction.UP -> {}
+            ScrollAction.DOWN -> {}
+            ScrollAction.NONE -> {}
         }
     }
 
@@ -92,8 +162,6 @@ class EditorViewModel() : ViewModel() {
                             motionEvent.y
                         )
                     )
-                    Log.d("scaless", motionEvent.x.toString())
-
                     it.copy(
                         latestStroke = Stroke(dots = currentDots.toList())
                     )
