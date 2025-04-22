@@ -26,7 +26,7 @@ fun Boundary.contains(dot: Dot): Boolean {
 }
 
 fun Boundary.contains(stroke: Stroke): Boolean {
-    stroke.dots.forEach { dot -> if(contains(dot)) return false }
+    stroke.dots.forEach { dot -> if(!contains(dot)) return false }
     return true
 }
 

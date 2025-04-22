@@ -1,5 +1,9 @@
 package com.example.goodnote.note.domain
 
+import android.util.Log
+import androidx.compose.runtime.Immutable
+
+@Immutable
 data class Region(
     var primaryStroke: Stroke? = null,
     var boundary: Boundary? = null,
