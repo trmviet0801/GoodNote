@@ -6,8 +6,8 @@ import androidx.compose.runtime.Immutable
 data class Dot(
     val x: Float,
     val y: Float,
-    var scaledX: Float = 0f,
-    var scaledY: Float = 0f,
+    var scaledX: Float,
+    var scaledY: Float,
 )
 
 fun Dot.calScaledPosition(scale: Float) {

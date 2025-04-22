@@ -62,4 +62,17 @@ data class Region(
         overlapsStrokes.forEach { stroke -> stroke.updateScaledPositions(scale) }
         return this
     }
+
+    fun updateScaledPositions(scale: Float): Region {
+        if (isRoot) {
+            val newPrimaryStroke = primaryStroke!!.updateScaledPositions(scale)
+            val overlapsStrokes: List<Stroke> =
+                overlapsStrokes.map { stroke -> stroke.updateScaledPositions(scale) }
+            return this.copy(
+                primaryStroke = newPrimaryStroke,
+                overlapsStrokes = overlapsStrokes
+            )
+        }
+        return this
+    }
 }

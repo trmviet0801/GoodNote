@@ -14,13 +14,15 @@ import com.example.goodnote.note.domain.Dot
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
 import com.example.goodnote.note.domain.calActualSize
+import com.example.goodnote.note.domain.updateScaledPositions
 import com.example.goodnote.note.utils.AppConst
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlin.collections.toList
 
-class EditorViewModel(): ViewModel() {
+class EditorViewModel() : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
     val state = _state
         .stateIn(
@@ -73,21 +75,31 @@ class EditorViewModel(): ViewModel() {
                     currentDots = mutableListOf<Dot>()
 
                     it.copy(
-                        latestStroke =  Stroke(dots = currentDots.toList())
+                        latestStroke = Stroke(dots = currentDots.toList())
                     )
                 }
             }
+
             MotionEvent.ACTION_MOVE -> {
                 _state.update { it ->
                     val currentStroke = it.latestStroke
                     val currentDots = currentStroke.dots.toMutableList()
-                    currentDots.add(Dot(motionEvent.x, motionEvent.y))
+                    currentDots.add(
+                        Dot(
+                            motionEvent.x / it.scale,
+                            motionEvent.y / it.scale,
+                            motionEvent.x,
+                            motionEvent.y
+                        )
+                    )
+                    Log.d("scaless", motionEvent.x.toString())
 
                     it.copy(
                         latestStroke = Stroke(dots = currentDots.toList())
                     )
                 }
             }
+
             MotionEvent.ACTION_UP -> {
                 _state.update { it ->
                     var currentLatestStroke = it.latestStroke
@@ -110,11 +122,10 @@ class EditorViewModel(): ViewModel() {
         _state.update { it ->
             var currentScale = it.scale
             if (isIncrease) currentScale += AppConst.SCALE_LEVEL else currentScale -= AppConst.SCALE_LEVEL
-            val currentRegion = it.rootRegion
-            currentRegion!!.scaleStrokes(it.scale)
+            val newRootRegion = it.rootRegion!!.scaleStrokes(currentScale)
             it.copy(
                 scale = currentScale,
-                rootRegion = currentRegion
+                rootRegion = newRootRegion
             )
         }
     }
@@ -124,16 +135,5 @@ class EditorViewModel(): ViewModel() {
         if (scaleFactor == 1f) return
         //zoom in
         if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
-
-//        _state.update { it ->
-//            val currentRegion = it.rootRegion
-//            currentRegion!!.scaleStrokes(it.scale)
-//            val currentBoundary = currentRegion.boundary!!.calActualSize(it.scale)
-//            currentRegion.boundary = currentBoundary
-//            val currentPage = it.copy(rootRegion = currentRegion)
-//            it.copy(
-//                page = currentPage
-//            )
-//        }
     }
 }

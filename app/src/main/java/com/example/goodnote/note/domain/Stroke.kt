@@ -23,7 +23,7 @@ fun Stroke.toPath(scale: Float): Path {
 
 fun Stroke.toPath(): Path {
     if (dots.isEmpty()) return Path()
-    updateScaledPositions(1f)
+
     val result = Path()
     result.moveTo(dots[0].scaledX, dots[0].scaledY)
     dots.forEach { dot ->
@@ -32,8 +32,9 @@ fun Stroke.toPath(): Path {
     return result
 }
 
-fun Stroke.updateScaledPositions(scale: Float) {
+fun Stroke.updateScaledPositions(scale: Float): Stroke {
     dots.forEach { dot ->
         dot.calScaledPosition(scale)
     }
+    return this
 }
