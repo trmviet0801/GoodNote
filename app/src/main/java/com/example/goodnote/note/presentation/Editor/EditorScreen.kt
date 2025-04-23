@@ -87,23 +87,23 @@ fun EditorScreen(innerPadding: PaddingValues) {
                         state.value.rootRegion?.boundary?.actualHeight ?: 100f
                     ) * state.value.scale
                 )
-                .background(Color.Blue)
+                .background(Color.Black)
         ) {
                 drawPath(
-                    path = state.value.latestStroke.toPath(),
+                    path = state.value.latestStroke.toPath(state.value.canvasRelativePosition),
                     color = Color.White,
                     style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
 
                 drawPath(
-                    path = (state.value.rootRegion?.primaryStroke?.toPath() ?: Path()),
+                    path = (state.value.rootRegion?.primaryStroke?.toPath(state.value.canvasRelativePosition) ?: Path()),
                     color = Color.White,
                     style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
 
                 state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
                     drawPath(
-                        path = stroke.toPath(),
+                        path = stroke.toPath(state.value.canvasRelativePosition),
                         color = Color.White,
                         style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
                     )

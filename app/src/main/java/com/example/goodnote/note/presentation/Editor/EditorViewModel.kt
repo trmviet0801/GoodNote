@@ -176,12 +176,31 @@ class EditorViewModel() : ViewModel() {
 
     private fun scrolling(amount: Offset, previousPosition: Offset) {
         addSizeToCanvas(amount)
+        moveVirtualCamera(amount)
+    }
+
+    private fun moveVirtualCamera(amount: Offset) {
+        Log.d("scroll", amount.toString())
         _state.update { it ->
-            val newRegion = it.rootRegion?.scroll(amount)
-            it.copy(
-                rootRegion = newRegion,
-                scrollOffset = previousPosition
+            var currentCanvasRelativePosition = it.canvasRelativePosition.copy(
+                x = it.canvasRelativePosition.x - amount.x,
+                y = it.canvasRelativePosition.y - amount.y
             )
+            if (currentCanvasRelativePosition.x > 0 && currentCanvasRelativePosition.y > 0) {
+                return@update it.copy(
+                    canvasRelativePosition = currentCanvasRelativePosition
+                )
+                Log.d("scroll", "scroll ${_state.value.canvasRelativePosition}")
+            } else if (currentCanvasRelativePosition.x > 0) {
+                return@update it.copy(
+                    canvasRelativePosition = currentCanvasRelativePosition.copy(y = it.canvasRelativePosition.y)
+                )
+            } else if (currentCanvasRelativePosition.y > 0) {
+                return@update it.copy(
+                    canvasRelativePosition = currentCanvasRelativePosition.copy(x = it.canvasRelativePosition.x)
+                )
+            }
+            it.copy()
         }
     }
 
@@ -242,10 +261,10 @@ class EditorViewModel() : ViewModel() {
                     val currentDots = currentStroke.dots.toMutableList()
                     currentDots.add(
                         Dot(
-                            motionEvent.x / it.scale,
-                            motionEvent.y / it.scale,
-                            motionEvent.x,
-                            motionEvent.y
+                            (motionEvent.x + it.canvasRelativePosition.x) / it.scale,
+                            (motionEvent.y + it.canvasRelativePosition.y) / it.scale,
+                            motionEvent.x + it.canvasRelativePosition.x,
+                            motionEvent.y + it.canvasRelativePosition.y
                         )
                     )
                     it.copy(
@@ -259,7 +278,6 @@ class EditorViewModel() : ViewModel() {
                     var currentLatestStroke = it.latestStroke
                     val currentRootRegion = it.rootRegion
                     var currentPage = it
-
                     currentRootRegion!!.insert(currentLatestStroke)
                     currentLatestStroke = Stroke()
 
@@ -277,7 +295,7 @@ class EditorViewModel() : ViewModel() {
             var currentScale = it.scale
             if (isIncrease) currentScale += AppConst.SCALE_LEVEL else currentScale -= AppConst.SCALE_LEVEL
             val newRootRegion = it.rootRegion!!.scaleStrokes(currentScale)
-            if (currentScale > 0) {
+            if (currentScale > 0.07) {
                 it.copy(
                     scale = currentScale,
                     rootRegion = newRootRegion

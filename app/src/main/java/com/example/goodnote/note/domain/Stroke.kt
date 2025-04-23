@@ -28,13 +28,13 @@ fun Stroke.scroll(amount: Offset): Stroke {
     )
 }
 
-fun Stroke.toPath(): Path {
+fun Stroke.toPath(virtualCamera: Offset): Path {
     if (dots.isEmpty()) return Path()
 
     val result = Path()
-    result.moveTo(dots[0].scaledX, dots[0].scaledY)
+    result.moveTo(dots[0].scaledX - virtualCamera.x, dots[0].scaledY - virtualCamera.y)
     dots.forEach { dot ->
-        result.lineTo(dot.scaledX, dot.scaledY)
+        result.lineTo(dot.scaledX - virtualCamera.x, dot.scaledY - virtualCamera.y)
     }
     return result
 }

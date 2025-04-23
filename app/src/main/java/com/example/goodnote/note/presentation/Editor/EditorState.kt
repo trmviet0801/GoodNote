@@ -17,5 +17,6 @@ data class EditorState(
     var latestStroke: Stroke = Stroke(),
     var translate: Offset = Offset.Zero,
     var screenWidth: Int = 0,
-    var screenHeight: Int = 0
+    var screenHeight: Int = 0,
+    var canvasRelativePosition: Offset = Offset.Zero
 )

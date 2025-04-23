@@ -1,5 +1,6 @@
 package com.example.goodnote.note.domain
 
+import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
 
@@ -18,11 +19,16 @@ data class Region(
     fun addSize(amount: Offset, scale: Float = 1f): Region {
         val newBoundary = boundary!!.addSize(amount, scale)
         val newRegion = this.copy(boundary = newBoundary)
-        newRegion.topLeftRegion?.addSize(amount, scale)
-        newRegion.topRightRegion?.addSize(amount, scale)
-        newRegion.bottomLeftRegion?.addSize(amount, scale)
-        newRegion.bottomRightRegion?.addSize(amount, scale)
+        newRegion.adjustSubRegionSize()
         return newRegion
+    }
+
+    private fun adjustSubRegionSize() {
+        val boundaries = boundary!!.extractSubDivines()
+        if (topLeftRegion != null) topLeftRegion = topLeftRegion!!.copy(boundary = boundaries[0])
+        if (topRightRegion != null) topRightRegion = topRightRegion!!.copy(boundary = boundaries[1])
+        if (bottomLeftRegion != null) bottomLeftRegion = bottomLeftRegion!!.copy(boundary = boundaries[2])
+        if (bottomRightRegion != null) bottomRightRegion = bottomRightRegion!!.copy(boundary = boundaries[3])
     }
 
     //4 equal regions
