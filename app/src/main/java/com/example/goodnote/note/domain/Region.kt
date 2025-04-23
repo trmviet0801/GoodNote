@@ -15,6 +15,16 @@ data class Region(
     var bottomLeftRegion: Region? = null,
     var bottomRightRegion: Region? = null
 ) {
+    fun addSize(amount: Offset, scale: Float = 1f): Region {
+        val newBoundary = boundary!!.addSize(amount, scale)
+        val newRegion = this.copy(boundary = newBoundary)
+        newRegion.topLeftRegion?.addSize(amount, scale)
+        newRegion.topRightRegion?.addSize(amount, scale)
+        newRegion.bottomLeftRegion?.addSize(amount, scale)
+        newRegion.bottomRightRegion?.addSize(amount, scale)
+        return newRegion
+    }
+
     //4 equal regions
     private fun divide() {
         if (!isDivided) {

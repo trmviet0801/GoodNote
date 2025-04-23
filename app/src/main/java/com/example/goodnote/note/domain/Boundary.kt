@@ -17,6 +17,15 @@ fun Boundary.calActualSize(scale: Float): Boundary {
     return this
 }
 
+fun Boundary.addSize(amount: Offset, scale: Float = 1f): Boundary {
+    return this.copy(
+        x = x + amount.x,
+        y = y + amount.y,
+        w = w + amount.x,
+        h = h + amount.y
+    ).calActualSize()
+}
+
 fun Boundary.calActualSize(): Boundary {
     actualWidth = x + w
     actualHeight = y + h

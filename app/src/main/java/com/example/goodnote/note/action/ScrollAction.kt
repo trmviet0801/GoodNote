@@ -5,5 +5,9 @@ enum class ScrollAction {
     LEFT,
     UP,
     DOWN,
-    NONE
+    NONE,
+    RIGHT_UP,
+    RIGHT_DOWN,
+    LEFT_UP,
+    LEFT_DOWN
 }

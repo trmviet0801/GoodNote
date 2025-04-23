@@ -5,7 +5,6 @@ import android.view.MotionEvent
 import android.view.ScaleGestureDetector
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
-import androidx.compose.ui.layout.positionInRoot
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -14,15 +13,16 @@ import com.example.goodnote.note.domain.Boundary
 import com.example.goodnote.note.domain.Dot
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
+import com.example.goodnote.note.domain.addSize
 import com.example.goodnote.note.domain.calActualSize
-import com.example.goodnote.note.domain.scroll
-import com.example.goodnote.note.domain.updateScaledPositions
 import com.example.goodnote.note.utils.AppConst
+import com.example.goodnote.note.utils.AppConvertor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlin.collections.toList
+import kotlin.math.abs
 
 class EditorViewModel() : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
@@ -44,7 +44,9 @@ class EditorViewModel() : ViewModel() {
             region.isRoot = true
             _state.update { it ->
                 it.copy(
-                    rootRegion = region
+                    rootRegion = region,
+                    screenWidth = layoutCoordinates.size.width,
+                    screenHeight = layoutCoordinates.size.height
                 )
             }
         }
@@ -105,32 +107,116 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun scroll(amount: Offset, previousPosition: Offset) {
-        var vertical: ScrollAction = ScrollAction.NONE
-        var horizontal: ScrollAction = ScrollAction.NONE
-        if (amount.x > 0) horizontal = ScrollAction.LEFT
-        if (amount.x < 0) horizontal = ScrollAction.RIGHT
-        if (amount.y > 0) vertical = ScrollAction.UP
-        if (amount.y < 0) vertical = ScrollAction.DOWN
-        if (horizontal != ScrollAction.NONE) moveStrokes(horizontal, previousPosition)
-        if (vertical != ScrollAction.NONE) moveStrokes(vertical, previousPosition)
+        var scrollDirection: ScrollAction = ScrollAction.NONE
+        if (amount.x > 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.LEFT_UP
+            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.LEFT_DOWN
+            if (amount.y == 0f) scrollDirection = ScrollAction.LEFT
+        } else if (amount.x < 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.RIGHT_UP
+            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.RIGHT_DOWN
+            if (amount.y == 0f) scrollDirection = ScrollAction.RIGHT
+        } else {
+            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.UP
+            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.DOWN
+        }
+        moveStrokes(scrollDirection, previousPosition)
+    }
+
+    private fun addSizeToCanvas(amount: Offset) {
+        _state.update { it ->
+            var newRegion = it.rootRegion?.addSize(AppConvertor.convertOffset(amount))
+            it.copy(
+                rootRegion = newRegion
+            )
+        }
+        canvasFillScreen()
+    }
+
+    private fun canvasFillScreen() {
+        val extraX =
+            _state.value.screenWidth - (_state.value.rootRegion!!.boundary!!.actualWidth * _state.value.scale)
+        val extraY =
+            _state.value.screenHeight - (_state.value.rootRegion!!.boundary!!.actualHeight * _state.value.scale)
+//        Log.d("scroll", "${_state.value.screenWidth} ${_state.value.screenHeight}" +
+//                " ${_state.value.rootRegion?.boundary!!.actualWidth * _state.value.scale}" +
+//                " ${_state.value.scale}")
+        _state.update { it ->
+            if (extraX > 0 && extraY > 0) {
+                val newRegion = it.rootRegion?.addSize(
+                    Offset(
+                        extraX / _state.value.scale,
+                        extraY / _state.value.scale
+                    )
+                )
+                it.copy(
+                    rootRegion = newRegion
+                )
+            } else if (extraX > 0 && extraY <= 0) {
+                val newRegion = it.rootRegion?.addSize(Offset(extraX / _state.value.scale, 0f))
+                it.copy(
+                    rootRegion = newRegion
+                )
+            } else if (extraX < 0 && extraY > 0) {
+                val newRegion = it.rootRegion?.addSize(Offset(0f, extraY / _state.value.scale))
+                it.copy(
+                    rootRegion = newRegion
+                )
+            } else {
+                it.copy()
+            }
+        }
+    }
+
+    private fun scrolling(amount: Offset, previousPosition: Offset) {
+        addSizeToCanvas(amount)
+        _state.update { it ->
+            val newRegion = it.rootRegion?.scroll(amount)
+            it.copy(
+                rootRegion = newRegion,
+                scrollOffset = previousPosition
+            )
+        }
     }
 
     private fun moveStrokes(scrollAction: ScrollAction, previousPosition: Offset) {
         when (scrollAction) {
-            ScrollAction.RIGHT -> {
-                Log.d("scroll", "======")
-                _state.update { it ->
-                    val newRegion = it.rootRegion?.scroll(Offset(-AppConst.SCROLL_LEVEL, 0f))
-                    it.copy(
-                        rootRegion = newRegion,
-                        scrollOffset = previousPosition
-                    )
-                }
-            }
+            ScrollAction.RIGHT -> scrolling(Offset(-AppConst.SCROLL_LEVEL, 0f), previousPosition)
+            ScrollAction.LEFT -> scrolling(Offset(AppConst.SCROLL_LEVEL, 0f), previousPosition)
+            ScrollAction.UP -> scrolling(Offset(0f, AppConst.SCROLL_LEVEL), previousPosition)
+            ScrollAction.DOWN -> scrolling(Offset(0f, -AppConst.SCROLL_LEVEL), previousPosition)
+            ScrollAction.RIGHT_UP -> scrolling(
+                Offset(
+                    -AppConst.SCROLL_LEVEL,
+                    AppConst.SCROLL_LEVEL
+                ), previousPosition
+            )
 
-            ScrollAction.LEFT -> {}
-            ScrollAction.UP -> {}
-            ScrollAction.DOWN -> {}
+            ScrollAction.RIGHT_DOWN -> scrolling(
+                Offset(
+                    -AppConst.SCROLL_LEVEL,
+                    -AppConst.SCROLL_LEVEL
+                ), previousPosition
+            )
+
+            ScrollAction.LEFT_UP -> scrolling(
+                Offset(AppConst.SCROLL_LEVEL, AppConst.SCROLL_LEVEL),
+                previousPosition
+            )
+
+            ScrollAction.LEFT_DOWN -> scrolling(
+                Offset(
+                    AppConst.SCROLL_LEVEL,
+                    -AppConst.SCROLL_LEVEL
+                ), previousPosition
+            )
+
             ScrollAction.NONE -> {}
         }
     }
@@ -191,11 +277,16 @@ class EditorViewModel() : ViewModel() {
             var currentScale = it.scale
             if (isIncrease) currentScale += AppConst.SCALE_LEVEL else currentScale -= AppConst.SCALE_LEVEL
             val newRootRegion = it.rootRegion!!.scaleStrokes(currentScale)
-            it.copy(
-                scale = currentScale,
-                rootRegion = newRootRegion
-            )
+            if (currentScale > 0) {
+                it.copy(
+                    scale = currentScale,
+                    rootRegion = newRootRegion
+                )
+            } else {
+                it
+            }
         }
+        canvasFillScreen()
     }
 
     fun scaling(detector: ScaleGestureDetector) {
@@ -204,4 +295,6 @@ class EditorViewModel() : ViewModel() {
         //zoom in
         if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
     }
+
+
 }

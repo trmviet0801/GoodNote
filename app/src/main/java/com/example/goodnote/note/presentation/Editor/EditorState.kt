@@ -15,5 +15,7 @@ data class EditorState(
     var scrollOffset: Offset = Offset.Zero,
     var rootRegion: Region? = null,
     var latestStroke: Stroke = Stroke(),
-    var translate: Offset = Offset.Zero
+    var translate: Offset = Offset.Zero,
+    var screenWidth: Int = 0,
+    var screenHeight: Int = 0
 )
