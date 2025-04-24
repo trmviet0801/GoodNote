@@ -11,6 +11,16 @@ data class Stroke(
     var timestamp: Long = System.currentTimeMillis()
 )
 
+fun Stroke.getRightest(): Dot? {
+    if (dots.isEmpty()) return null
+    return dots.maxByOrNull { it.x }
+}
+
+fun Stroke.getDownest(): Dot? {
+    if (dots.isEmpty()) return null
+    return dots.maxByOrNull { it.y }
+}
+
 fun Stroke.toPath(scale: Float): Path {
     updateScaledPositions(scale)
     if (dots.isEmpty()) return Path()

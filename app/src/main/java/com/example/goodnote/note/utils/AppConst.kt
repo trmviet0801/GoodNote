@@ -6,4 +6,5 @@ object AppConst {
     const val SCROLL_LEVEL: Float = 40f
     const val SCROLL_MINIMUM: Float = 2.5f
     const val SCROLL_AXIS_DOMINANT = 2
+    const val MIN_FREE_SPACE = 500f
 }

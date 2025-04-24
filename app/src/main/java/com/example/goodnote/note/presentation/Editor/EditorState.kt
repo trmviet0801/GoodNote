@@ -2,7 +2,6 @@ package com.example.goodnote.note.presentation.Editor
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
-import com.example.goodnote.domain.Page
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
 import com.example.goodnote.note.utils.AppConst
@@ -18,5 +17,7 @@ data class EditorState(
     var translate: Offset = Offset.Zero,
     var screenWidth: Int = 0,
     var screenHeight: Int = 0,
-    var canvasRelativePosition: Offset = Offset.Zero
+    var canvasRelativePosition: Offset = Offset.Zero,
+    var rightest: Stroke? = null,
+    var downest: Stroke? = null,
 )
