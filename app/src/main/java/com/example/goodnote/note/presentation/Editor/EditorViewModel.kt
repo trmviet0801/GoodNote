@@ -97,7 +97,7 @@ class EditorViewModel() : ViewModel() {
                 MotionEvent.ACTION_UP -> {
                     _state.update { it ->
                         it.copy(
-                            scrollOffset = Offset.Zero
+                            scrollOffset = Offset(event.x, event.y)
                         )
                     }
                     true
@@ -107,24 +107,42 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun scroll(amount: Offset, previousPosition: Offset) {
+        Log.d("scroll", amount.toString())
         var scrollDirection: ScrollAction = ScrollAction.NONE
-        if (amount.x > 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
-            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//        if (amount.x > 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+//            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//                ScrollAction.LEFT_UP
+//            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//                ScrollAction.LEFT_DOWN
+//            if (amount.y == 0f) scrollDirection = ScrollAction.LEFT
+//        } else if (amount.x < 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+//            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//                ScrollAction.RIGHT_UP
+//            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//                ScrollAction.RIGHT_DOWN
+//            if (amount.y == 0f) scrollDirection = ScrollAction.RIGHT
+//        } else {
+//            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//                ScrollAction.UP
+//            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+//                ScrollAction.DOWN
+//        }
+        if (abs(amount.x) > abs(amount.y * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+            scrollDirection = if (amount.x > 0) ScrollAction.LEFT else ScrollAction.RIGHT
+        } else if (abs(amount.y) > abs(amount.x * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.y) >= AppConst.SCROLL_MINIMUM) {
+            scrollDirection = if (amount.y > 0) ScrollAction.UP else ScrollAction.DOWN
+        } else if (amount.x > 0 && amount.x >= AppConst.SCROLL_MINIMUM) {
+            if (amount.y > 0 && amount.y >= AppConst.SCROLL_MINIMUM) scrollDirection =
                 ScrollAction.LEFT_UP
-            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            else if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
                 ScrollAction.LEFT_DOWN
-            if (amount.y == 0f) scrollDirection = ScrollAction.LEFT
+            else scrollDirection = ScrollAction.LEFT
         } else if (amount.x < 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
-            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            if (amount.y > 0 && amount.y >= AppConst.SCROLL_MINIMUM) scrollDirection =
                 ScrollAction.RIGHT_UP
-            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            else if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
                 ScrollAction.RIGHT_DOWN
-            if (amount.y == 0f) scrollDirection = ScrollAction.RIGHT
-        } else {
-            if (amount.y > 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
-                ScrollAction.UP
-            if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
-                ScrollAction.DOWN
+            else scrollDirection = ScrollAction.RIGHT
         }
         moveStrokes(scrollDirection, previousPosition)
     }
@@ -176,11 +194,10 @@ class EditorViewModel() : ViewModel() {
 
     private fun scrolling(amount: Offset, previousPosition: Offset) {
         addSizeToCanvas(amount)
-        moveVirtualCamera(amount)
+        moveVirtualCamera(amount, previousPosition)
     }
 
-    private fun moveVirtualCamera(amount: Offset) {
-        Log.d("scroll", amount.toString())
+    private fun moveVirtualCamera(amount: Offset, previousPosition: Offset) {
         _state.update { it ->
             var currentCanvasRelativePosition = it.canvasRelativePosition.copy(
                 x = it.canvasRelativePosition.x - amount.x,
@@ -188,16 +205,18 @@ class EditorViewModel() : ViewModel() {
             )
             if (currentCanvasRelativePosition.x > 0 && currentCanvasRelativePosition.y > 0) {
                 return@update it.copy(
-                    canvasRelativePosition = currentCanvasRelativePosition
+                    canvasRelativePosition = currentCanvasRelativePosition,
+                    scrollOffset = previousPosition
                 )
-                Log.d("scroll", "scroll ${_state.value.canvasRelativePosition}")
             } else if (currentCanvasRelativePosition.x > 0) {
                 return@update it.copy(
-                    canvasRelativePosition = currentCanvasRelativePosition.copy(y = it.canvasRelativePosition.y)
+                    canvasRelativePosition = currentCanvasRelativePosition.copy(y = it.canvasRelativePosition.y),
+                    scrollOffset = previousPosition
                 )
             } else if (currentCanvasRelativePosition.y > 0) {
                 return@update it.copy(
-                    canvasRelativePosition = currentCanvasRelativePosition.copy(x = it.canvasRelativePosition.x)
+                    canvasRelativePosition = currentCanvasRelativePosition.copy(x = it.canvasRelativePosition.x),
+                    scrollOffset = previousPosition
                 )
             }
             it.copy()

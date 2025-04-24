@@ -50,13 +50,13 @@ fun EditorScreen(innerPadding: PaddingValues) {
     val state = editorViewModel.state.collectAsState()
 
     val context = LocalContext.current
-    val scaleGestureDetector = ScaleGestureDetector(context, object :
-        ScaleGestureDetector.SimpleOnScaleGestureListener() {
-        override fun onScale(detector: ScaleGestureDetector): Boolean {
-            editorViewModel.scaling(detector)
-            return true
-        }
-    })
+    val scaleGestureDetector =
+        ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
+            override fun onScale(detector: ScaleGestureDetector): Boolean {
+                editorViewModel.scaling(detector)
+                return true
+            }
+        })
 
     Box(
         modifier = Modifier
@@ -64,50 +64,48 @@ fun EditorScreen(innerPadding: PaddingValues) {
             .background(Color.Red)
             .onGloballyPositioned { layoutCoordinates ->
                 editorViewModel.adjustPageSize(layoutCoordinates)
-            }
-    ) {
+            }) {
         Text(
             text = if (state.value.rootRegion == null) "null" else "${AppConvertor.pxToDp(state.value.rootRegion?.boundary?.actualWidth ?: 0f)}",
             modifier = Modifier.padding(top = 50.dp)
         )
-        Canvas(
-            modifier = Modifier
-                .pointerInteropFilter { motionEvent ->
-                    scaleGestureDetector.onTouchEvent(motionEvent)
-                    editorViewModel.handleInput(motionEvent)
-                    true
-                }
-                .width(
-                    AppConvertor.pxToDp(
-                        state.value.rootRegion?.boundary?.actualWidth ?: 100f
-                    ) * state.value.scale
-                )
-                .height(
-                    AppConvertor.pxToDp(
-                        state.value.rootRegion?.boundary?.actualHeight ?: 100f
-                    ) * state.value.scale
-                )
-                .background(Color.Black)
-        ) {
+        Canvas(modifier = Modifier
+            .pointerInteropFilter { motionEvent ->
+                scaleGestureDetector.onTouchEvent(motionEvent)
+                editorViewModel.handleInput(motionEvent)
+                true
+            }
+            .width(
+                AppConvertor.pxToDp(
+                    state.value.rootRegion?.boundary?.actualWidth ?: 100f
+                ) * state.value.scale
+            )
+            .height(
+                AppConvertor.pxToDp(
+                    state.value.rootRegion?.boundary?.actualHeight ?: 100f
+                ) * state.value.scale
+            )
+            .background(Color.Black)) {
+            drawPath(
+                path = state.value.latestStroke.toPath(state.value.canvasRelativePosition),
+                color = Color.White,
+                style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            )
+
+            drawPath(
+                path = (state.value.rootRegion?.primaryStroke?.toPath(state.value.canvasRelativePosition)
+                    ?: Path()),
+                color = Color.White,
+                style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+            )
+
+            state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
                 drawPath(
-                    path = state.value.latestStroke.toPath(state.value.canvasRelativePosition),
+                    path = stroke.toPath(state.value.canvasRelativePosition),
                     color = Color.White,
                     style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
-
-                drawPath(
-                    path = (state.value.rootRegion?.primaryStroke?.toPath(state.value.canvasRelativePosition) ?: Path()),
-                    color = Color.White,
-                    style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
-                )
-
-                state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
-                    drawPath(
-                        path = stroke.toPath(state.value.canvasRelativePosition),
-                        color = Color.White,
-                        style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
-                    )
-                }
+            }
         }
     }
 }
