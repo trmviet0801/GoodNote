@@ -99,15 +99,6 @@ data class Region(
         return this
     }
 
-    fun scroll(amount: Offset): Region {
-        val newPrimaryStroke = primaryStroke?.scroll(amount)
-        val newStrokes: List<Stroke> = overlapsStrokes.map { stroke -> stroke.scroll(amount) }
-        return this.copy(
-            primaryStroke = newPrimaryStroke,
-            overlapsStrokes = newStrokes
-        )
-    }
-
     fun removeStrokes(strokes: List<Stroke>) {
         if (strokes.isEmpty()) return
         strokes.forEach { stroke -> stroke.dots = emptyList<Dot>() }

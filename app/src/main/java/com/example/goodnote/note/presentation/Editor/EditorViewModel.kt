@@ -425,6 +425,8 @@ class EditorViewModel() : ViewModel() {
     }
 
     // / scale make the position is the offset with scale = 1 (strokes are stored with scale = 1 too)
+    // x,y always the position with scale = 1f
+    // scaledX, scaledY are the position with the current scale
     private fun convertMotionEventToDot(motionEvent: MotionEvent): Dot {
         return Dot(
             (motionEvent.x + _state.value.canvasRelativePosition.x) / _state.value.scale,

@@ -33,11 +33,6 @@ fun Stroke.toPath(scale: Float): Path {
     return result
 }
 
-fun Stroke.scroll(amount: Offset): Stroke {
-    return this.copy(
-        dots = dots.map { dot -> dot.scroll(amount) }
-    )
-}
 
 fun Stroke.toPath(virtualCamera: Offset): Path {
     if (dots.isEmpty()) return Path()
