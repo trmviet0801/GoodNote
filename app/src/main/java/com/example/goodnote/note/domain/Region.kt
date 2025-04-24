@@ -1,8 +1,8 @@
 package com.example.goodnote.note.domain
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
+import com.example.goodnote.note.action.InsertAction
 
 @Immutable
 data class Region(
@@ -44,19 +44,26 @@ data class Region(
         }
     }
 
-    fun insert(stroke: Stroke) {
-        if (primaryStroke == null) {
+    fun insert(stroke: Stroke): InsertAction {
+        if (primaryStroke == null || primaryStroke?.dots?.isEmpty() == true) {
             if (boundary!!.contains(stroke)) {
                 primaryStroke = stroke
-            } else if (boundary!!.overlap(stroke)) updateOverlapsStrokes(stroke)
+                return InsertAction.Inserted
+            } else if (boundary!!.overlap(stroke)) {
+                updateOverlapsStrokes(stroke)
+                return InsertAction.Oversize
+            }
+            return InsertAction.NotRelevant
         } else {
             if (boundary!!.overlap(stroke)) {
-                updateOverlapsStrokes(stroke)
                 if (boundary!!.contains(stroke)) {
                     divide()
                     insertToAllSubDivines(stroke)
                 }
+                updateOverlapsStrokes(stroke)
+                return InsertAction.Oversize
             }
+            return InsertAction.NotRelevant
         }
     }
 
@@ -99,5 +106,28 @@ data class Region(
             primaryStroke = newPrimaryStroke,
             overlapsStrokes = newStrokes
         )
+    }
+
+    fun removeStrokes(strokes: List<Stroke>) {
+        if (strokes.isEmpty()) return
+        strokes.forEach { stroke -> stroke.dots = emptyList<Dot>() }
+    }
+
+    fun findStrokesToRemove(dot: Dot, removedStrokes: MutableList<Stroke>): MutableList<Stroke> {
+        if (boundary?.contains(dot) == true) {
+            if (primaryStroke?.contains(dot) == true) {
+                removedStrokes.add(primaryStroke!!)
+            } else {
+                removeInSubRegions(dot, removedStrokes)
+            }
+        }
+        return removedStrokes
+    }
+
+    private fun removeInSubRegions(dot: Dot, removedStrokes: MutableList<Stroke>) {
+        this.topLeftRegion?.findStrokesToRemove(dot, removedStrokes)
+        this.topRightRegion?.findStrokesToRemove(dot, removedStrokes)
+        this.bottomLeftRegion?.findStrokesToRemove(dot, removedStrokes)
+        this.bottomRightRegion?.findStrokesToRemove(dot, removedStrokes)
     }
 }

@@ -12,6 +12,7 @@ data class EditorState(
     var scale: Float = 1f,
     var size: List<Offset> = emptyList(),
     var scrollOffset: Offset = Offset.Zero,
+    var oversizeStrokes: List<Stroke> = emptyList<Stroke>(),
     var rootRegion: Region? = null,
     var latestStroke: Stroke = Stroke(),
     var translate: Offset = Offset.Zero,
@@ -20,4 +21,5 @@ data class EditorState(
     var canvasRelativePosition: Offset = Offset.Zero,
     var rightest: Stroke? = null,
     var downest: Stroke? = null,
+    var removedStrokes: List<Stroke> = emptyList()
 )

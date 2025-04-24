@@ -8,6 +8,7 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.goodnote.note.action.InsertAction
 import com.example.goodnote.note.action.ScrollAction
 import com.example.goodnote.note.domain.Boundary
 import com.example.goodnote.note.domain.Dot
@@ -15,6 +16,7 @@ import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
 import com.example.goodnote.note.domain.addSize
 import com.example.goodnote.note.domain.calActualSize
+import com.example.goodnote.note.domain.contains
 import com.example.goodnote.note.domain.getDownest
 import com.example.goodnote.note.domain.getRightest
 import com.example.goodnote.note.utils.AppConst
@@ -171,7 +173,6 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun addSizeToCanvas(amount: Offset) {
-        Log.d("scroll", "add size to canvas ${amount.toString()}")
         _state.update { it ->
             var newRegion = it.rootRegion?.addSize(AppConvertor.convertOffset(amount))
             it.copy(
@@ -262,34 +263,48 @@ class EditorViewModel() : ViewModel() {
             ScrollAction.UP -> {
                 moveVirtualCamera(Offset(0f, AppConst.SCROLL_LEVEL), previousPosition)
             }
+
             ScrollAction.DOWN -> {
                 addSizeToCanvas(Offset(0f, -AppConst.SCROLL_LEVEL))
                 moveVirtualCamera(Offset(0f, -AppConst.SCROLL_LEVEL), previousPosition)
             }
+
             ScrollAction.RIGHT_UP -> {
                 addSizeToCanvas(Offset(-AppConst.SCROLL_LEVEL, 0f))
-                moveVirtualCamera(Offset(-AppConst.SCROLL_LEVEL, AppConst.SCROLL_LEVEL), previousPosition)
+                moveVirtualCamera(
+                    Offset(-AppConst.SCROLL_LEVEL, AppConst.SCROLL_LEVEL),
+                    previousPosition
+                )
             }
 
             ScrollAction.RIGHT_DOWN -> {
                 addSizeToCanvas(Offset(-AppConst.SCROLL_LEVEL, -AppConst.SCROLL_LEVEL))
-                moveVirtualCamera(Offset(-AppConst.SCROLL_LEVEL, -AppConst.SCROLL_LEVEL), previousPosition)
+                moveVirtualCamera(
+                    Offset(-AppConst.SCROLL_LEVEL, -AppConst.SCROLL_LEVEL),
+                    previousPosition
+                )
             }
 
             ScrollAction.LEFT_UP -> {
-                moveVirtualCamera(Offset(AppConst.SCROLL_LEVEL, AppConst.SCROLL_LEVEL), previousPosition)
+                moveVirtualCamera(
+                    Offset(AppConst.SCROLL_LEVEL, AppConst.SCROLL_LEVEL),
+                    previousPosition
+                )
             }
 
             ScrollAction.LEFT_DOWN -> {
                 addSizeToCanvas(Offset(0f, -AppConst.SCROLL_LEVEL))
-                moveVirtualCamera(Offset(AppConst.SCROLL_LEVEL, -AppConst.SCROLL_LEVEL), previousPosition)
+                moveVirtualCamera(
+                    Offset(AppConst.SCROLL_LEVEL, -AppConst.SCROLL_LEVEL),
+                    previousPosition
+                )
             }
 
             ScrollAction.NONE -> {}
         }
     }
 
-    private fun stylusHandle(motionEvent: MotionEvent) {
+    private fun stylusWritingHandle(motionEvent: MotionEvent) {
         val action = motionEvent.actionMasked
         when (action) {
             MotionEvent.ACTION_DOWN -> {
@@ -309,12 +324,7 @@ class EditorViewModel() : ViewModel() {
                     val currentStroke = it.latestStroke
                     val currentDots = currentStroke.dots.toMutableList()
                     currentDots.add(
-                        Dot(
-                            (motionEvent.x + it.canvasRelativePosition.x) / it.scale,
-                            (motionEvent.y + it.canvasRelativePosition.y) / it.scale,
-                            motionEvent.x + it.canvasRelativePosition.x,
-                            motionEvent.y + it.canvasRelativePosition.y
-                        )
+                        convertMotionEventToDot(motionEvent)
                     )
                     it.copy(
                         latestStroke = Stroke(dots = currentDots.toList())
@@ -326,36 +336,127 @@ class EditorViewModel() : ViewModel() {
                 _state.update { it ->
                     var currentLatestStroke = it.latestStroke
                     val currentRootRegion = it.rootRegion
-                    var currentPage = it
                     var currentRightest: Stroke =
-                        if (isRightest(currentLatestStroke)) currentLatestStroke else it.rightest!!
+                        if (isRightest(currentLatestStroke)) currentLatestStroke else it.rightest
+                            ?: Stroke()
                     var currentDownest: Stroke =
-                        if (isDownest(currentLatestStroke)) currentLatestStroke else it.downest!!
-                    currentRootRegion!!.insert(currentLatestStroke)
+                        if (isDownest(currentLatestStroke)) currentLatestStroke else it.downest
+                            ?: Stroke()
+                    var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
+
+                    if (currentRootRegion?.insert(currentLatestStroke) == InsertAction.Oversize)
+                        currentOversizeStroke = currentOversizeStroke.plus(currentLatestStroke)
+
                     currentLatestStroke = Stroke()
 
-                    Log.d(
-                        "scroll righest and downest",
-                        "${currentRightest.getRightest()?.x} ${currentDownest.getDownest()?.y}"
-                    )
                     it.copy(
                         latestStroke = currentLatestStroke,
                         rootRegion = currentRootRegion,
                         rightest = currentRightest,
-                        downest = currentDownest
+                        downest = currentDownest,
+                        oversizeStrokes = currentOversizeStroke
                     )
                 }
             }
         }
     }
 
+    private fun stylusHandle(motionEvent: MotionEvent) {
+        Log.d("erase", "${motionEvent.x} ${motionEvent.y} ${_state.value.scale}")
+        when (motionEvent.buttonState) {
+            0 -> stylusWritingHandle(motionEvent)
+            32 -> eraseHandle(motionEvent)
+        }
+    }
+
+    private fun eraseHandle(motionEvent: MotionEvent) {
+        Log.d("erase", _state.value.scale.toString())
+        val action = motionEvent.actionMasked
+        when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                _state.update { it ->
+                    var currentRemoveStroke = it.removedStrokes
+                    if (!currentRemoveStroke.isEmpty()) currentRemoveStroke = emptyList()
+                    val currentOversizeStrokes = removeOversizeStrokes(convertMotionEventToDot(motionEvent))
+                    currentRemoveStroke = currentRemoveStroke.plus(
+                        it.rootRegion!!.findStrokesToRemove(
+                            convertMotionEventToDot(motionEvent),
+                            currentRemoveStroke.toMutableList()
+                        ).toList()
+                    )
+                    if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
+                        currentRemoveStroke
+                    )
+                    it.copy(
+                        removedStrokes = currentRemoveStroke,
+                        oversizeStrokes = currentOversizeStrokes
+                    )
+                }
+            }
+
+            MotionEvent.ACTION_MOVE -> {
+                _state.update { it ->
+                    var currentRemoveStroke = it.removedStrokes
+                    val currentOversizeStrokes = removeOversizeStrokes(convertMotionEventToDot(motionEvent))
+                    currentRemoveStroke = currentRemoveStroke.plus(
+                        it.rootRegion!!.findStrokesToRemove(
+                            convertMotionEventToDot(motionEvent),
+                            currentRemoveStroke.toMutableList()
+                        ).toList()
+                    )
+                    if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
+                        currentRemoveStroke
+                    )
+                    it.copy(
+                        removedStrokes = currentRemoveStroke,
+                        oversizeStrokes = currentOversizeStrokes
+                    )
+                }
+            }
+
+            MotionEvent.ACTION_UP -> {
+                _state.update { it ->
+                    it.copy(
+                        removedStrokes = emptyList<Stroke>()
+                    )
+                }
+            }
+        }
+    }
+
+    // / scale make the position is the offset with scale = 1 (strokes are stored with scale = 1 too)
+    private fun convertMotionEventToDot(motionEvent: MotionEvent): Dot {
+        return Dot(
+            (motionEvent.x + _state.value.canvasRelativePosition.x) / _state.value.scale,
+            (motionEvent.y + _state.value.canvasRelativePosition.y) / _state.value.scale,
+            motionEvent.x + _state.value.canvasRelativePosition.x,
+            motionEvent.y + _state.value.canvasRelativePosition.y
+        )
+    }
+
+    //change dots to empty
+    //remove in oversize list
+    private fun removeOversizeStrokes(dot: Dot): List<Stroke> {
+        var result = mutableListOf<Stroke>()
+        var currentOversizeStrokes = _state.value.oversizeStrokes
+
+        currentOversizeStrokes.forEach { stroke ->
+            if (stroke.contains(dot)) {
+                stroke.dots = emptyList<Dot>()
+            } else {
+                result.add(stroke)
+            }
+        }
+        return result.toList()
+    }
+
     private fun isRightest(stroke: Stroke): Boolean {
-        if (_state.value.rightest == null) return true
+        if (_state.value.rightest == null || _state?.value?.rightest?.dots == emptyList<Dot>()) return true
         return stroke.getRightest()!!.x > _state.value.rightest!!.getRightest()!!.x
     }
 
     private fun isDownest(stroke: Stroke): Boolean {
-        if (_state.value.downest == null) return true
+        if (_state.value.downest == null || _state?.value?.downest?.dots == emptyList<Dot>()) return true
         return stroke.getDownest()!!.y > _state.value.downest!!.getDownest()!!.y
     }
 
@@ -382,6 +483,4 @@ class EditorViewModel() : ViewModel() {
         //zoom in
         if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
     }
-
-
 }

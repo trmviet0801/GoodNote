@@ -106,6 +106,7 @@ fun EditorScreen(innerPadding: PaddingValues) {
                     style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
             }
+
         }
     }
 }
