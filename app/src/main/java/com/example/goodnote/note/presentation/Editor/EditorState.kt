@@ -5,9 +5,11 @@ import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
 import com.example.goodnote.note.utils.AppConst
+import com.example.goodnote.note.utils.PenConst
 
 @Immutable
 data class EditorState(
+    //file + canvas
     var name: String = AppConst.PAGE_NAME,
     var scale: Float = 1f,
     var size: List<Offset> = emptyList(),
@@ -21,5 +23,9 @@ data class EditorState(
     var canvasRelativePosition: Offset = Offset.Zero,
     var rightest: Stroke? = null,
     var downest: Stroke? = null,
-    var removedStrokes: List<Stroke> = emptyList()
+    var removedStrokes: List<Stroke> = emptyList(),
+
+    //pen
+    var color: Long = PenConst.DEFAULT_PEN_COLOR_1,
+    var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH
 )

@@ -3,15 +3,17 @@ package com.example.goodnote.note.domain
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
+import com.example.goodnote.note.utils.PenConst
 import kotlin.math.abs
 
 data class Stroke(
     var dots: List<Dot> = emptyList(),
-    var color: Color = Color.Black,
     var bold: Float = 5f,
     var timestamp: Long = System.currentTimeMillis(),
     var isRightest: Boolean = false,
-    var isDownest: Boolean = false
+    var isDownest: Boolean = false,
+    var color: Long = PenConst.DEFAULT_PEN_COLOR_1,
+    val lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH
 )
 
 fun Stroke.getRightest(): Dot? {
@@ -23,18 +25,6 @@ fun Stroke.getDownest(): Dot? {
     if (dots.isEmpty()) return null
     return dots.maxByOrNull { it.y }
 }
-
-fun Stroke.toPath(scale: Float): Path {
-    updateScaledPositions(scale)
-    if (dots.isEmpty()) return Path()
-    val result = Path()
-    result.moveTo(dots[0].scaledX, dots[0].scaledY)
-    dots.forEach { dot ->
-        result.lineTo(dot.scaledX, dot.scaledY)
-    }
-    return result
-}
-
 
 fun Stroke.toPath(virtualCamera: Offset): Path {
     if (dots.isEmpty()) return Path()

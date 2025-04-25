@@ -40,6 +40,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.goodnote.note.domain.toPath
 import com.example.goodnote.note.utils.AppConvertor
+import com.example.goodnote.note.utils.PenConst
 import org.koin.androidx.compose.koinViewModel
 import org.koin.viewmodel.getViewModelKey
 
@@ -88,22 +89,22 @@ fun EditorScreen(innerPadding: PaddingValues) {
             .background(Color.Black)) {
             drawPath(
                 path = state.value.latestStroke.toPath(state.value.canvasRelativePosition),
-                color = Color.White,
-                style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+                color = Color(state.value.latestStroke.color),
+                style = Stroke(state.value.latestStroke.lineWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
 
             drawPath(
                 path = (state.value.rootRegion?.primaryStroke?.toPath(state.value.canvasRelativePosition)
                     ?: Path()),
-                color = Color.White,
-                style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+                color = Color(state.value.rootRegion?.primaryStroke?.color ?: 0xffffff),
+                style = Stroke(state.value.rootRegion?.primaryStroke?.lineWidth ?: PenConst.DEFAULT_LINE_WIDTH, cap = StrokeCap.Round, join = StrokeJoin.Round)
             )
 
             state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
                 drawPath(
                     path = stroke.toPath(state.value.canvasRelativePosition),
-                    color = Color.White,
-                    style = Stroke(5f, cap = StrokeCap.Round, join = StrokeJoin.Round)
+                    color = Color(stroke.color),
+                    style = Stroke(stroke.lineWidth, cap = StrokeCap.Round, join = StrokeJoin.Round)
                 )
             }
 

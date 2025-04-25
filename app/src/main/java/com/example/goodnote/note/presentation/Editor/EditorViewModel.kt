@@ -338,7 +338,11 @@ class EditorViewModel() : ViewModel() {
                     currentDots = mutableListOf<Dot>()
 
                     it.copy(
-                        latestStroke = Stroke(dots = currentDots.toList())
+                        latestStroke = Stroke(
+                            dots = currentDots.toList(),
+                            color = it.color,
+                            lineWidth = it.lineWidth
+                        )
                     )
                 }
             }
@@ -351,7 +355,11 @@ class EditorViewModel() : ViewModel() {
                         convertMotionEventToDot(motionEvent)
                     )
                     it.copy(
-                        latestStroke = Stroke(dots = currentDots.toList())
+                        latestStroke = Stroke(
+                            dots = currentDots.toList(),
+                            color = it.color,
+                            lineWidth = it.lineWidth
+                        )
                     )
                 }
             }
@@ -380,6 +388,8 @@ class EditorViewModel() : ViewModel() {
 
                     var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
 
+                    // insert new stroke into root region
+                    // if stroke is oversize -> add to oversize list for erasing behavior
                     if (currentRootRegion?.insert(currentLatestStroke) == InsertAction.Oversize)
                         currentOversizeStroke = currentOversizeStroke.plus(currentLatestStroke)
 
