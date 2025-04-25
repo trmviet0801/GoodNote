@@ -216,11 +216,35 @@ class EditorViewModel() : ViewModel() {
         }
     }
 
-    private fun scrolling(amount: Offset, previousPosition: Offset) {
-        //adjust canvas size and scroll virtual cam
-        //
-        addSizeToCanvas(amount)
-        moveVirtualCamera(amount, previousPosition)
+    //update rightest stroke after erasing for keeping scrolling behavior
+    // if erased stroke was the rightest
+    private fun updateRightestStroke() {
+        _state.update { it ->
+            var rightestStroke: Stroke? = it.rootRegion?.findRightestStroke()
+            it.copy(
+                rightest = rightestStroke
+            )
+        }
+    }
+
+    //update downest stroke after erasing for keeping scrolling behavior
+    // if erased stroke was the downest
+    private fun updateDownestStroke() {
+        _state.update { it ->
+            var downestStroke: Stroke? = it.rootRegion?.findDownestStroke()
+            it.copy(
+                downest = downestStroke
+            )
+        }
+    }
+
+    //checking if need to update rightest stroke or downest stroke
+    //if need -> update
+    private fun updateFarestStrokes() {
+        if (_state.value.rightest == null || _state.value.rightest?.dots?.isEmpty() == true)
+            updateRightestStroke()
+        if (_state.value.downest == null || _state.value.downest?.dots?.isEmpty() == true)
+            updateDownestStroke()
     }
 
     private fun moveVirtualCamera(amount: Offset, previousPosition: Offset) {
@@ -336,12 +360,24 @@ class EditorViewModel() : ViewModel() {
                 _state.update { it ->
                     var currentLatestStroke = it.latestStroke
                     val currentRootRegion = it.rootRegion
+                    //update the farest stroke in the root region
                     var currentRightest: Stroke =
-                        if (isRightest(currentLatestStroke)) currentLatestStroke else it.rightest
+                        if (isRightest(currentLatestStroke)) {
+                            if (it.rightest !== null)
+                                it.rightest!!.isRightest = false
+                            currentLatestStroke.isRightest = true
+                            currentLatestStroke
+                        } else it.rightest
                             ?: Stroke()
                     var currentDownest: Stroke =
-                        if (isDownest(currentLatestStroke)) currentLatestStroke else it.downest
+                        if (isDownest(currentLatestStroke)) {
+                            if (it.downest !== null)
+                                it.downest!!.isDownest = false
+                            currentLatestStroke.isDownest = true
+                            currentLatestStroke
+                        } else it.downest
                             ?: Stroke()
+
                     var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
 
                     if (currentRootRegion?.insert(currentLatestStroke) == InsertAction.Oversize)
@@ -422,6 +458,7 @@ class EditorViewModel() : ViewModel() {
                 }
             }
         }
+        updateFarestStrokes()
     }
 
     // / scale make the position is the offset with scale = 1 (strokes are stored with scale = 1 too)

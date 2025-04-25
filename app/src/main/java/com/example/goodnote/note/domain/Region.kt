@@ -121,4 +121,37 @@ data class Region(
         this.bottomLeftRegion?.findStrokesToRemove(dot, removedStrokes)
         this.bottomRightRegion?.findStrokesToRemove(dot, removedStrokes)
     }
+
+    //return rightest stroke in region
+    //empty region return null
+    fun findRightestStroke(): Stroke? {
+        if (isRoot) {
+            var rightest: Stroke? = null
+            if (primaryStroke == null && overlapsStrokes.isEmpty())
+                return null
+            rightest = primaryStroke ?: overlapsStrokes[0]
+            overlapsStrokes.forEach { stroke ->
+                if (rightest!!.findRightestDot() < stroke.findRightestDot())
+                    rightest = stroke
+            }
+            return rightest
+        }
+        return null
+    }
+
+    // return downest stroke in region
+    //empty region returns null
+    fun findDownestStroke(): Stroke? {
+        if (isRoot) {
+            var downest: Stroke? = null
+            if (primaryStroke == null && overlapsStrokes.isEmpty())
+                return null
+            downest = primaryStroke ?: overlapsStrokes[0]
+            overlapsStrokes.forEach { stroke ->
+                if (downest!!.findDownestDot() < stroke.findDownestDot())
+                    downest = stroke
+            }
+        }
+        return null
+    }
 }

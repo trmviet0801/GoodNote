@@ -9,7 +9,9 @@ data class Stroke(
     var dots: List<Dot> = emptyList(),
     var color: Color = Color.Black,
     var bold: Float = 5f,
-    var timestamp: Long = System.currentTimeMillis()
+    var timestamp: Long = System.currentTimeMillis(),
+    var isRightest: Boolean = false,
+    var isDownest: Boolean = false
 )
 
 fun Stroke.getRightest(): Dot? {
@@ -59,4 +61,22 @@ fun Stroke.contains(dot: Dot): Boolean {
         val dy = abs(dot.y - it.y)
         dx <= 10 && dy <= 10
     }
+}
+
+fun Stroke.findRightestDot(): Float {
+    var maxX = 0f
+    if (!dots.isEmpty())
+        dots.forEach { dot ->
+            if (dot.x > maxX) maxX = dot.x
+        }
+    return maxX
+}
+
+fun Stroke.findDownestDot(): Float {
+    var maxY = 0f
+    if (!dots.isEmpty())
+        dots.forEach { it ->
+            if (it.y > maxY) maxY = it.x
+        }
+    return maxY
 }
