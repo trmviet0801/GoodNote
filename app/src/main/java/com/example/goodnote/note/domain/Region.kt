@@ -1,5 +1,6 @@
 package com.example.goodnote.note.domain
 
+import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.note.action.InsertAction
@@ -134,6 +135,7 @@ data class Region(
                 if (rightest!!.findRightestDot() < stroke.findRightestDot())
                     rightest = stroke
             }
+            Log.e("erase", "runnununu ${rightest}")
             return rightest
         }
         return null
@@ -151,6 +153,7 @@ data class Region(
                 if (downest!!.findDownestDot() < stroke.findDownestDot())
                     downest = stroke
             }
+            return downest
         }
         return null
     }

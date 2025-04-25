@@ -14,7 +14,6 @@ import com.example.goodnote.note.domain.Boundary
 import com.example.goodnote.note.domain.Dot
 import com.example.goodnote.note.domain.Region
 import com.example.goodnote.note.domain.Stroke
-import com.example.goodnote.note.domain.addSize
 import com.example.goodnote.note.domain.calActualSize
 import com.example.goodnote.note.domain.contains
 import com.example.goodnote.note.domain.getDownest
@@ -110,6 +109,7 @@ class EditorViewModel() : ViewModel() {
         }
     }
 
+    // decide the direction of scrolling
     private fun scroll(amount: Offset, previousPosition: Offset) {
         var scrollDirection: ScrollAction = ScrollAction.NONE
 
@@ -133,6 +133,8 @@ class EditorViewModel() : ViewModel() {
         processScrollDirection(scrollDirection, previousPosition)
     }
 
+    //only allows to scroll to right + down when the remained space < MIN_SPACE
+    //prevent from creating too much unused space
     private fun processScrollDirection(scrollDirection: ScrollAction, previousPosition: Offset) {
         when (scrollDirection) {
             ScrollAction.RIGHT -> {
@@ -150,6 +152,11 @@ class EditorViewModel() : ViewModel() {
                         ?: 0f) <= AppConst.MIN_FREE_SPACE
                 ) {
                     moveStrokes(scrollDirection, previousPosition)
+                } else {
+                    Log.d(
+                        "erase",
+                        "Downest: ${_state.value.downest?.getDownest()?.y} = canvas height: ${_state.value.rootRegion?.boundary?.actualHeight}"
+                    )
                 }
             }
 
@@ -218,33 +225,29 @@ class EditorViewModel() : ViewModel() {
 
     //update rightest stroke after erasing for keeping scrolling behavior
     // if erased stroke was the rightest
-    private fun updateRightestStroke() {
-        _state.update { it ->
-            var rightestStroke: Stroke? = it.rootRegion?.findRightestStroke()
-            it.copy(
-                rightest = rightestStroke
-            )
-        }
+    private fun findRightestStroke(): Stroke? {
+        return _state.value.rootRegion?.findRightestStroke()
     }
 
-    //update downest stroke after erasing for keeping scrolling behavior
-    // if erased stroke was the downest
-    private fun updateDownestStroke() {
-        _state.update { it ->
-            var downestStroke: Stroke? = it.rootRegion?.findDownestStroke()
-            it.copy(
-                downest = downestStroke
-            )
-        }
+    private fun findDownestStroke(): Stroke? {
+        return _state.value.rootRegion?.findDownestStroke()
     }
 
     //checking if need to update rightest stroke or downest stroke
     //if need -> update
     private fun updateFarestStrokes() {
+        var rightestStroke: Stroke? = null
+        var downestStroke: Stroke? = null
         if (_state.value.rightest == null || _state.value.rightest?.dots?.isEmpty() == true)
-            updateRightestStroke()
+            rightestStroke = findRightestStroke()
         if (_state.value.downest == null || _state.value.downest?.dots?.isEmpty() == true)
-            updateDownestStroke()
+            downestStroke = findDownestStroke()
+        _state.update { it ->
+            it.copy(
+                rightest = rightestStroke ?: it.rightest,
+                downest = downestStroke ?: it.downest
+            )
+        }
     }
 
     private fun moveVirtualCamera(amount: Offset, previousPosition: Offset) {
@@ -408,7 +411,6 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun stylusHandle(motionEvent: MotionEvent) {
-        Log.d("erase", "${motionEvent.x} ${motionEvent.y} ${_state.value.scale}")
         when (motionEvent.buttonState) {
             0 -> stylusWritingHandle(motionEvent)
             32 -> eraseHandle(motionEvent)
@@ -416,14 +418,14 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun eraseHandle(motionEvent: MotionEvent) {
-        Log.d("erase", _state.value.scale.toString())
         val action = motionEvent.actionMasked
         when (action) {
             MotionEvent.ACTION_DOWN -> {
                 _state.update { it ->
                     var currentRemoveStroke = it.removedStrokes
                     if (!currentRemoveStroke.isEmpty()) currentRemoveStroke = emptyList()
-                    val currentOversizeStrokes = removeOversizeStrokes(convertMotionEventToDot(motionEvent))
+                    val currentOversizeStrokes =
+                        removeOversizeStrokes(convertMotionEventToDot(motionEvent))
                     currentRemoveStroke = currentRemoveStroke.plus(
                         it.rootRegion!!.findStrokesToRemove(
                             convertMotionEventToDot(motionEvent),
@@ -443,7 +445,8 @@ class EditorViewModel() : ViewModel() {
             MotionEvent.ACTION_MOVE -> {
                 _state.update { it ->
                     var currentRemoveStroke = it.removedStrokes
-                    val currentOversizeStrokes = removeOversizeStrokes(convertMotionEventToDot(motionEvent))
+                    val currentOversizeStrokes =
+                        removeOversizeStrokes(convertMotionEventToDot(motionEvent))
                     currentRemoveStroke = currentRemoveStroke.plus(
                         it.rootRegion!!.findStrokesToRemove(
                             convertMotionEventToDot(motionEvent),
@@ -469,6 +472,10 @@ class EditorViewModel() : ViewModel() {
             }
         }
         updateFarestStrokes()
+        Log.d(
+            "erase",
+            "updateFarestStrokes: rightestStroke: ${_state.value.rightest?.getRightest()?.x} downestStroke: ${_state.value.downest?.getDownest()?.y}"
+        )
     }
 
     // / scale make the position is the offset with scale = 1 (strokes are stored with scale = 1 too)
