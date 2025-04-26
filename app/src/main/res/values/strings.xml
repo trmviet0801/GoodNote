@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Good Note</string>
+    <string name="arrow_left">Arrow Left</string>
+    <string name="full_screen">Full screen</string>
+    <string name="add">Add</string>
+    <string name="dots">Dot</string>
+    <string name="pen">Pen</string>
+    <string name="back">Back</string>
+    <string name="rec">Rec</string>
 </resources>

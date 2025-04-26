@@ -539,4 +539,13 @@ class EditorViewModel() : ViewModel() {
         //zoom in
         if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
     }
+
+    //change file name
+    fun onTitleChange(newFileName: String) {
+        _state.update { it ->
+            it.copy(
+                name = newFileName
+            )
+        }
+    }
 }

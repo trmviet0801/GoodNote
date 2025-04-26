@@ -135,7 +135,6 @@ data class Region(
                 if (rightest!!.findRightestDot() < stroke.findRightestDot())
                     rightest = stroke
             }
-            Log.e("erase", "runnununu ${rightest}")
             return rightest
         }
         return null

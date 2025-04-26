@@ -1,0 +1,93 @@
+package com.example.goodnote.note.presentation.Editor.components
+
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Icon
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.rotate
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
+import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.dp
+import androidx.core.graphics.rotationMatrix
+import com.example.goodnote.note.utils.AppConst
+import com.example.goodnote.ui.theme.GoodNoteTheme
+import com.example.goodnote.R
+import com.example.goodnote.note.utils.PenConst
+import java.nio.file.WatchEvent
+
+@Composable
+fun PenSelection() {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(AppConst.BARs_HEIGHT)
+            .background(Color(0xFF2C3539)),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceAround,
+    ) {
+        Row(
+            modifier = Modifier.fillMaxHeight(),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(56.dp)
+        ) {
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.pen),
+                contentDescription = R.string.pen.toString(),
+                modifier = Modifier.size(AppConst.ICON_SIZE)
+            )
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                ColorSelection(Color(PenConst.DEFAULT_PEN_COLOR_1))
+                ColorSelection(Color(PenConst.DEFAULT_PEN_COLOR_2))
+                ColorSelection(Color(PenConst.DEFAULT_PEN_COLOR_3))
+            }
+            Row(
+                modifier = Modifier.fillMaxHeight(),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+
+            ) {
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.back),
+                    contentDescription = R.string.back.toString(),
+                    modifier = Modifier.size(AppConst.ICON_SIZE)
+                )
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.back),
+                    contentDescription = R.string.back.toString(),
+                    modifier = Modifier
+                        .size(AppConst.ICON_SIZE)
+                        .rotate(180f)
+                )
+            }
+            Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.rec),
+                contentDescription = R.string.rec.toString(),
+                modifier = Modifier
+                    .size(AppConst.ICON_SIZE)
+            )
+        }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun PenSelectionPreview() {
+    GoodNoteTheme {
+        PenSelection()
+    }
+}
