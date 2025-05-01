@@ -57,15 +57,6 @@ fun EditorScreen(innerPadding: PaddingValues) {
     val focusRequester = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
 
-    val context = LocalContext.current
-    val scaleGestureDetector =
-        ScaleGestureDetector(context, object : ScaleGestureDetector.SimpleOnScaleGestureListener() {
-            override fun onScale(detector: ScaleGestureDetector): Boolean {
-                editorViewModel.scaling(detector)
-                return true
-            }
-        })
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -85,7 +76,6 @@ fun EditorScreen(innerPadding: PaddingValues) {
                 modifier = Modifier
                     .pointerInteropFilter { motionEvent ->
                         focusManager.clearFocus()
-                        scaleGestureDetector.onTouchEvent(motionEvent)
                         editorViewModel.handleInput(motionEvent)
                         true
                     }

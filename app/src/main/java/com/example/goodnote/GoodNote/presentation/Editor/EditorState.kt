@@ -25,6 +25,9 @@ data class EditorState(
     var downest: Stroke? = null,
     var removedStrokes: List<Stroke> = emptyList(),
 
+    //scale
+    var scaleFactor: Float = 0f,
+
     //pen
     var color: Long = PenConst.DEFAULT_PEN_COLOR_1,
     var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH,

@@ -6,6 +6,7 @@ import android.view.ScaleGestureDetector
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
+import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goodnote.goodNote.action.InsertAction
@@ -26,6 +27,8 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlin.collections.toList
 import kotlin.math.abs
+import kotlin.math.pow
+import kotlin.math.sqrt
 
 class EditorViewModel() : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
@@ -63,12 +66,49 @@ class EditorViewModel() : ViewModel() {
         return Boundary(x, y, w.toFloat(), h.toFloat()).calActualSize()
     }
 
+    fun onScaleChange(motionEvent: MotionEvent) {
+        val distance = distanceBetweenFingers(
+            Offset(motionEvent.getX(0), motionEvent.getY(0)),
+            Offset(motionEvent.getX(1), motionEvent.getY(1))
+        )
+        var currentScaleFactor = _state.value.scaleFactor
+        if (currentScaleFactor != 0f) {
+            if (distance != currentScaleFactor) {
+                scaling(distance / currentScaleFactor)
+                Log.d("erase", "scale")
+                _state.update { it ->
+                    it.copy(
+                        scaleFactor = distance
+                    )
+                }
+            }
+        } else {
+            _state.update { it ->
+                it.copy(
+                    scaleFactor = distance
+                )
+            }
+        }
+    }
+
+    private fun distanceBetweenFingers(x: Offset, y: Offset): Float {
+        return sqrt((x.x - y.x).pow(2) + (x.y - y.y).pow(2))
+    }
+
     fun handleInput(motionEvent: MotionEvent) {
-        for (i in 0 until motionEvent.pointerCount) {
-            when (motionEvent.getToolType(i)) {
-                MotionEvent.TOOL_TYPE_STYLUS -> stylusHandle(motionEvent)
-                MotionEvent.TOOL_TYPE_FINGER -> fingerHandle(motionEvent, i)
-                else -> {}
+        //scale detector
+        if (motionEvent.pointerCount == 2 &&
+            motionEvent.getToolType(0) == MotionEvent.TOOL_TYPE_FINGER &&
+            motionEvent.getToolType(1) == MotionEvent.TOOL_TYPE_FINGER
+        ) {
+            onScaleChange(motionEvent)
+        } else {
+            for (i in 0 until motionEvent.pointerCount) {
+                when (motionEvent.getToolType(i)) {
+                    MotionEvent.TOOL_TYPE_STYLUS -> stylusHandle(motionEvent)
+                    MotionEvent.TOOL_TYPE_FINGER -> fingerHandle(motionEvent, i)
+                    else -> {}
+                }
             }
         }
     }
@@ -533,8 +573,7 @@ class EditorViewModel() : ViewModel() {
         canvasFillScreen()
     }
 
-    fun scaling(detector: ScaleGestureDetector) {
-        val scaleFactor = detector.scaleFactor
+    fun scaling(scaleFactor: Float) {
         if (scaleFactor == 1f) return
         //zoom in
         if (scaleFactor > 1f) adjustScale(true) else adjustScale(false)
