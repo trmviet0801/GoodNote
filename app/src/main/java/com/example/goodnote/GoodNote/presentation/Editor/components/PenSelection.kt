@@ -1,7 +1,10 @@
 package com.example.goodnote.goodNote.presentation.Editor.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -9,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.rotate
@@ -17,17 +21,23 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import com.example.goodnote.R
+import com.example.goodnote.goodNote.presentation.Editor.EditorViewModel
 import com.example.goodnote.goodNote.utils.PenConst
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PenSelection() {
+    val editorViewModel: EditorViewModel = koinViewModel<EditorViewModel>()
+    val state = editorViewModel.state.collectAsState()
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .height(AppConst.BARs_HEIGHT)
+            .height(500.dp)
             .background(Color(0xFF2C3539)),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceAround,
@@ -40,16 +50,22 @@ fun PenSelection() {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.pen),
                 contentDescription = R.string.pen.toString(),
-                modifier = Modifier.size(AppConst.ICON_SIZE)
+                modifier = Modifier
+                    .size(AppConst.ICON_SIZE)
+                    .clickable(
+                        enabled = true,
+                        onClick = {editorViewModel.onPenWidthSelection()}
+                    ),
+                tint = Color(state.value.color)
             )
             Row(
                 modifier = Modifier.fillMaxHeight(),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                ColorSelection(Color(PenConst.DEFAULT_PEN_COLOR_1))
-                ColorSelection(Color(PenConst.DEFAULT_PEN_COLOR_2))
-                ColorSelection(Color(PenConst.DEFAULT_PEN_COLOR_3))
+                ColorSelection(state.value.savedColors[0], 0)
+                ColorSelection(state.value.savedColors[1], 1)
+                ColorSelection(state.value.savedColors[2], 2)
             }
             Row(
                 modifier = Modifier.fillMaxHeight(),

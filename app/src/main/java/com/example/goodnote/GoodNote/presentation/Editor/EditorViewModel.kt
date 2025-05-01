@@ -2,11 +2,9 @@ package com.example.goodnote.goodNote.presentation.Editor
 
 import android.util.Log
 import android.view.MotionEvent
-import android.view.ScaleGestureDetector
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
-import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goodnote.goodNote.action.InsertAction
@@ -21,6 +19,7 @@ import com.example.goodnote.goodNote.domain.getDownest
 import com.example.goodnote.goodNote.domain.getRightest
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.AppConvertor
+import com.example.goodnote.goodNote.utils.PenConst
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -28,6 +27,7 @@ import kotlinx.coroutines.flow.update
 import kotlin.collections.toList
 import kotlin.math.abs
 import kotlin.math.pow
+import kotlin.math.roundToInt
 import kotlin.math.sqrt
 
 class EditorViewModel() : ViewModel() {
@@ -64,6 +64,14 @@ class EditorViewModel() : ViewModel() {
         val w = width / 2
         val h = height / 2
         return Boundary(x, y, w.toFloat(), h.toFloat()).calActualSize()
+    }
+
+    fun onPenWidthSelection() {
+        _state.update { it ->
+            it.copy(
+                isShowPenPicker = !it.isShowPenPicker
+            )
+        }
     }
 
     // calculating scale factor based on distance between fingers
@@ -135,7 +143,7 @@ class EditorViewModel() : ViewModel() {
                         event.getX(index) - _state.value.scrollOffset.x,
                         event.getY(index) - _state.value.scrollOffset.y
                     )
-                    scroll(amountOffset, Offset(event.getX(index), event.getY(index)))
+                    scrollDirection(amountOffset, Offset(event.getX(index), event.getY(index)))
                 }
 
                 MotionEvent.ACTION_UP -> {
@@ -151,7 +159,7 @@ class EditorViewModel() : ViewModel() {
     }
 
     // decide the direction of scrolling
-    private fun scroll(amount: Offset, previousPosition: Offset) {
+    private fun scrollDirection(amount: Offset, previousPosition: Offset) {
         var scrollDirection: ScrollAction = ScrollAction.NONE
 
         if (abs(amount.x) > abs(amount.y * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
@@ -193,11 +201,6 @@ class EditorViewModel() : ViewModel() {
                         ?: 0f) <= AppConst.MIN_FREE_SPACE
                 ) {
                     moveStrokes(scrollDirection, previousPosition)
-                } else {
-                    Log.d(
-                        "erase",
-                        "Downest: ${_state.value.downest?.getDownest()?.y} = canvas height: ${_state.value.rootRegion?.boundary?.actualHeight}"
-                    )
                 }
             }
 
@@ -594,6 +597,156 @@ class EditorViewModel() : ViewModel() {
             it.copy(
                 isFullScreen = !it.isFullScreen
             )
+        }
+    }
+
+    fun onPenColorChange(color: Long) {
+        _state.update { it ->
+            it.copy(
+                color = color
+            )
+        }
+    }
+
+    fun onSavedColorChange(color: Long, index: Int) {
+        _state.update { it ->
+            var currentColors = it.savedColors.toMutableList()
+            currentColors[index] = color
+            val newIndex = if (index == 2) 0 else index + 1
+            it.copy(
+                savedColors = currentColors.toList(),
+                currentSavedColorIndex = newIndex
+            )
+        }
+    }
+
+    //takes input as motion event of motion on pen width slice card
+    fun handlePenSelectionTouch(motionEvent: MotionEvent) {
+        if (motionEvent.pointerCount == 1) {
+            var action = motionEvent.actionMasked
+            when (action) {
+                MotionEvent.ACTION_DOWN -> {
+                    _state.update { it ->
+                        it.copy(
+                            penWidthScrollOffset = Offset(
+                                motionEvent.x,
+                                motionEvent.y
+                            )
+                        )
+                    }
+                    true
+                }
+
+                MotionEvent.ACTION_MOVE -> {
+                    val amountOffset = Offset(
+                        motionEvent.x - _state.value.penWidthScrollOffset.x,
+                        motionEvent.y - _state.value.penWidthScrollOffset.y
+                    )
+                    //scrolling
+                    onPenWidthChange(
+                        getPenSelectionDirection(amountOffset, Offset(motionEvent.x, motionEvent.y))
+                    )
+                }
+
+                MotionEvent.ACTION_UP -> {
+                    _state.update { it ->
+                        it.copy(
+                            penWidthScrollOffset = Offset(motionEvent.x, motionEvent.y)
+                        )
+                    }
+                    true
+                }
+            }
+        }
+    }
+
+    //get motion direction
+    private fun getPenSelectionDirection(amount: Offset, previousPosition: Offset): ScrollAction {
+        var scrollDirection: ScrollAction = ScrollAction.NONE
+
+        if (abs(amount.x) > abs(amount.y * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+            scrollDirection = if (amount.x > 0) ScrollAction.LEFT else ScrollAction.RIGHT
+        } else if (abs(amount.y) > abs(amount.x * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.y) >= AppConst.SCROLL_MINIMUM) {
+            scrollDirection = if (amount.y > 0) ScrollAction.UP else ScrollAction.DOWN
+        } else if (amount.x > 0 && amount.x >= AppConst.SCROLL_MINIMUM) {
+            if (amount.y > 0 && amount.y >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.LEFT_UP
+            else if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.LEFT_DOWN
+            else scrollDirection = ScrollAction.LEFT
+        } else if (amount.x < 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+            if (amount.y > 0 && amount.y >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.RIGHT_UP
+            else if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+                ScrollAction.RIGHT_DOWN
+            else scrollDirection = ScrollAction.RIGHT
+        }
+        return scrollDirection
+    }
+
+    // scroll handle
+    // only accept forward and backward scrolling
+    fun onPenWidthChange(scrollAction: ScrollAction) {
+        when (scrollAction) {
+            //decrease pen width
+            ScrollAction.RIGHT -> {
+                _state.update { it ->
+                    var currentLineWidthLevel = it.lineWidthLevel.toFloat()
+                    currentLineWidthLevel =
+                        if (currentLineWidthLevel.roundToInt() - 1 >= AppConst.PEN_WIDTH_LEVEL_MIN) currentLineWidthLevel - AppConst.PEN_WIDTH_MOVE_UNIT else currentLineWidthLevel
+                    it.copy(
+                        lineWidthLevel = currentLineWidthLevel,
+                        lineWidth = PenConst.DEFAULT_LINE_WIDTH * currentLineWidthLevel
+                    )
+                }
+            }
+            //increase pen width
+            ScrollAction.LEFT -> {
+                _state.update { it ->
+                    var currentLineWidthLevel = it.lineWidthLevel.toFloat()
+                    currentLineWidthLevel =
+                        if (currentLineWidthLevel.roundToInt() + 1 <= AppConst.PEN_WIDTH_LEVEL_MAX) currentLineWidthLevel + AppConst.PEN_WIDTH_MOVE_UNIT else currentLineWidthLevel
+                    Log.d("scrolll", "[+]onPenWidthChange: $currentLineWidthLevel")
+                    it.copy(
+                        lineWidthLevel = currentLineWidthLevel,
+                        lineWidth = PenConst.DEFAULT_LINE_WIDTH * currentLineWidthLevel
+                    )
+                }
+            }
+
+            else -> {}
+        }
+    }
+
+    fun onPenWidthChange(scrollAction: ScrollAction, amount: Float) {
+        when (scrollAction) {
+            //decrease pen width
+            ScrollAction.RIGHT -> {
+                _state.update { it ->
+                    var currentLineWidthLevel = it.lineWidthLevel.toFloat()
+                    currentLineWidthLevel =
+                        if (currentLineWidthLevel.roundToInt() - 1 >= AppConst.PEN_WIDTH_LEVEL_MIN) currentLineWidthLevel - amount else currentLineWidthLevel
+                    it.copy(
+                        lineWidthLevel = currentLineWidthLevel.roundToInt().toFloat(),
+                        lineWidth = PenConst.DEFAULT_LINE_WIDTH * currentLineWidthLevel
+                    )
+                }
+            }
+            //increase pen width
+            ScrollAction.LEFT -> {
+                _state.update { it ->
+                    var currentLineWidthLevel = it.lineWidthLevel.toFloat()
+                    currentLineWidthLevel =
+                        if (currentLineWidthLevel.roundToInt() + 1 <= AppConst.PEN_WIDTH_LEVEL_MAX) currentLineWidthLevel + amount else currentLineWidthLevel
+                    Log.d("scrolll", "[+]onPenWidthChange: $currentLineWidthLevel")
+                    it.copy(
+                        lineWidthLevel = currentLineWidthLevel.roundToInt().toFloat(),
+                        lineWidth = PenConst.DEFAULT_LINE_WIDTH * currentLineWidthLevel
+                    )
+                }
+            }
+
+            else -> {}
         }
     }
 }

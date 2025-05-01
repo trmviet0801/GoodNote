@@ -13,7 +13,6 @@ data class EditorState(
     var name: String = AppConst.PAGE_NAME,
     var scale: Float = 1f,
     var size: List<Offset> = emptyList(),
-    var scrollOffset: Offset = Offset.Zero,
     var oversizeStrokes: List<Stroke> = emptyList<Stroke>(),
     var rootRegion: Region? = null,
     var latestStroke: Stroke = Stroke(),
@@ -25,13 +24,26 @@ data class EditorState(
     var downest: Stroke? = null,
     var removedStrokes: List<Stroke> = emptyList(),
 
+    //scroll
+    var scrollOffset: Offset = Offset.Zero,
+    var penWidthScrollOffset: Offset = Offset.Zero,
+
     //scale
     var scaleFactor: Float = 0f,
 
     //pen
     var color: Long = PenConst.DEFAULT_PEN_COLOR_1,
-    var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH,
+    var savedColors: List<Long> = listOf<Long>(
+        PenConst.DEFAULT_PEN_COLOR_1,
+        PenConst.DEFAULT_PEN_COLOR_2,
+        PenConst.DEFAULT_PEN_COLOR_3
+    ),
+    var lineWidthLevel: Float = 3f,
+    var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH * lineWidthLevel,
+    var widthSlicerXLevel: Int = 0,
+    var currentSavedColorIndex: Int = 0,
 
     //bars
     var isFullScreen: Boolean = true,
+    var isShowPenPicker: Boolean = false,
 )

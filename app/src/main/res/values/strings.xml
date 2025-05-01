@@ -7,4 +7,7 @@
     <string name="pen">Pen</string>
     <string name="back">Back</string>
     <string name="rec">Rec</string>
+    <string name="star">Star</string>
+    <string name="close">Close</string>
+    <string name="minus">Minus</string>
 </resources>

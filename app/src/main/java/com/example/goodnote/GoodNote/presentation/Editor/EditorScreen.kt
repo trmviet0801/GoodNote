@@ -38,14 +38,17 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.example.goodnote.R
 import com.example.goodnote.goodNote.domain.toPath
+import com.example.goodnote.goodNote.presentation.Editor.components.PenPicker
 import com.example.goodnote.goodNote.presentation.Editor.components.PenSelection
 import com.example.goodnote.goodNote.presentation.Editor.components.TopBar
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.AppConvertor
 import com.example.goodnote.goodNote.utils.PenConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
+import org.intellij.lang.annotations.JdkConstants
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
@@ -72,6 +75,15 @@ fun EditorScreen(innerPadding: PaddingValues) {
             modifier = Modifier
                 .fillMaxSize()
         ) {
+            this@Column.AnimatedVisibility(
+                visible = state.value.isShowPenPicker,
+                modifier = Modifier
+                    .padding(16.dp)
+                    .zIndex(1f)
+                    .align(Alignment.TopCenter)
+            ) {
+                PenPicker()
+            }
             Canvas(
                 modifier = Modifier
                     .pointerInteropFilter { motionEvent ->
