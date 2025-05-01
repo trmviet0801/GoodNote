@@ -1,4 +1,4 @@
-package com.example.goodnote.note.utils
+package com.example.goodnote.goodNote.utils
 
 import androidx.compose.ui.unit.dp
 

@@ -1,4 +1,4 @@
-package com.example.goodnote.note.utils
+package com.example.goodnote.goodNote.utils
 
 object PenConst {
     const val DEFAULT_PEN_COLOR_1: Long = 0xFFffffff

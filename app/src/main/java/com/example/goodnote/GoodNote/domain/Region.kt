@@ -1,9 +1,8 @@
-package com.example.goodnote.note.domain
+package com.example.goodnote.goodNote.domain
 
-import android.util.Log
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
-import com.example.goodnote.note.action.InsertAction
+import com.example.goodnote.goodNote.action.InsertAction
 
 @Immutable
 data class Region(

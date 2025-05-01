@@ -1,8 +1,6 @@
-package com.example.goodnote.note.presentation.Editor.components
+package com.example.goodnote.goodNote.presentation.Editor.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -19,12 +17,10 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.rotationMatrix
-import com.example.goodnote.note.utils.AppConst
+import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import com.example.goodnote.R
-import com.example.goodnote.note.utils.PenConst
-import java.nio.file.WatchEvent
+import com.example.goodnote.goodNote.utils.PenConst
 
 @Composable
 fun PenSelection() {

@@ -1,4 +1,4 @@
-package com.example.goodnote.note.domain
+package com.example.goodnote.goodNote.domain
 
 import androidx.compose.ui.geometry.Offset
 

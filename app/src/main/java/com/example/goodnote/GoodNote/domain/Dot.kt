@@ -1,7 +1,6 @@
-package com.example.goodnote.note.domain
+package com.example.goodnote.goodNote.domain
 
 import androidx.compose.runtime.Immutable
-import androidx.compose.ui.geometry.Offset
 
 @Immutable
 //x,y are the position with scale = 1f - used for checking equals with other offset

@@ -1,4 +1,4 @@
-package com.example.goodnote.note.action
+package com.example.goodnote.goodNote.action
 
 enum class ScrollAction {
     RIGHT,

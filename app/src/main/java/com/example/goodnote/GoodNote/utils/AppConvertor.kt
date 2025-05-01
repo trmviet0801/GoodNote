@@ -1,4 +1,4 @@
-package com.example.goodnote.note.utils
+package com.example.goodnote.goodNote.utils
 
 import android.content.res.Resources
 import androidx.compose.ui.geometry.Offset

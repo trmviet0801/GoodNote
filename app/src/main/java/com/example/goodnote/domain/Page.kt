@@ -2,9 +2,9 @@ package com.example.goodnote.domain
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
-import com.example.goodnote.note.domain.Region
-import com.example.goodnote.note.domain.Stroke
-import com.example.goodnote.note.utils.AppConst
+import com.example.goodnote.goodNote.domain.Region
+import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.goodNote.utils.AppConst
 import java.util.UUID
 
 @Immutable

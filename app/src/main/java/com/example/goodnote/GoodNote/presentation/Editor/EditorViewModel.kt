@@ -1,4 +1,4 @@
-package com.example.goodnote.note.presentation.Editor
+package com.example.goodnote.goodNote.presentation.Editor
 
 import android.util.Log
 import android.view.MotionEvent
@@ -8,18 +8,18 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.goodnote.note.action.InsertAction
-import com.example.goodnote.note.action.ScrollAction
-import com.example.goodnote.note.domain.Boundary
-import com.example.goodnote.note.domain.Dot
-import com.example.goodnote.note.domain.Region
-import com.example.goodnote.note.domain.Stroke
-import com.example.goodnote.note.domain.calActualSize
-import com.example.goodnote.note.domain.contains
-import com.example.goodnote.note.domain.getDownest
-import com.example.goodnote.note.domain.getRightest
-import com.example.goodnote.note.utils.AppConst
-import com.example.goodnote.note.utils.AppConvertor
+import com.example.goodnote.goodNote.action.InsertAction
+import com.example.goodnote.goodNote.action.ScrollAction
+import com.example.goodnote.goodNote.domain.Boundary
+import com.example.goodnote.goodNote.domain.Dot
+import com.example.goodnote.goodNote.domain.Region
+import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.goodNote.domain.calActualSize
+import com.example.goodnote.goodNote.domain.contains
+import com.example.goodnote.goodNote.domain.getDownest
+import com.example.goodnote.goodNote.domain.getRightest
+import com.example.goodnote.goodNote.utils.AppConst
+import com.example.goodnote.goodNote.utils.AppConvertor
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
@@ -545,6 +545,14 @@ class EditorViewModel() : ViewModel() {
         _state.update { it ->
             it.copy(
                 name = newFileName
+            )
+        }
+    }
+
+    fun onFullScreenChange() {
+        _state.update { it ->
+            it.copy(
+                isFullScreen = !it.isFullScreen
             )
         }
     }

@@ -1,9 +1,8 @@
-package com.example.goodnote.note.domain
+package com.example.goodnote.goodNote.domain
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
-import com.example.goodnote.note.utils.PenConst
+import com.example.goodnote.goodNote.utils.PenConst
 import kotlin.math.abs
 
 data class Stroke(

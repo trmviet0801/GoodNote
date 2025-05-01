@@ -1,11 +1,11 @@
-package com.example.goodnote.note.presentation.Editor
+package com.example.goodnote.goodNote.presentation.Editor
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
-import com.example.goodnote.note.domain.Region
-import com.example.goodnote.note.domain.Stroke
-import com.example.goodnote.note.utils.AppConst
-import com.example.goodnote.note.utils.PenConst
+import com.example.goodnote.goodNote.domain.Region
+import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.goodNote.utils.AppConst
+import com.example.goodnote.goodNote.utils.PenConst
 
 @Immutable
 data class EditorState(
@@ -27,5 +27,8 @@ data class EditorState(
 
     //pen
     var color: Long = PenConst.DEFAULT_PEN_COLOR_1,
-    var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH
+    var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH,
+
+    //bars
+    var isFullScreen: Boolean = true,
 )
