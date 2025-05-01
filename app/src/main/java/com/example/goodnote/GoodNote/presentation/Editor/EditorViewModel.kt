@@ -66,6 +66,7 @@ class EditorViewModel() : ViewModel() {
         return Boundary(x, y, w.toFloat(), h.toFloat()).calActualSize()
     }
 
+    // calculating scale factor based on distance between fingers
     fun onScaleChange(motionEvent: MotionEvent) {
         val distance = distanceBetweenFingers(
             Offset(motionEvent.getX(0), motionEvent.getY(0)),
@@ -74,8 +75,8 @@ class EditorViewModel() : ViewModel() {
         var currentScaleFactor = _state.value.scaleFactor
         if (currentScaleFactor != 0f) {
             if (distance != currentScaleFactor) {
+                // scaling the canvas
                 scaling(distance / currentScaleFactor)
-                Log.d("erase", "scale")
                 _state.update { it ->
                     it.copy(
                         scaleFactor = distance
