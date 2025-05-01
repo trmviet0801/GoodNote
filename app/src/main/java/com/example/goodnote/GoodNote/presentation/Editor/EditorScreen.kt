@@ -41,6 +41,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.goodnote.R
 import com.example.goodnote.goodNote.domain.toPath
+import com.example.goodnote.goodNote.presentation.Editor.components.ColorPicker
 import com.example.goodnote.goodNote.presentation.Editor.components.PenPicker
 import com.example.goodnote.goodNote.presentation.Editor.components.PenSelection
 import com.example.goodnote.goodNote.presentation.Editor.components.TopBar
@@ -84,6 +85,15 @@ fun EditorScreen(innerPadding: PaddingValues) {
             ) {
                 PenPicker()
             }
+//            this@Column.AnimatedVisibility(
+//                visible = state.value.isShowColorPicker,
+//                modifier = Modifier
+//                    .padding(16.dp)
+//                    .zIndex(1f)
+//                    .align(Alignment.TopCenter)
+//            ) {
+//                ColorPicker()
+//            }
             Canvas(
                 modifier = Modifier
                     .pointerInteropFilter { motionEvent ->

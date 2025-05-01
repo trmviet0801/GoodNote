@@ -66,10 +66,18 @@ class EditorViewModel() : ViewModel() {
         return Boundary(x, y, w.toFloat(), h.toFloat()).calActualSize()
     }
 
-    fun onPenWidthSelection() {
+    fun onDisplayPenWidthSelection() {
         _state.update { it ->
             it.copy(
                 isShowPenPicker = !it.isShowPenPicker
+            )
+        }
+    }
+
+    fun onDisplayColorPicker() {
+        _state.update { it ->
+            it.copy(
+                isShowColorPicker = !it.isShowColorPicker
             )
         }
     }

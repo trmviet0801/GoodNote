@@ -1,7 +1,10 @@
 package com.example.goodnote.goodNote.presentation.Editor.components
 
+import android.text.Layout
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -12,7 +15,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -26,11 +28,11 @@ import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import org.koin.androidx.compose.koinViewModel
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun PenPicker() {
+fun ColorPicker(index: Int) {
     val editorViewModel: EditorViewModel = koinViewModel<EditorViewModel>()
-    val state = editorViewModel.state.collectAsState()
-    Card (
+    Card(
         modifier = Modifier
             .width(450.dp)
             .padding(16.dp),
@@ -40,63 +42,45 @@ fun PenPicker() {
             containerColor = Color(0xFF333333)
         )
     ) {
-        Row(
+        Box(
             modifier = Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .fillMaxWidth()
         ) {
-            if (state.value.savedColors.contains(state.value.color)) {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.star),
-                    contentDescription = R.string.star.toString(),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(AppConst.ICON_SIZE),
-                    tint = Color.Yellow
-                )
-            } else {
-                Icon(
-                    imageVector = ImageVector.vectorResource(R.drawable.star),
-                    contentDescription = R.string.star.toString(),
-                    modifier = Modifier
-                        .padding(8.dp)
-                        .size(AppConst.ICON_SIZE)
-                        .clickable(
-                            enabled = true,
-                            onClick = {
-                                editorViewModel.onSavedColorChange(
-                                    state.value.color,
-                                    state.value.currentSavedColorIndex
-                                )
-                            }
-                        ),
-                    tint = Color.White
-                )
-            }
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.close),
                 contentDescription = R.string.close.toString(),
                 modifier = Modifier
-                    .padding(8.dp)
+                    .align(Alignment.TopEnd)
+                    .padding(top = 16.dp, end = 16.dp)
                     .size(AppConst.ICON_SIZE)
                     .clickable(
                         enabled = true,
-                        onClick = {editorViewModel.onDisplayPenWidthSelection()}
+                        onClick = {editorViewModel.onDisplayColorPicker()}
                     ),
                 tint = Color.White
             )
         }
-        PenWidthPicker()
-        SmallColorPicker()
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            FlowRow (
+                modifier = Modifier
+                    .width(280.dp)
+                    .padding(16.dp)
+            ) {
+                AppConst.PEN_COLORS.forEach { color ->
+                    ColorBox(color, index)
+                }
+            }
+        }
     }
 }
 
 @PreviewLightDark
 @Composable
-private fun PenPickerPreview() {
+private fun ColorPickerPreview() {
     GoodNoteTheme {
-        PenPicker()
+        ColorPicker(0)
     }
 }

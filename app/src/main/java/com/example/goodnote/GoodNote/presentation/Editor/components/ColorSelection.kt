@@ -15,10 +15,17 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun ColorSelection(bgColor: Long, index: Int) {
+    val editorViewModel: EditorViewModel = koinViewModel<EditorViewModel>()
     Canvas(
         modifier = Modifier
             .width(AppConst.ICON_SIZE)
             .height(AppConst.ICON_SIZE)
+            .clickable(
+                enabled = true,
+                onClick = {
+                    editorViewModel.onPenColorChange(bgColor)
+                }
+            )
     ) {
         drawCircle(
             color = Color(bgColor),

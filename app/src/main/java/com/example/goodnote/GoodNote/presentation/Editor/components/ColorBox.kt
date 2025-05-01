@@ -18,7 +18,7 @@ import com.example.goodnote.ui.theme.GoodNoteTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ColorBox(code: Long) {
+fun ColorBox(code: Long, index: Int = -1) {
     val editorViewModel: EditorViewModel = koinViewModel<EditorViewModel>()
     val state = editorViewModel.state.collectAsState()
     if (code == state.value.color) {

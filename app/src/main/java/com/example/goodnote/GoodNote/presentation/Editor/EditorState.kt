@@ -46,4 +46,5 @@ data class EditorState(
     //bars
     var isFullScreen: Boolean = true,
     var isShowPenPicker: Boolean = false,
+    var isShowColorPicker: Boolean = true,
 )
