@@ -44,6 +44,17 @@ fun PenSelection() {
             horizontalArrangement = Arrangement.spacedBy(56.dp)
         ) {
             Icon(
+                imageVector = ImageVector.vectorResource(R.drawable.erase),
+                contentDescription = R.string.erase.toString(),
+                modifier = Modifier
+                    .size(AppConst.ICON_SIZE)
+                    .clickable(
+                        enabled = true,
+                        onClick = {editorViewModel.onEraser()}
+                    ),
+                tint = if (!state.value.isEraser) Color.White else Color.Red
+            )
+            Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.pen),
                 contentDescription = R.string.pen.toString(),
                 modifier = Modifier

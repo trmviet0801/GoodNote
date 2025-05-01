@@ -464,7 +464,9 @@ class EditorViewModel() : ViewModel() {
 
     private fun stylusHandle(motionEvent: MotionEvent) {
         when (motionEvent.buttonState) {
-            0 -> stylusWritingHandle(motionEvent)
+            0 -> if (!_state.value.isEraser) stylusWritingHandle(motionEvent) else eraseHandle(
+                motionEvent
+            )
             32 -> eraseHandle(motionEvent)
         }
     }
@@ -714,7 +716,6 @@ class EditorViewModel() : ViewModel() {
                     var currentLineWidthLevel = it.lineWidthLevel.toFloat()
                     currentLineWidthLevel =
                         if (currentLineWidthLevel.roundToInt() + 1 <= AppConst.PEN_WIDTH_LEVEL_MAX) currentLineWidthLevel + AppConst.PEN_WIDTH_MOVE_UNIT else currentLineWidthLevel
-                    Log.d("scrolll", "[+]onPenWidthChange: $currentLineWidthLevel")
                     it.copy(
                         lineWidthLevel = currentLineWidthLevel,
                         lineWidth = PenConst.DEFAULT_LINE_WIDTH * currentLineWidthLevel
@@ -723,6 +724,14 @@ class EditorViewModel() : ViewModel() {
             }
 
             else -> {}
+        }
+    }
+
+    fun onEraser() {
+        _state.update { it ->
+            it.copy(
+                isEraser = !it.isEraser
+            )
         }
     }
 

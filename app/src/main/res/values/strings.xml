@@ -10,4 +10,5 @@
     <string name="star">Star</string>
     <string name="close">Close</string>
     <string name="minus">Minus</string>
+    <string name="erase">Erase</string>
 </resources>

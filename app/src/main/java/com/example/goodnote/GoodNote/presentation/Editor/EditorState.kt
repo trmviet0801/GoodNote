@@ -42,6 +42,7 @@ data class EditorState(
     var lineWidth: Float = PenConst.DEFAULT_LINE_WIDTH * lineWidthLevel,
     var widthSlicerXLevel: Int = 0,
     var currentSavedColorIndex: Int = 0,
+    var isEraser: Boolean = false,
 
     //bars
     var isFullScreen: Boolean = true,
