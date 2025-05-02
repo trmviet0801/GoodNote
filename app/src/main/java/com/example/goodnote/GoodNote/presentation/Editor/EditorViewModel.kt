@@ -1,4 +1,4 @@
-package com.example.goodnote.goodNote.presentation.Editor
+package com.example.goodnote.goodNote.presentation.editor
 
 import android.util.Log
 import android.view.MotionEvent
@@ -19,6 +19,7 @@ import com.example.goodnote.goodNote.domain.contains
 import com.example.goodnote.goodNote.domain.getDownest
 import com.example.goodnote.goodNote.domain.getRightest
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
+import com.example.goodnote.goodNote.presentation.model.popBehavior
 import com.example.goodnote.goodNote.presentation.model.pushBehavior
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.AppConvertor
@@ -389,73 +390,74 @@ class EditorViewModel() : ViewModel() {
     private fun stylusWritingHandle(motionEvent: MotionEvent) {
         val action = motionEvent.actionMasked
         when (action) {
-            MotionEvent.ACTION_DOWN -> {
-                _state.update { it ->
-                    val currentStroke = it.latestStroke
-                    var currentDots = currentStroke.dots.toMutableList()
-                    currentDots = mutableListOf<Dot>()
+            MotionEvent.ACTION_DOWN -> stylusWritingActionDownHandle()
 
-                    it.copy(
-                        latestStroke = Stroke(
-                            dots = currentDots.toList(),
-                            color = it.color,
-                            lineWidth = it.lineWidth
-                        )
-                    )
-                }
-            }
+            MotionEvent.ACTION_MOVE -> stylusWritingActionMoveHandle(motionEvent)
 
-            MotionEvent.ACTION_MOVE -> {
-                _state.update { it ->
-                    val currentStroke = it.latestStroke
-                    val currentDots = currentStroke.dots.toMutableList()
-                    currentDots.add(
-                        convertMotionEventToDot(motionEvent)
-                    )
-                    it.copy(
-                        latestStroke = Stroke(
-                            dots = currentDots.toList(),
-                            color = it.color,
-                            lineWidth = it.lineWidth
-                        )
-                    )
-                }
-            }
+            MotionEvent.ACTION_UP -> stylusWritingActionUpHandle()
+        }
+    }
 
-            MotionEvent.ACTION_UP -> {
-                _state.update { it ->
-                    var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
-                    var currentLatestStroke = it.latestStroke
-                    val currentRootRegion = it.rootRegion
-                    //update the farest stroke in the root region
-                    var currentRightest: Stroke = getCurrentRightest(currentLatestStroke)
-                    var currentDownest: Stroke = getCurrentDownest(currentLatestStroke)
+    //set up the up-coming stroke (empty dots, color, width)
+    private fun stylusWritingActionDownHandle() {
+        _state.update { it ->
+            val currentStroke = it.latestStroke
+            var currentDots = currentStroke.dots.toMutableList()
+            currentDots = mutableListOf<Dot>()
 
-                    //update new action for forward/backward
-                    var currentStrokeBehaviors = it.strokeBehaviors.pushBehavior(
-                        StrokeBehavior(
-                            action = StrokeAction.WRITE,
-                            stroke = currentLatestStroke
-                        )
-                    )
+            it.copy(
+                latestStroke = Stroke(
+                    dots = currentDots.toList(),
+                    color = it.color,
+                    lineWidth = it.lineWidth
+                )
+            )
+        }
+    }
 
-                    // insert new stroke into root region
-                    // if stroke is oversize -> add to oversize list for erasing behavior
-                    if (currentRootRegion?.insert(currentLatestStroke) == InsertAction.Oversize)
-                        currentOversizeStroke = currentOversizeStroke.plus(currentLatestStroke)
-                    //get ready for the next writing
-                    currentLatestStroke = Stroke()
+    private fun stylusWritingActionMoveHandle(motionEvent: MotionEvent) {
+        _state.update { it ->
+            val currentStroke = it.latestStroke
+            val currentDots = currentStroke.dots.toMutableList()
+            currentDots.add(
+                convertMotionEventToDot(motionEvent)
+            )
+            it.copy(
+                latestStroke = Stroke(
+                    dots = currentDots.toList(),
+                    color = it.color,
+                    lineWidth = it.lineWidth
+                )
+            )
+        }
+    }
 
-                    it.copy(
-                        latestStroke = currentLatestStroke,
-                        rootRegion = currentRootRegion,
-                        rightest = currentRightest,
-                        downest = currentDownest,
-                        oversizeStrokes = currentOversizeStroke,
-                        strokeBehaviors = currentStrokeBehaviors
-                    )
-                }
-            }
+    // storing new stroke to display in the canvas
+    // stored stoke is _state.latestStroke
+    private fun stylusWritingActionUpHandle(isUndo: Boolean = false) {
+        _state.update { it ->
+            var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
+            var currentLatestStroke = it.latestStroke
+            val currentRootRegion = it.rootRegion
+            //update the farest stroke in the root region
+            var currentRightest: Stroke = getCurrentRightest(currentLatestStroke)
+            var currentDownest: Stroke = getCurrentDownest(currentLatestStroke)
+            //update new action for undo/redo
+            if (!isUndo) storeNewStroke(currentLatestStroke)
+            // insert new stroke into root region
+            // if stroke is oversize -> add to oversize list for erasing behavior
+            if (currentRootRegion?.insert(currentLatestStroke) == InsertAction.Oversize)
+                currentOversizeStroke = currentOversizeStroke.plus(currentLatestStroke)
+            //get ready for the next writing
+            currentLatestStroke = Stroke()
+
+            it.copy(
+                latestStroke = currentLatestStroke,
+                rootRegion = currentRootRegion,
+                rightest = currentRightest,
+                downest = currentDownest,
+                oversizeStrokes = currentOversizeStroke,
+            )
         }
     }
 
@@ -484,63 +486,108 @@ class EditorViewModel() : ViewModel() {
             0 -> if (!_state.value.isEraser) stylusWritingHandle(motionEvent) else eraseHandle(
                 motionEvent
             )
+
             32 -> eraseHandle(motionEvent)
+        }
+    }
+
+    private fun eraseActionDownHandle(motionEvent: MotionEvent) {
+        _state.update { it ->
+            var currentRemoveStroke = it.removedStrokes
+            if (!currentRemoveStroke.isEmpty()) currentRemoveStroke = emptyList()
+            //remove oversize strokes
+            val currentOversizeStrokes =
+                removeOversizeStrokes(convertMotionEventToDot(motionEvent))
+            //find strokes to remove
+            currentRemoveStroke = currentRemoveStroke.plus(
+                it.rootRegion!!.findStrokesToRemove(
+                    convertMotionEventToDot(motionEvent),
+                    currentRemoveStroke.toMutableList()
+                ).toList()
+            )
+            //storing removed strokes for undo/redo
+            currentRemoveStroke.forEach { stroke -> storeErasedStroke(stroke) }
+
+            //removing after getting all mapped strokes
+            if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
+                currentRemoveStroke
+            )
+            it.copy(
+                removedStrokes = currentRemoveStroke,
+                oversizeStrokes = currentOversizeStrokes
+            )
+        }
+    }
+
+    //same logic with eraseActionDownHandle but with different argument
+    // and does not store removed strokes for undo
+    private fun eraseStrokeByFirstDot(dot: Dot) {
+        _state.update { it ->
+            var currentRemoveStroke = it.removedStrokes
+            //if (!currentRemoveStroke.isEmpty()) currentRemoveStroke = emptyList()
+            //remove oversize strokes
+            val currentOversizeStrokes =
+                removeOversizeStrokes(dot, false)
+            //find strokes to remove
+            currentRemoveStroke = currentRemoveStroke.plus(
+                it.rootRegion!!.findStrokesToRemove(
+                    dot,
+                    currentRemoveStroke.toMutableList()
+                ).toList()
+            )
+            //removing after getting all mapped strokes
+            if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
+                currentRemoveStroke
+            )
+            it.copy(
+                removedStrokes = emptyList(),
+                oversizeStrokes = currentOversizeStrokes
+            )
+        }
+    }
+
+    private fun eraseActionMoveHandle(motionEvent: MotionEvent) {
+        _state.update { it ->
+            var currentRemoveStroke = it.removedStrokes
+            //remove oversize strokes
+            val currentOversizeStrokes =
+                removeOversizeStrokes(convertMotionEventToDot(motionEvent))
+            currentRemoveStroke = currentRemoveStroke.plus(
+                it.rootRegion!!.findStrokesToRemove(
+                    convertMotionEventToDot(motionEvent),
+                    currentRemoveStroke.toMutableList()
+                ).toList()
+            )
+            //storing removed strokes for undo/redo
+//            currentRemoveStroke.forEach { stroke ->
+//                storeErasedStroke(stroke)
+//                Log.d("scrolll", "add in 2st")
+//            }
+            //remove stroke
+            if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
+                currentRemoveStroke
+            )
+            it.copy(
+                removedStrokes = currentRemoveStroke,
+                oversizeStrokes = currentOversizeStrokes
+            )
+        }
+    }
+
+    private fun eraseActionUpHandle() {
+        _state.update { it ->
+            it.copy(
+                removedStrokes = emptyList<Stroke>()
+            )
         }
     }
 
     private fun eraseHandle(motionEvent: MotionEvent) {
         val action = motionEvent.actionMasked
         when (action) {
-            MotionEvent.ACTION_DOWN -> {
-                _state.update { it ->
-                    var currentRemoveStroke = it.removedStrokes
-                    if (!currentRemoveStroke.isEmpty()) currentRemoveStroke = emptyList()
-                    val currentOversizeStrokes =
-                        removeOversizeStrokes(convertMotionEventToDot(motionEvent))
-                    currentRemoveStroke = currentRemoveStroke.plus(
-                        it.rootRegion!!.findStrokesToRemove(
-                            convertMotionEventToDot(motionEvent),
-                            currentRemoveStroke.toMutableList()
-                        ).toList()
-                    )
-                    if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
-                        currentRemoveStroke
-                    )
-                    it.copy(
-                        removedStrokes = currentRemoveStroke,
-                        oversizeStrokes = currentOversizeStrokes
-                    )
-                }
-            }
-
-            MotionEvent.ACTION_MOVE -> {
-                _state.update { it ->
-                    var currentRemoveStroke = it.removedStrokes
-                    val currentOversizeStrokes =
-                        removeOversizeStrokes(convertMotionEventToDot(motionEvent))
-                    currentRemoveStroke = currentRemoveStroke.plus(
-                        it.rootRegion!!.findStrokesToRemove(
-                            convertMotionEventToDot(motionEvent),
-                            currentRemoveStroke.toMutableList()
-                        ).toList()
-                    )
-                    if (!currentRemoveStroke.isEmpty()) it.rootRegion!!.removeStrokes(
-                        currentRemoveStroke
-                    )
-                    it.copy(
-                        removedStrokes = currentRemoveStroke,
-                        oversizeStrokes = currentOversizeStrokes
-                    )
-                }
-            }
-
-            MotionEvent.ACTION_UP -> {
-                _state.update { it ->
-                    it.copy(
-                        removedStrokes = emptyList<Stroke>()
-                    )
-                }
-            }
+            MotionEvent.ACTION_DOWN -> eraseActionDownHandle(motionEvent)
+            MotionEvent.ACTION_MOVE -> eraseActionMoveHandle(motionEvent)
+            MotionEvent.ACTION_UP -> eraseActionUpHandle()
         }
         updateFarestStrokes()
     }
@@ -558,13 +605,14 @@ class EditorViewModel() : ViewModel() {
     }
 
     //change dots to empty
-    //remove in oversize list
-    private fun removeOversizeStrokes(dot: Dot): List<Stroke> {
+    //remove in oversize list + store removed strokes for undo/redo
+    private fun removeOversizeStrokes(dot: Dot, isStoreUndo: Boolean = true): List<Stroke> {
         var result = mutableListOf<Stroke>()
         var currentOversizeStrokes = _state.value.oversizeStrokes
 
         currentOversizeStrokes.forEach { stroke ->
             if (stroke.contains(dot)) {
+                if (isStoreUndo) storeErasedStroke(stroke)
                 stroke.dots = emptyList<Dot>()
             } else {
                 result.add(stroke)
@@ -778,6 +826,39 @@ class EditorViewModel() : ViewModel() {
             }
 
             else -> {}
+        }
+    }
+
+    private fun storeNewStroke(stroke: Stroke) {
+        _state.value.strokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.WRITE, stroke.copy()))
+    }
+
+    private fun storeErasedStroke(stroke: Stroke) {
+        _state.value.strokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.ERASE, stroke.copy()))
+    }
+
+    fun onUndo() {
+        val lastBehavior: StrokeBehavior? = _state.value.strokeBehaviors.popBehavior()
+        Log.d("scrolll", _state.value.strokeBehaviors.behaviors.size.toString())
+        when (lastBehavior?.action) {
+            StrokeAction.WRITE -> undoWriteHandle(lastBehavior)
+            StrokeAction.ERASE -> undoEraseHandle(lastBehavior)
+            null -> {}
+        }
+    }
+
+    //erase new-write stroke
+    private fun undoWriteHandle(strokeBehavior: StrokeBehavior?) {
+        if (strokeBehavior != null) {
+            eraseStrokeByFirstDot(strokeBehavior.stroke.dots[0])
+        }
+    }
+
+    //re-write erased strok
+    private fun undoEraseHandle(strokeBehavior: StrokeBehavior?) {
+        if (strokeBehavior != null) {
+            _state.value.latestStroke = strokeBehavior.stroke
+            stylusWritingActionUpHandle(true)
         }
     }
 }

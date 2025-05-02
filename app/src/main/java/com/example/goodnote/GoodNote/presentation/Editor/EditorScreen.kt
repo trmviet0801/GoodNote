@@ -1,6 +1,5 @@
-package com.example.goodnote.goodNote.presentation.Editor
+package com.example.goodnote.goodNote.presentation.editor
 
-import android.view.ScaleGestureDetector
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
@@ -25,7 +24,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -35,7 +33,6 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
@@ -43,15 +40,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import com.example.goodnote.R
 import com.example.goodnote.goodNote.domain.toPath
-import com.example.goodnote.goodNote.presentation.Editor.components.ColorPicker
-import com.example.goodnote.goodNote.presentation.Editor.components.PenPicker
-import com.example.goodnote.goodNote.presentation.Editor.components.PenSelection
-import com.example.goodnote.goodNote.presentation.Editor.components.TopBar
-import com.example.goodnote.goodNote.utils.AppConst
+import com.example.goodnote.goodNote.presentation.editor.components.PenPicker
+import com.example.goodnote.goodNote.presentation.editor.components.PenSelection
+import com.example.goodnote.goodNote.presentation.editor.components.TopBar
 import com.example.goodnote.goodNote.utils.AppConvertor
 import com.example.goodnote.goodNote.utils.PenConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
-import org.intellij.lang.annotations.JdkConstants
 import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)

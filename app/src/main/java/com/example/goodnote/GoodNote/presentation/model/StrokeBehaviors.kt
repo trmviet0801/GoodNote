@@ -6,12 +6,12 @@ data class StrokeBehaviors(
 )
 
 fun StrokeBehaviors.pushBehavior(behavior: StrokeBehavior): StrokeBehaviors {
-    val newBehaviors = behaviors.toMutableList()
-    newBehaviors.add(behavior)
-    return StrokeBehaviors(newBehaviors.toList())
+    behaviors = behaviors.plus(behavior)
+    return this
 }
 
-fun StrokeBehaviors.popBehavior(): StrokeBehavior {
+fun StrokeBehaviors.popBehavior(): StrokeBehavior? {
+    if (behaviors.isEmpty()) return null
     val currentBehaviors = behaviors.toMutableList()
     val newBehaviors = currentBehaviors.subList(0, currentBehaviors.size - 1)
     behaviors = newBehaviors
@@ -23,5 +23,6 @@ fun StrokeBehaviors.isEmpty(): Boolean {
 }
 
 fun StrokeBehaviors.clear(): StrokeBehaviors {
-    return StrokeBehaviors(emptyList())
+    behaviors = emptyList()
+    return this
 }

@@ -1,4 +1,4 @@
-package com.example.goodnote.goodNote.presentation.Editor
+package com.example.goodnote.goodNote.presentation.editor
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
@@ -24,7 +24,6 @@ data class EditorState(
     var rightest: Stroke? = null,
     var downest: Stroke? = null,
     var removedStrokes: List<Stroke> = emptyList(),
-    var marginTop: Float = 0f,
 
     //scroll
     var scrollOffset: Offset = Offset.Zero,

@@ -101,7 +101,9 @@ data class Region(
 
     fun removeStrokes(strokes: List<Stroke>) {
         if (strokes.isEmpty()) return
-        strokes.forEach { stroke -> stroke.dots = emptyList<Dot>() }
+        strokes.forEach { stroke ->
+            stroke.dots = emptyList<Dot>()
+        }
     }
 
     fun findStrokesToRemove(dot: Dot, removedStrokes: MutableList<Stroke>): MutableList<Stroke> {

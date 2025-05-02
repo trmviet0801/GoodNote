@@ -1,4 +1,4 @@
-package com.example.goodnote.goodNote.presentation.Editor.components
+package com.example.goodnote.goodNote.presentation.editor.components
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.clickable
@@ -8,7 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.PreviewLightDark
-import com.example.goodnote.goodNote.presentation.Editor.EditorViewModel
+import com.example.goodnote.goodNote.presentation.editor.EditorViewModel
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import org.koin.androidx.compose.koinViewModel

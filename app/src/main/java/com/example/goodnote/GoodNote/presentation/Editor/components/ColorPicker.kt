@@ -1,6 +1,5 @@
-package com.example.goodnote.goodNote.presentation.Editor.components
+package com.example.goodnote.goodNote.presentation.editor.components
 
-import android.text.Layout
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
@@ -23,7 +22,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import com.example.goodnote.R
-import com.example.goodnote.goodNote.presentation.Editor.EditorViewModel
+import com.example.goodnote.goodNote.presentation.editor.EditorViewModel
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import org.koin.androidx.compose.koinViewModel

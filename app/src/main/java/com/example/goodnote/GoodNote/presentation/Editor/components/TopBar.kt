@@ -1,8 +1,6 @@
-package com.example.goodnote.goodNote.presentation.Editor.components
+package com.example.goodnote.goodNote.presentation.editor.components
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -29,7 +27,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import com.example.goodnote.R
-import com.example.goodnote.goodNote.presentation.Editor.EditorViewModel
+import com.example.goodnote.goodNote.presentation.editor.EditorViewModel
 import com.example.goodnote.goodNote.utils.AppConst
 import org.koin.androidx.compose.koinViewModel
 
