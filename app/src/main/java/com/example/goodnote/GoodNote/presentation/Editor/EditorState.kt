@@ -4,6 +4,7 @@ import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.goodNote.presentation.model.StrokeBehaviors
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
 
@@ -23,6 +24,7 @@ data class EditorState(
     var rightest: Stroke? = null,
     var downest: Stroke? = null,
     var removedStrokes: List<Stroke> = emptyList(),
+    var marginTop: Float = 0f,
 
     //scroll
     var scrollOffset: Offset = Offset.Zero,
@@ -48,4 +50,7 @@ data class EditorState(
     var isFullScreen: Boolean = true,
     var isShowPenPicker: Boolean = false,
     var isShowColorPicker: Boolean = true,
+
+    //forward + backward
+    val strokeBehaviors: StrokeBehaviors = StrokeBehaviors()
 )

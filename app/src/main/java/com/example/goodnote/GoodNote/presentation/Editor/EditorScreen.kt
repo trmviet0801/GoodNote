@@ -25,11 +25,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -85,15 +87,6 @@ fun EditorScreen(innerPadding: PaddingValues) {
             ) {
                 PenPicker()
             }
-//            this@Column.AnimatedVisibility(
-//                visible = state.value.isShowColorPicker,
-//                modifier = Modifier
-//                    .padding(16.dp)
-//                    .zIndex(1f)
-//                    .align(Alignment.TopCenter)
-//            ) {
-//                ColorPicker()
-//            }
             Canvas(
                 modifier = Modifier
                     .pointerInteropFilter { motionEvent ->
@@ -112,38 +105,46 @@ fun EditorScreen(innerPadding: PaddingValues) {
                         ) * state.value.scale
                     )
                     .background(Color.Black)) {
-                drawPath(
-                    path = state.value.latestStroke.toPath(state.value.canvasRelativePosition),
-                    color = Color(state.value.latestStroke.color),
-                    style = Stroke(
-                        state.value.latestStroke.lineWidth,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round
-                    )
-                )
-
-                drawPath(
-                    path = (state.value.rootRegion?.primaryStroke?.toPath(state.value.canvasRelativePosition)
-                        ?: Path()),
-                    color = Color(state.value.rootRegion?.primaryStroke?.color ?: 0xffffff),
-                    style = Stroke(
-                        state.value.rootRegion?.primaryStroke?.lineWidth
-                            ?: PenConst.DEFAULT_LINE_WIDTH,
-                        cap = StrokeCap.Round,
-                        join = StrokeJoin.Round
-                    )
-                )
-
-                state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
+                clipRect {
                     drawPath(
-                        path = stroke.toPath(state.value.canvasRelativePosition),
-                        color = Color(stroke.color),
+                        path = state.value.latestStroke.toPath(
+                            state.value.canvasRelativePosition
+                        ),
+                        color = Color(state.value.latestStroke.color),
                         style = Stroke(
-                            stroke.lineWidth,
+                            state.value.latestStroke.lineWidth,
                             cap = StrokeCap.Round,
                             join = StrokeJoin.Round
                         )
                     )
+
+                    drawPath(
+                        path = (state.value.rootRegion?.primaryStroke?.toPath(
+                            state.value.canvasRelativePosition
+                        )
+                            ?: Path()),
+                        color = Color(state.value.rootRegion?.primaryStroke?.color ?: 0xffffff),
+                        style = Stroke(
+                            state.value.rootRegion?.primaryStroke?.lineWidth
+                                ?: PenConst.DEFAULT_LINE_WIDTH,
+                            cap = StrokeCap.Round,
+                            join = StrokeJoin.Round
+                        )
+                    )
+
+                    state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
+                        drawPath(
+                            path = stroke.toPath(
+                                state.value.canvasRelativePosition
+                            ),
+                            color = Color(stroke.color),
+                            style = Stroke(
+                                stroke.lineWidth,
+                                cap = StrokeCap.Round,
+                                join = StrokeJoin.Round
+                            )
+                        )
+                    }
                 }
 
             }

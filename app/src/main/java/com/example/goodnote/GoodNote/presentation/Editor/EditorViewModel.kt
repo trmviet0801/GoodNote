@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goodnote.goodNote.action.InsertAction
 import com.example.goodnote.goodNote.action.ScrollAction
+import com.example.goodnote.goodNote.action.StrokeAction
 import com.example.goodnote.goodNote.domain.Boundary
 import com.example.goodnote.goodNote.domain.Dot
 import com.example.goodnote.goodNote.domain.Region
@@ -17,6 +18,8 @@ import com.example.goodnote.goodNote.domain.calActualSize
 import com.example.goodnote.goodNote.domain.contains
 import com.example.goodnote.goodNote.domain.getDownest
 import com.example.goodnote.goodNote.domain.getRightest
+import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
+import com.example.goodnote.goodNote.presentation.model.pushBehavior
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.AppConvertor
 import com.example.goodnote.goodNote.utils.PenConst
@@ -421,33 +424,26 @@ class EditorViewModel() : ViewModel() {
 
             MotionEvent.ACTION_UP -> {
                 _state.update { it ->
+                    var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
                     var currentLatestStroke = it.latestStroke
                     val currentRootRegion = it.rootRegion
                     //update the farest stroke in the root region
-                    var currentRightest: Stroke =
-                        if (isRightest(currentLatestStroke)) {
-                            if (it.rightest !== null)
-                                it.rightest!!.isRightest = false
-                            currentLatestStroke.isRightest = true
-                            currentLatestStroke
-                        } else it.rightest
-                            ?: Stroke()
-                    var currentDownest: Stroke =
-                        if (isDownest(currentLatestStroke)) {
-                            if (it.downest !== null)
-                                it.downest!!.isDownest = false
-                            currentLatestStroke.isDownest = true
-                            currentLatestStroke
-                        } else it.downest
-                            ?: Stroke()
+                    var currentRightest: Stroke = getCurrentRightest(currentLatestStroke)
+                    var currentDownest: Stroke = getCurrentDownest(currentLatestStroke)
 
-                    var currentOversizeStroke: List<Stroke> = it.oversizeStrokes
+                    //update new action for forward/backward
+                    var currentStrokeBehaviors = it.strokeBehaviors.pushBehavior(
+                        StrokeBehavior(
+                            action = StrokeAction.WRITE,
+                            stroke = currentLatestStroke
+                        )
+                    )
 
                     // insert new stroke into root region
                     // if stroke is oversize -> add to oversize list for erasing behavior
                     if (currentRootRegion?.insert(currentLatestStroke) == InsertAction.Oversize)
                         currentOversizeStroke = currentOversizeStroke.plus(currentLatestStroke)
-
+                    //get ready for the next writing
                     currentLatestStroke = Stroke()
 
                     it.copy(
@@ -455,11 +451,32 @@ class EditorViewModel() : ViewModel() {
                         rootRegion = currentRootRegion,
                         rightest = currentRightest,
                         downest = currentDownest,
-                        oversizeStrokes = currentOversizeStroke
+                        oversizeStrokes = currentOversizeStroke,
+                        strokeBehaviors = currentStrokeBehaviors
                     )
                 }
             }
         }
+    }
+
+    private fun getCurrentDownest(stroke: Stroke): Stroke {
+        return if (isDownest(stroke)) {
+            if (_state.value.downest !== null)
+                _state.value.downest!!.isDownest = false
+            stroke.isDownest = true
+            stroke
+        } else _state.value.downest
+            ?: Stroke()
+    }
+
+    private fun getCurrentRightest(stroke: Stroke): Stroke {
+        return if (isRightest(stroke)) {
+            if (_state.value.rightest !== null)
+                _state.value.rightest!!.isRightest = false
+            stroke.isRightest = true
+            stroke
+        } else _state.value.rightest
+            ?: Stroke()
     }
 
     private fun stylusHandle(motionEvent: MotionEvent) {
@@ -526,13 +543,9 @@ class EditorViewModel() : ViewModel() {
             }
         }
         updateFarestStrokes()
-        Log.d(
-            "erase",
-            "updateFarestStrokes: rightestStroke: ${_state.value.rightest?.getRightest()?.x} downestStroke: ${_state.value.downest?.getDownest()?.y}"
-        )
     }
 
-    // / scale make the position is the offset with scale = 1 (strokes are stored with scale = 1 too)
+    // scale make the position is the offset with scale = 1 (strokes are stored with scale = 1 too)
     // x,y always the position with scale = 1f
     // scaledX, scaledY are the position with the current scale
     private fun convertMotionEventToDot(motionEvent: MotionEvent): Dot {
@@ -561,12 +574,12 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun isRightest(stroke: Stroke): Boolean {
-        if (_state.value.rightest == null || _state?.value?.rightest?.dots == emptyList<Dot>()) return true
+        if (_state.value.rightest == null || _state.value?.rightest?.dots == emptyList<Dot>()) return true
         return stroke.getRightest()!!.x > _state.value.rightest!!.getRightest()!!.x
     }
 
     private fun isDownest(stroke: Stroke): Boolean {
-        if (_state.value.downest == null || _state?.value?.downest?.dots == emptyList<Dot>()) return true
+        if (_state.value.downest == null || _state.value?.downest?.dots == emptyList<Dot>()) return true
         return stroke.getDownest()!!.y > _state.value.downest!!.getDownest()!!.y
     }
 
@@ -735,6 +748,7 @@ class EditorViewModel() : ViewModel() {
         }
     }
 
+    // triggers when using button instead of scrolling
     fun onPenWidthChange(scrollAction: ScrollAction, amount: Float) {
         when (scrollAction) {
             //decrease pen width
