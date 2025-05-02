@@ -13,7 +13,7 @@ A  handwriting editor built from scratch in Android using **Jetpack Compose**, *
 - 🎨 **Pen Color and Width Selection** with a scroll gesture
 - 🧲 **Virtual Camera Scrolling** (moving strokes instead of the screen)
 - 🖼 **Full Screen Mode** toggle for distraction-free writing
-- 📐 **Smooth Scaling** with scale-aware stroke positions
+- 📐 **Smooth Scaling and Zooming** with scale-aware stroke positions
 ---
 
 ## 🛠 Tech Stack
