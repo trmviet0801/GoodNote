@@ -830,16 +830,22 @@ class EditorViewModel() : ViewModel() {
     }
 
     private fun storeNewStroke(stroke: Stroke) {
-        _state.value.strokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.WRITE, stroke.copy()))
+        _state.value.undoStrokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.WRITE, stroke.copy()))
     }
 
     private fun storeErasedStroke(stroke: Stroke) {
-        _state.value.strokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.ERASE, stroke.copy()))
+        _state.value.undoStrokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.ERASE, stroke.copy()))
+    }
+
+    private fun storeRedoStroke(stroke: Stroke, isWrite: Boolean) {
+        if (isWrite)
+            _state.value.redoStrokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.WRITE, stroke.copy()))
+        else
+            _state.value.redoStrokeBehaviors.pushBehavior(StrokeBehavior(StrokeAction.ERASE, stroke.copy()))
     }
 
     fun onUndo() {
-        val lastBehavior: StrokeBehavior? = _state.value.strokeBehaviors.popBehavior()
-        Log.d("scrolll", _state.value.strokeBehaviors.behaviors.size.toString())
+        val lastBehavior: StrokeBehavior? = _state.value.undoStrokeBehaviors.popBehavior()
         when (lastBehavior?.action) {
             StrokeAction.WRITE -> undoWriteHandle(lastBehavior)
             StrokeAction.ERASE -> undoEraseHandle(lastBehavior)
@@ -847,18 +853,44 @@ class EditorViewModel() : ViewModel() {
         }
     }
 
-    //erase new-write stroke
-    private fun undoWriteHandle(strokeBehavior: StrokeBehavior?) {
+    fun onRedo() {
+        val lastBehavior: StrokeBehavior? = _state.value.redoStrokeBehaviors.popBehavior()
+        when (lastBehavior?.action) {
+            StrokeAction.WRITE -> redoWriteHandle(lastBehavior)
+            StrokeAction.ERASE -> redoEraseHandle(lastBehavior)
+            null -> {}
+        }
+    }
+
+    //erase stroke
+    private fun redoWriteHandle(strokeBehavior: StrokeBehavior?) {
         if (strokeBehavior != null) {
             eraseStrokeByFirstDot(strokeBehavior.stroke.dots[0])
         }
     }
 
-    //re-write erased strok
+    //re-write stroke
+    private fun redoEraseHandle(strokeBehavior: StrokeBehavior?) {
+        if (strokeBehavior != null) {
+            _state.value.latestStroke = strokeBehavior.stroke
+            stylusWritingActionUpHandle(true)
+        }
+    }
+
+    //erase new-write stroke
+    private fun undoWriteHandle(strokeBehavior: StrokeBehavior?) {
+        if (strokeBehavior != null) {
+            eraseStrokeByFirstDot(strokeBehavior.stroke.dots[0])
+            storeRedoStroke(strokeBehavior.stroke, false)
+        }
+    }
+
+    //re-write erased stroke
     private fun undoEraseHandle(strokeBehavior: StrokeBehavior?) {
         if (strokeBehavior != null) {
             _state.value.latestStroke = strokeBehavior.stroke
             stylusWritingActionUpHandle(true)
+            storeRedoStroke(strokeBehavior.stroke, true)
         }
     }
 }

@@ -96,6 +96,10 @@ fun PenSelection() {
                     modifier = Modifier
                         .size(AppConst.ICON_SIZE)
                         .rotate(180f)
+                        .clickable(
+                            enabled = true,
+                            onClick = {editorViewModel.onRedo()}
+                        )
                 )
             }
             Icon(

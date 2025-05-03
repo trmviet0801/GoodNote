@@ -51,5 +51,6 @@ data class EditorState(
     var isShowColorPicker: Boolean = true,
 
     //forward + backward
-    val strokeBehaviors: StrokeBehaviors = StrokeBehaviors()
+    val undoStrokeBehaviors: StrokeBehaviors = StrokeBehaviors(),
+    val redoStrokeBehaviors: StrokeBehaviors = StrokeBehaviors()
 )
