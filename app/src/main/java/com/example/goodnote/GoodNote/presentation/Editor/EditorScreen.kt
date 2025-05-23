@@ -24,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
@@ -33,11 +34,15 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.pointer.pointerInteropFilter
 import androidx.compose.ui.layout.onGloballyPositioned
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
 import com.example.goodnote.R
 import com.example.goodnote.goodNote.domain.toPath
 import com.example.goodnote.goodNote.presentation.editor.components.PenPicker
@@ -50,7 +55,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun EditorScreen(innerPadding: PaddingValues) {
+fun EditorScreen() {
     val editorViewModel = koinViewModel<EditorViewModel>()
     val state = editorViewModel.state.collectAsState()
 
@@ -142,6 +147,19 @@ fun EditorScreen(innerPadding: PaddingValues) {
                 }
 
             }
+
+            state.value.imgUris.forEach { img ->
+                Box(
+                    modifier = Modifier
+                        .padding(top = Dp(img.top), start = Dp(img.left))
+                ) {
+                    AsyncImage(
+                        model = img.uri,
+                        contentDescription = null
+                    )
+                }
+            }
+
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -171,6 +189,6 @@ fun EditorScreen(innerPadding: PaddingValues) {
 @Composable
 private fun EditorScreenPreview() {
     GoodNoteTheme {
-        EditorScreen(PaddingValues(12.dp))
+        EditorScreen()
     }
 }

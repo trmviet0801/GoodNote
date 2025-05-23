@@ -60,7 +60,8 @@ fun TopBar(focusRequester: FocusRequester) {
                     contentDescription = R.string.arrow_left.toString(),
                     modifier = Modifier
                         .size(AppConst.ICON_SIZE)
-                        .padding(4.dp)
+                        .padding(4.dp),
+                    tint = Color.White
                 )
                 BasicTextField(
                     value = state.value.name,
@@ -84,15 +85,15 @@ fun TopBar(focusRequester: FocusRequester) {
                     imageVector = ImageVector.vectorResource(R.drawable.add),
                     contentDescription = R.string.add.toString(),
                     modifier = Modifier
-                        .size(AppConst.ICON_SIZE)
-                    //.padding(4.dp)
+                        .size(AppConst.ICON_SIZE),
+                    tint = Color.White
                 )
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable._dots),
                     contentDescription = R.string.dots.toString(),
                     modifier = Modifier
-                        .size(AppConst.ICON_SIZE)
-                    //.padding(4.dp)
+                        .size(AppConst.ICON_SIZE),
+                    tint = Color.White
                 )
             }
         }

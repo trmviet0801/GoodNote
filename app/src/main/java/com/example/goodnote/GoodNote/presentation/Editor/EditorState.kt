@@ -1,7 +1,9 @@
 package com.example.goodnote.goodNote.presentation.editor
 
+import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
+import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.domain.Stroke
 import com.example.goodnote.goodNote.presentation.model.StrokeBehaviors
@@ -52,5 +54,9 @@ data class EditorState(
 
     //forward + backward
     val undoStrokeBehaviors: StrokeBehaviors = StrokeBehaviors(),
-    val redoStrokeBehaviors: StrokeBehaviors = StrokeBehaviors()
+    val redoStrokeBehaviors: StrokeBehaviors = StrokeBehaviors(),
+
+    //inserting image
+    val isShowImagePicker: Boolean = false,
+    var imgUris: List<Image> = emptyList<Image>()
 )

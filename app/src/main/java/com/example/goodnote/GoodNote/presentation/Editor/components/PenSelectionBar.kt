@@ -88,7 +88,8 @@ fun PenSelection() {
                         .clickable(
                             enabled = true,
                             onClick = {editorViewModel.onUndo()}
-                        )
+                        ),
+                    tint = Color.White
                 )
                 Icon(
                     imageVector = ImageVector.vectorResource(R.drawable.back),
@@ -99,14 +100,16 @@ fun PenSelection() {
                         .clickable(
                             enabled = true,
                             onClick = {editorViewModel.onRedo()}
-                        )
+                        ),
+                    tint = Color.White
                 )
             }
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.rec),
                 contentDescription = R.string.rec.toString(),
                 modifier = Modifier
-                    .size(AppConst.ICON_SIZE)
+                    .size(AppConst.ICON_SIZE),
+                tint = Color.White
             )
         }
     }

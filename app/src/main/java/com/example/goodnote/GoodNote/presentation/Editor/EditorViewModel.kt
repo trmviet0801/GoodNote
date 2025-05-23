@@ -1,5 +1,6 @@
 package com.example.goodnote.goodNote.presentation.editor
 
+import android.net.Uri
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
@@ -12,6 +13,7 @@ import com.example.goodnote.goodNote.action.ScrollAction
 import com.example.goodnote.goodNote.action.StrokeAction
 import com.example.goodnote.goodNote.domain.Boundary
 import com.example.goodnote.goodNote.domain.Dot
+import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.domain.Stroke
 import com.example.goodnote.goodNote.domain.calActualSize
@@ -891,6 +893,26 @@ class EditorViewModel() : ViewModel() {
             _state.value.latestStroke = strokeBehavior.stroke
             stylusWritingActionUpHandle(true)
             storeRedoStroke(strokeBehavior.stroke, true)
+        }
+    }
+
+    //inserting new image from shared-storage
+    fun onInsertImage(uri: Uri) {
+        Log.d("scrolll,", uri.toString())
+        _state.update { it ->
+            val imgUris: List<Image> = it.imgUris + Image(uri = uri)
+            it.copy(
+                imgUris = imgUris,
+                isShowImagePicker = !it.isShowImagePicker
+            )
+        }
+    }
+
+    fun showImagePicker() {
+        _state.update { it ->
+            it.copy(
+                isShowImagePicker = !it.isShowImagePicker
+            )
         }
     }
 }
