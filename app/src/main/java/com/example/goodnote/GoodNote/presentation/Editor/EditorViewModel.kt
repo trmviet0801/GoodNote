@@ -6,6 +6,7 @@ import android.net.Uri
 import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
@@ -340,5 +341,29 @@ class EditorViewModel(
 
     fun getImageBitmap(uri: Uri): Bitmap {
         return imageRepository.getImageBitmap(uri)
+    }
+
+    fun onDropDownMenu() {
+        _state.update { it ->
+            it.copy(
+                isShowSettingPopupMenu = !it.isShowSettingPopupMenu
+            )
+        }
+    }
+
+    fun onBackgroundColorChange(code: Long) {
+        _state.update { it ->
+            it.copy(
+                backgroundColor = Color(code)
+            )
+        }
+    }
+
+    fun onShowBackgroundColorPicker() {
+        _state.update { it ->
+            it.copy(
+                isShowBackgroundColorPicker = !it.isShowBackgroundColorPicker
+            )
+        }
     }
 }

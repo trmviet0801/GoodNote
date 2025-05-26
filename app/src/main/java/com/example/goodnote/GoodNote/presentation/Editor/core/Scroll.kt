@@ -1,6 +1,5 @@
 package com.example.goodnote.goodNote.presentation.editor.core
 
-import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.action.ScrollAction
@@ -216,7 +215,6 @@ fun imageScrollHandle(motionEvent: MotionEvent, state: MutableStateFlow<EditorSt
                         motionEvent.x - state.value.scrollOffset.x,
                         motionEvent.y - state.value.scrollOffset.y
                     )
-                    Log.d("scrolll", "${it.canvasRelativePosition}}")
                     val newImage: Image = onImageScroll(getScrollDirection(moveDistance), image, it.scale)
                         .setActualPosition(it.canvasRelativePosition, it.scale)
                     it.copy(

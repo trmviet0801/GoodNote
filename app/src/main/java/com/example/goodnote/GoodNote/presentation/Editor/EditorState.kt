@@ -2,6 +2,7 @@ package com.example.goodnote.goodNote.presentation.editor
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
 import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
@@ -64,5 +65,12 @@ data class EditorState(
     var imageScrollOffset: Offset = Offset.Zero,
 
     //moving image
-    var lastMovingImage: Image? = null
+    var lastMovingImage: Image? = null,
+
+    //setting
+    var isShowSettingPopupMenu: Boolean = false,
+
+    //background
+    var backgroundColor: Color = Color.Black,
+    var isShowBackgroundColorPicker: Boolean = false
 )

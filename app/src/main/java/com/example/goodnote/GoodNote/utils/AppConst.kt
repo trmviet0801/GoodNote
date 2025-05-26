@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object AppConst {
     const val PAGE_NAME: String = "New file"
-    const val SCALE_LEVEL: Float = 0.03f
+    const val SCALE_LEVEL: Float = 0.003f
     const val SCROLL_LEVEL: Float = 40f
     const val SCROLL_MINIMUM: Float = 2.5f
     const val SCROLL_AXIS_DOMINANT = 2
@@ -12,7 +12,7 @@ object AppConst {
     val ICON_SIZE = 24.dp
     val BARs_HEIGHT = 50.dp
     val PEN_COLORS = listOf(
-        //0xFF000000, // Black
+        0xFF000000, // Black
         0xFFFFFFFF, // White
         0xFFFF0000, // Red
         0xFF8B0000, // Dark Red

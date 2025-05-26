@@ -63,7 +63,9 @@ import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.example.goodnote.R
 import com.example.goodnote.goodNote.domain.toPath
+import com.example.goodnote.goodNote.presentation.editor.components.BackgroundColorPicker
 import com.example.goodnote.goodNote.presentation.editor.components.ImageDot
+import com.example.goodnote.goodNote.presentation.editor.components.ImagePicker
 import com.example.goodnote.goodNote.presentation.editor.components.PenPicker
 import com.example.goodnote.goodNote.presentation.editor.components.PenSelection
 import com.example.goodnote.goodNote.presentation.editor.components.TopBar
@@ -109,6 +111,14 @@ fun EditorScreen() {
                 PenPicker()
             }
 
+            if (state.value.isShowImagePicker)
+                ImagePicker()
+            if (state.value.isShowBackgroundColorPicker)
+                Box(
+                    modifier = Modifier.align(Alignment.TopEnd).zIndex(2f)
+                ) {
+                    BackgroundColorPicker()
+                }
             Canvas(
                 modifier = Modifier
                     .pointerInteropFilter { motionEvent ->
@@ -140,62 +150,60 @@ fun EditorScreen() {
                             state.value.rootRegion?.boundary?.actualHeight ?: 100f
                         ) * state.value.scale
                     )
-                    .background(Color.Black)) {
+                    .background(state.value.backgroundColor)) {
                 clipRect {
                     //draw images
                     state.value.imageManager.images.forEach { image ->
-                        if (editorViewModel.getImageBitmap(image.uri) != null) {
-                            val imageBitMap: ImageBitmap =
-                                editorViewModel.getImageBitmap(image.uri).asImageBitmap()
-                            image.setSize(imageBitMap, state.value.scale)
-                            drawImage(
-                                image = imageBitMap,
-                                dstOffset = image.getRelativePosition(
+                        val imageBitMap: ImageBitmap =
+                            editorViewModel.getImageBitmap(image.uri).asImageBitmap()
+                        image.setSize(imageBitMap, state.value.scale)
+                        drawImage(
+                            image = imageBitMap,
+                            dstOffset = image.getRelativePosition(
+                                state.value.canvasRelativePosition,
+                                state.value.scale
+                            ),
+                            dstSize = IntSize(
+                                image.scaledWidth.toInt(),
+                                image.scaledHeight.toInt()
+                            )
+                        )
+                        //display circle-border when selecting image
+                        if (image.isSelected) {
+                            drawCircle(
+                                color = Color.Gray,
+                                radius = 10f,
+                                center = image.getRelativePositionOffset(
                                     state.value.canvasRelativePosition,
                                     state.value.scale
-                                ),
-                                dstSize = IntSize(
-                                    image.scaledWidth.toInt(),
-                                    image.scaledHeight.toInt()
                                 )
                             )
-                            //display circle-border when selecting image
-                            if (image.isSelected) {
-                                drawCircle(
-                                    color = Color.Gray,
-                                    radius = 10f,
-                                    center = image.getRelativePositionOffset(
-                                        state.value.canvasRelativePosition,
-                                        state.value.scale
-                                    )
+                            drawCircle(
+                                color = Color.Gray,
+                                radius = 10f,
+                                center = image.getRelativePositionOffset(
+                                    state.value.canvasRelativePosition,
+                                    state.value.scale
+                                ) + _root_ide_package_.androidx.compose.ui.geometry.Offset(
+                                    image.scaledWidth, 0f
                                 )
-                                drawCircle(
-                                    color = Color.Gray,
-                                    radius = 10f,
-                                    center = image.getRelativePositionOffset(
-                                        state.value.canvasRelativePosition,
-                                        state.value.scale
-                                    ) + _root_ide_package_.androidx.compose.ui.geometry.Offset(
-                                        image.scaledWidth, 0f
-                                    )
-                                )
-                                drawCircle(
-                                    color = Color.Gray,
-                                    radius = 10f,
-                                    center = image.getRelativePositionOffset(
-                                        state.value.canvasRelativePosition,
-                                        state.value.scale
-                                    ) + Offset(0f, image.scaledHeight)
-                                )
-                                drawCircle(
-                                    color = Color.Gray,
-                                    radius = 10f,
-                                    center = image.getRelativePositionOffset(
-                                        state.value.canvasRelativePosition,
-                                        state.value.scale
-                                    ) + Offset(image.scaledWidth, image.scaledHeight)
-                                )
-                            }
+                            )
+                            drawCircle(
+                                color = Color.Gray,
+                                radius = 10f,
+                                center = image.getRelativePositionOffset(
+                                    state.value.canvasRelativePosition,
+                                    state.value.scale
+                                ) + Offset(0f, image.scaledHeight)
+                            )
+                            drawCircle(
+                                color = Color.Gray,
+                                radius = 10f,
+                                center = image.getRelativePositionOffset(
+                                    state.value.canvasRelativePosition,
+                                    state.value.scale
+                                ) + Offset(image.scaledWidth, image.scaledHeight)
+                            )
                         }
                     }
                     drawPath(
@@ -238,7 +246,6 @@ fun EditorScreen() {
                         )
                     }
                 }
-
             }
 
             Box(

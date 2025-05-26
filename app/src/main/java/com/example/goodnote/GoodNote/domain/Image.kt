@@ -1,16 +1,9 @@
 package com.example.goodnote.goodNote.domain
 
-import android.app.Application
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.net.Uri
-import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
-import coil3.compose.AsyncImagePainter
-import com.example.goodnote.goodNote.presentation.editor.repository.ImageRepository
 import java.sql.Timestamp
 
 //left + top only used for checking if user touch image

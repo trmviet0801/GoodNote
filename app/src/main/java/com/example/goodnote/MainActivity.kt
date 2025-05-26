@@ -28,15 +28,6 @@ class MainActivity : ComponentActivity() {
             GoodNoteTheme {
                 Box(modifier = Modifier.fillMaxSize()) {
                     EditorScreen()
-                    AnimatedVisibility(
-                        visible = true,
-                        modifier = Modifier
-                            .padding(top = 45.dp, end = 40.dp)
-                            .zIndex(1f)
-                            .align(Alignment.TopEnd)
-                    ) {
-                        AddResourceMenu()
-                    }
                 }
             }
         }

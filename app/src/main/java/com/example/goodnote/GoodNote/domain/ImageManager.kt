@@ -33,16 +33,6 @@ data class ImageManager (
         )
     }
 
-    //image changed position
-    //only return new imageManager to trigger re-render
-    fun onMoveImage(image: Image): ImageManager {
-        return this.copy(
-            images = this.images.map { it ->
-                if (it.isEquals(image)) image else it
-            }
-        )
-    }
-
     fun onTapHandle(tapPosition: Offset, virtualCameraOffset: Offset, scale: Float): ImageManager {
         val newImages: List<Image> = images.map { it ->
             if (it.onImage(tapPosition, virtualCameraOffset  ,scale))
