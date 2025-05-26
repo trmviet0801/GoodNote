@@ -174,27 +174,27 @@ private fun moveVirtualCamera(amount: Offset, previousPosition: Offset, state: M
     }
 }
 
-fun onImageScroll(scrollAction: ScrollAction, image: Image): Image {
+fun onImageScroll(scrollAction: ScrollAction, image: Image, scale: Float): Image {
     if (scrollAction == ScrollAction.RIGHT)
-        image.left -= AppConst.SCROLL_LEVEL
+        image.left -= AppConst.SCROLL_LEVEL / scale
     else if (scrollAction == ScrollAction.LEFT)
-        image.left += AppConst.SCROLL_LEVEL
+        image.left += AppConst.SCROLL_LEVEL / scale
     else if (scrollAction == ScrollAction.DOWN)
-        image.top -= AppConst.SCROLL_LEVEL
+        image.top -= AppConst.SCROLL_LEVEL / scale
     else if (scrollAction == ScrollAction.UP)
-        image.top += AppConst.SCROLL_LEVEL
+        image.top += AppConst.SCROLL_LEVEL / scale
     else if (scrollAction == ScrollAction.RIGHT_DOWN) {
-        image.left -= AppConst.SCROLL_LEVEL
-        image.top -= AppConst.SCROLL_LEVEL
+        image.left -= AppConst.SCROLL_LEVEL / scale
+        image.top -= AppConst.SCROLL_LEVEL / scale
     } else if (scrollAction == ScrollAction.LEFT_DOWN) {
-        image.left += AppConst.SCROLL_LEVEL
-        image.top -= AppConst.SCROLL_LEVEL
+        image.left += AppConst.SCROLL_LEVEL / scale
+        image.top -= AppConst.SCROLL_LEVEL / scale
     } else if (scrollAction == ScrollAction.RIGHT_UP) {
-        image.left -= AppConst.SCROLL_LEVEL
-        image.top += AppConst.SCROLL_LEVEL
+        image.left -= AppConst.SCROLL_LEVEL / scale
+        image.top += AppConst.SCROLL_LEVEL / scale
     } else if (scrollAction == ScrollAction.LEFT_UP) {
-        image.left += AppConst.SCROLL_LEVEL
-        image.top += AppConst.SCROLL_LEVEL
+        image.left += AppConst.SCROLL_LEVEL / scale
+        image.top += AppConst.SCROLL_LEVEL / scale
     }
     return image
 }
@@ -217,7 +217,7 @@ fun imageScrollHandle(motionEvent: MotionEvent, state: MutableStateFlow<EditorSt
                         motionEvent.y - state.value.scrollOffset.y
                     )
                     Log.d("scrolll", "${it.canvasRelativePosition}}")
-                    val newImage: Image = onImageScroll(getScrollDirection(moveDistance), image)
+                    val newImage: Image = onImageScroll(getScrollDirection(moveDistance), image, it.scale)
                         .setActualPosition(it.canvasRelativePosition, it.scale)
                     it.copy(
                         imageManager = it.imageManager.onScrolling(newImage),
