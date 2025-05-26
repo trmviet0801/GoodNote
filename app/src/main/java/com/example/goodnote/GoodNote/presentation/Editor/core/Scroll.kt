@@ -1,7 +1,9 @@
 package com.example.goodnote.goodNote.presentation.editor.core
 
+import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.action.ScrollAction
+import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.getDownest
 import com.example.goodnote.goodNote.domain.getRightest
 import com.example.goodnote.goodNote.presentation.editor.EditorState
@@ -169,4 +171,52 @@ private fun moveVirtualCamera(amount: Offset, previousPosition: Offset, state: M
         }
         it.copy()
     }
+}
+
+fun onImageScroll(scrollAction: ScrollAction, image: Image, state: MutableStateFlow<EditorState>) {
+    if (scrollAction == ScrollAction.RIGHT)
+        image.left += AppConst.SCROLL_LEVEL
+    else if (scrollAction == ScrollAction.LEFT)
+        image.left -= AppConst.SCROLL_LEVEL
+    else if (scrollAction == ScrollAction.DOWN)
+        image.top += AppConst.SCROLL_LEVEL
+    else if (scrollAction == ScrollAction.UP)
+        image.top -= AppConst.SCROLL_LEVEL
+    else if (scrollAction == ScrollAction.RIGHT_DOWN) {
+        image.left += AppConst.SCROLL_LEVEL
+        image.top += AppConst.SCROLL_LEVEL
+    } else if (scrollAction == ScrollAction.LEFT_DOWN) {
+        image.left -= AppConst.SCROLL_LEVEL
+        image.top += AppConst.SCROLL_LEVEL
+    } else if (scrollAction == ScrollAction.RIGHT_UP) {
+        image.left += AppConst.SCROLL_LEVEL
+        image.top -= AppConst.SCROLL_LEVEL
+    } else if (scrollAction == ScrollAction.LEFT_UP) {
+        image.left -= AppConst.SCROLL_LEVEL
+        image.top -= AppConst.SCROLL_LEVEL
+    }
+}
+
+//get motion direction
+fun getScrollDirection(amount: Offset): ScrollAction {
+    var scrollDirection: ScrollAction = ScrollAction.NONE
+
+    if (abs(amount.x) > abs(amount.y * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+        scrollDirection = if (amount.x > 0) ScrollAction.LEFT else ScrollAction.RIGHT
+    } else if (abs(amount.y) > abs(amount.x * AppConst.SCROLL_AXIS_DOMINANT) && abs(amount.y) >= AppConst.SCROLL_MINIMUM) {
+        scrollDirection = if (amount.y > 0) ScrollAction.UP else ScrollAction.DOWN
+    } else if (amount.x > 0 && amount.x >= AppConst.SCROLL_MINIMUM) {
+        if (amount.y > 0 && amount.y >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            ScrollAction.LEFT_UP
+        else if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            ScrollAction.LEFT_DOWN
+        else scrollDirection = ScrollAction.LEFT
+    } else if (amount.x < 0 && abs(amount.x) >= AppConst.SCROLL_MINIMUM) {
+        if (amount.y > 0 && amount.y >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            ScrollAction.RIGHT_UP
+        else if (amount.y < 0 && abs(amount.y) >= AppConst.SCROLL_MINIMUM) scrollDirection =
+            ScrollAction.RIGHT_DOWN
+        else scrollDirection = ScrollAction.RIGHT
+    }
+    return scrollDirection
 }

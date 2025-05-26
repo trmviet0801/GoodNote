@@ -1,5 +1,6 @@
 package com.example.goodnote.goodNote.presentation.editor
 
+import android.app.Application
 import android.net.Uri
 import android.util.Log
 import android.view.MotionEvent
@@ -11,22 +12,18 @@ import androidx.lifecycle.viewModelScope
 import com.example.goodnote.goodNote.action.ScrollAction
 import com.example.goodnote.goodNote.action.StrokeAction
 import com.example.goodnote.goodNote.domain.Boundary
-import com.example.goodnote.goodNote.domain.Dot
 import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.Region
-import com.example.goodnote.goodNote.domain.Stroke
 import com.example.goodnote.goodNote.domain.calActualSize
-import com.example.goodnote.goodNote.presentation.editor.core.eraseStrokeByFirstDot
 import com.example.goodnote.goodNote.presentation.editor.core.fingerHandle
+import com.example.goodnote.goodNote.presentation.editor.core.getScrollDirection
+import com.example.goodnote.goodNote.presentation.editor.core.onImageScroll
 import com.example.goodnote.goodNote.presentation.editor.core.onScaleChange
-import com.example.goodnote.goodNote.presentation.editor.core.removeOversizeStrokes
 import com.example.goodnote.goodNote.presentation.editor.core.stylusHandle
-import com.example.goodnote.goodNote.presentation.editor.core.stylusWritingActionUpHandle
 import com.example.goodnote.goodNote.presentation.editor.core.undoEraseHandle
 import com.example.goodnote.goodNote.presentation.editor.core.undoWriteHandle
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.popBehavior
-import com.example.goodnote.goodNote.presentation.model.pushBehavior
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +36,9 @@ import kotlin.collections.toList
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
-class EditorViewModel() : ViewModel() {
+class EditorViewModel(
+    private val application: Application
+) : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
     val state = _state
         .stateIn(
@@ -162,7 +161,6 @@ class EditorViewModel() : ViewModel() {
                     }
                     true
                 }
-
                 MotionEvent.ACTION_MOVE -> {
                     val amountOffset = Offset(
                         motionEvent.x - _state.value.penWidthScrollOffset.x,
@@ -173,7 +171,6 @@ class EditorViewModel() : ViewModel() {
                         getPenSelectionDirection(amountOffset, Offset(motionEvent.x, motionEvent.y))
                     )
                 }
-
                 MotionEvent.ACTION_UP -> {
                     _state.update { it ->
                         it.copy(
@@ -305,11 +302,14 @@ class EditorViewModel() : ViewModel() {
 
     //inserting new image from shared-storage
     fun onInsertImage(uri: Uri) {
-        Log.d("scrolll,", uri.toString())
         _state.update { it ->
-            val imgUris: List<Image> = it.imgUris + Image(uri = uri)
             it.copy(
-                imgUris = imgUris,
+                imageManager = it.imageManager
+                    .insertImage(
+                        Image(uri)
+                            .loadBitmap(application)
+                            .setActualPosition(it.canvasRelativePosition, it.scale)
+                    ),
                 isShowImagePicker = !it.isShowImagePicker
             )
         }
@@ -319,6 +319,18 @@ class EditorViewModel() : ViewModel() {
         _state.update { it ->
             it.copy(
                 isShowImagePicker = !it.isShowImagePicker
+            )
+        }
+    }
+
+    fun onTapHandle(tapPosition: Offset) {
+        _state.update { it ->
+            it.copy(
+                imageManager = it.imageManager.onTapHandle(
+                    tapPosition,
+                    it.canvasRelativePosition,
+                    it.scale
+                )
             )
         }
     }

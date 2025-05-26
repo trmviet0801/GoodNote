@@ -1,9 +1,9 @@
 package com.example.goodnote.goodNote.presentation.editor
 
-import android.net.Uri
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.domain.Image
+import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.domain.Stroke
 import com.example.goodnote.goodNote.presentation.model.StrokeBehaviors
@@ -22,6 +22,7 @@ data class EditorState(
     var translate: Offset = Offset.Zero,
     var screenWidth: Int = 0,
     var screenHeight: Int = 0,
+    //screen position - virtual camera offset
     var canvasRelativePosition: Offset = Offset.Zero,
     var rightest: Stroke? = null,
     var downest: Stroke? = null,
@@ -32,6 +33,7 @@ data class EditorState(
     var penWidthScrollOffset: Offset = Offset.Zero,
 
     //scale
+    //scale factor between two fingers when scaling
     var scaleFactor: Float = 0f,
 
     //pen
@@ -58,5 +60,6 @@ data class EditorState(
 
     //inserting image
     val isShowImagePicker: Boolean = false,
-    var imgUris: List<Image> = emptyList<Image>()
+    var imageManager: ImageManager = ImageManager(emptyList()),
+    var imageScrollOffset: Offset = Offset.Zero
 )

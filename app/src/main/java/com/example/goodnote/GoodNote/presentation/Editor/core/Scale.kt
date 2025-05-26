@@ -49,8 +49,8 @@ fun adjustScale(isIncrease: Boolean, state: MutableStateFlow<EditorState>) {
     state.update { it ->
         var currentScale = it.scale
         if (isIncrease) currentScale += AppConst.SCALE_LEVEL else currentScale -= AppConst.SCALE_LEVEL
-        val newRootRegion = it.rootRegion!!.scaleStrokes(currentScale)
         if (currentScale > 0.07) {
+            val newRootRegion = it.rootRegion!!.scaleStrokes(currentScale)
             it.copy(
                 scale = currentScale,
                 rootRegion = newRootRegion
