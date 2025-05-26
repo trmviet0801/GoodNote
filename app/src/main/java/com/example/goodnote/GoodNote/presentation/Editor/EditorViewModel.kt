@@ -1,6 +1,7 @@
 package com.example.goodnote.goodNote.presentation.editor
 
 import android.app.Application
+import android.graphics.Bitmap
 import android.net.Uri
 import android.util.Log
 import android.view.MotionEvent
@@ -22,6 +23,7 @@ import com.example.goodnote.goodNote.presentation.editor.core.onScaleChange
 import com.example.goodnote.goodNote.presentation.editor.core.stylusHandle
 import com.example.goodnote.goodNote.presentation.editor.core.undoEraseHandle
 import com.example.goodnote.goodNote.presentation.editor.core.undoWriteHandle
+import com.example.goodnote.goodNote.presentation.editor.repository.ImageRepository
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.popBehavior
 import com.example.goodnote.goodNote.utils.AppConst
@@ -37,7 +39,7 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class EditorViewModel(
-    private val application: Application
+    private val imageRepository: ImageRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
     val state = _state
@@ -303,11 +305,12 @@ class EditorViewModel(
     //inserting new image from shared-storage
     fun onInsertImage(uri: Uri) {
         _state.update { it ->
+            imageRepository.getImageBitmap(uri)
             it.copy(
                 imageManager = it.imageManager
                     .insertImage(
                         Image(uri)
-                            .loadBitmap(application)
+                            //.loadBitmap(imageRepository)
                             .setActualPosition(it.canvasRelativePosition, it.scale)
                     ),
                 isShowImagePicker = !it.isShowImagePicker
@@ -333,5 +336,9 @@ class EditorViewModel(
                 )
             )
         }
+    }
+
+    fun getImageBitmap(uri: Uri): Bitmap {
+        return imageRepository.getImageBitmap(uri)
     }
 }

@@ -144,8 +144,9 @@ fun EditorScreen() {
                 clipRect {
                     //draw images
                     state.value.imageManager.images.forEach { image ->
-                        if (image.bitmap != null) {
-                            val imageBitMap: ImageBitmap = image.getImageBitMap()
+                        if (editorViewModel.getImageBitmap(image.uri) != null) {
+                            val imageBitMap: ImageBitmap =
+                                editorViewModel.getImageBitmap(image.uri).asImageBitmap()
                             image.setSize(imageBitMap, state.value.scale)
                             drawImage(
                                 image = imageBitMap,

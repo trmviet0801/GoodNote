@@ -10,13 +10,13 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.IntOffset
 import coil3.compose.AsyncImagePainter
+import com.example.goodnote.goodNote.presentation.editor.repository.ImageRepository
 import java.sql.Timestamp
 
 //left + top only used for checking if user touch image
 //actualTop + actualLeft -> image position
 data class Image(
     val uri: Uri,
-    var bitmap: Bitmap? = null,
     var left: Float = 300f,
     var top: Float = 300f,
     var width: Float = 0f,
@@ -26,7 +26,6 @@ data class Image(
     var actualTop: Float = 0f,
     var actualLeft: Float = 0f,
     var isSelected: Boolean = false,
-    var painter: AsyncImagePainter? = null,
     val timestamp: Timestamp = Timestamp(System.currentTimeMillis())
 ) {
     // called when new image is inserted
@@ -35,10 +34,6 @@ data class Image(
             actualLeft = (screenPosition.x + left) / scale,
             actualTop = (screenPosition.y + top) / scale
         )
-    }
-
-    fun getImageBitMap(): ImageBitmap {
-        return this.bitmap!!.asImageBitmap()
     }
 
     fun setSize(imageBitMap: ImageBitmap, scale: Float) {
@@ -66,7 +61,6 @@ data class Image(
 
     fun onImage(offset: Offset,virtualCameraOffset: Offset ,scale: Float): Boolean {
         val currentPosition: IntOffset = getRelativePosition(virtualCameraOffset, scale)
-        Log.d("tapp", "${offset} ${currentPosition} ${currentPosition + IntOffset(scaledWidth.toInt(), scaledHeight.toInt())}")
         return (
                 offset.x >= currentPosition.x && offset.x <= currentPosition.x + scaledWidth
                 ) &&
@@ -89,16 +83,5 @@ data class Image(
         return this.copy(
             isSelected = !this.isSelected
         )
-    }
-
-    fun loadBitmap(application: Application): Image {
-        return try {
-            val inputStream = application.contentResolver.openInputStream(uri)
-            this.copy(
-                bitmap = BitmapFactory.decodeStream(inputStream)
-            )
-        } catch (e: Exception) {
-            return this
-        }
     }
 }
