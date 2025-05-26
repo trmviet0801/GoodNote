@@ -15,10 +15,13 @@ fun fingerHandle(event: MotionEvent, index: Int, state: MutableStateFlow<EditorS
             state.value.canvasRelativePosition,
             state.value.scale
         )
-        if (image == null)
-            scrollScreen(event, index, state)
-        else
+        val lastMovingImage: Image? = state.value.lastMovingImage
+        if (image != null)
             imageScrollHandle(event, state, image)
+        else if (lastMovingImage != null && lastMovingImage.isSelected)
+            imageScrollHandle(event, state, lastMovingImage)
+        else
+            scrollScreen(event, index, state)
     }
 }
 

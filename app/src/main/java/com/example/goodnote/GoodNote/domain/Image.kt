@@ -31,8 +31,8 @@ data class Image(
     // called when new image is inserted
     fun setActualPosition(screenPosition: Offset, scale: Float): Image {
         return this.copy(
-            actualLeft = (screenPosition.x + left) / scale,
-            actualTop = (screenPosition.y + top) / scale
+            actualLeft = screenPosition.x + left * scale,
+            actualTop = screenPosition.y + top * scale
         )
     }
 

@@ -61,5 +61,8 @@ data class EditorState(
     //inserting image
     val isShowImagePicker: Boolean = false,
     var imageManager: ImageManager = ImageManager(emptyList()),
-    var imageScrollOffset: Offset = Offset.Zero
+    var imageScrollOffset: Offset = Offset.Zero,
+
+    //moving image
+    var lastMovingImage: Image? = null
 )

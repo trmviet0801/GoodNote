@@ -221,7 +221,15 @@ fun imageScrollHandle(motionEvent: MotionEvent, state: MutableStateFlow<EditorSt
                         .setActualPosition(it.canvasRelativePosition, it.scale)
                     it.copy(
                         imageManager = it.imageManager.onScrolling(newImage),
-                        scrollOffset = Offset(motionEvent.x, motionEvent.y)
+                        scrollOffset = Offset(motionEvent.x, motionEvent.y),
+                        lastMovingImage = newImage
+                    )
+                }
+            }
+            MotionEvent.ACTION_UP -> {
+                state.update { it ->
+                    it.copy(
+                        lastMovingImage = null
                     )
                 }
             }
