@@ -54,4 +54,21 @@ data class ImageManager (
             images = newImages
         )
     }
+
+    fun isTouchOnImage(position: Offset, virtualCameraOffset: Offset, scale: Float): Image? {
+        images.forEach { image ->
+            if (image.onImage(position, virtualCameraOffset, scale))
+                return image
+        }
+        return null
+    }
+
+    //act as a middle layer to trigger re-render
+    fun onScrolling(image: Image): ImageManager {
+        return this.copy(
+            images = this.images.map { it ->
+                if (it.isEquals(image)) image else it
+            }
+        )
+    }
 }

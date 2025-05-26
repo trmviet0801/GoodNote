@@ -1,5 +1,6 @@
 package com.example.goodnote.goodNote.presentation.editor.core
 
+import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.action.ScrollAction
@@ -173,27 +174,58 @@ private fun moveVirtualCamera(amount: Offset, previousPosition: Offset, state: M
     }
 }
 
-fun onImageScroll(scrollAction: ScrollAction, image: Image, state: MutableStateFlow<EditorState>) {
+fun onImageScroll(scrollAction: ScrollAction, image: Image): Image {
     if (scrollAction == ScrollAction.RIGHT)
-        image.left += AppConst.SCROLL_LEVEL
+        image.left -= AppConst.SCROLL_LEVEL
     else if (scrollAction == ScrollAction.LEFT)
-        image.left -= AppConst.SCROLL_LEVEL
+        image.left += AppConst.SCROLL_LEVEL
     else if (scrollAction == ScrollAction.DOWN)
-        image.top += AppConst.SCROLL_LEVEL
+        image.top -= AppConst.SCROLL_LEVEL
     else if (scrollAction == ScrollAction.UP)
-        image.top -= AppConst.SCROLL_LEVEL
+        image.top += AppConst.SCROLL_LEVEL
     else if (scrollAction == ScrollAction.RIGHT_DOWN) {
-        image.left += AppConst.SCROLL_LEVEL
-        image.top += AppConst.SCROLL_LEVEL
+        image.left -= AppConst.SCROLL_LEVEL
+        image.top -= AppConst.SCROLL_LEVEL
     } else if (scrollAction == ScrollAction.LEFT_DOWN) {
-        image.left -= AppConst.SCROLL_LEVEL
-        image.top += AppConst.SCROLL_LEVEL
-    } else if (scrollAction == ScrollAction.RIGHT_UP) {
         image.left += AppConst.SCROLL_LEVEL
         image.top -= AppConst.SCROLL_LEVEL
-    } else if (scrollAction == ScrollAction.LEFT_UP) {
+    } else if (scrollAction == ScrollAction.RIGHT_UP) {
         image.left -= AppConst.SCROLL_LEVEL
-        image.top -= AppConst.SCROLL_LEVEL
+        image.top += AppConst.SCROLL_LEVEL
+    } else if (scrollAction == ScrollAction.LEFT_UP) {
+        image.left += AppConst.SCROLL_LEVEL
+        image.top += AppConst.SCROLL_LEVEL
+    }
+    return image
+}
+
+fun imageScrollHandle(motionEvent: MotionEvent, state: MutableStateFlow<EditorState>, image: Image) {
+    val action = motionEvent.actionMasked
+    if (image.isSelected) {
+        when (action) {
+            MotionEvent.ACTION_DOWN -> {
+                state.update { it ->
+                    it.copy(
+                        scrollOffset = Offset(motionEvent.x, motionEvent.y)
+                    )
+                }
+            }
+            MotionEvent.ACTION_MOVE -> {
+                state.update { it ->
+                    val moveDistance: Offset = Offset(
+                        motionEvent.x - state.value.scrollOffset.x,
+                        motionEvent.y - state.value.scrollOffset.y
+                    )
+                    Log.d("scrolll", "${it.canvasRelativePosition}}")
+                    val newImage: Image = onImageScroll(getScrollDirection(moveDistance), image)
+                        .setActualPosition(it.canvasRelativePosition, it.scale)
+                    it.copy(
+                        imageManager = it.imageManager.onScrolling(newImage),
+                        scrollOffset = Offset(motionEvent.x, motionEvent.y)
+                    )
+                }
+            }
+        }
     }
 }
 
@@ -219,4 +251,38 @@ fun getScrollDirection(amount: Offset): ScrollAction {
         else scrollDirection = ScrollAction.RIGHT
     }
     return scrollDirection
+}
+
+fun scrollScreen(event: MotionEvent, index: Int, state: MutableStateFlow<EditorState>) {
+    val action = event.actionMasked
+    when (action) {
+        MotionEvent.ACTION_DOWN -> {
+            state.update { it ->
+                it.copy(
+                    scrollOffset = Offset(
+                        event.getX(index),
+                        event.getY(index)
+                    )
+                )
+            }
+            true
+        }
+
+        MotionEvent.ACTION_MOVE -> {
+            val amountOffset = Offset(
+                event.getX(index) - state.value.scrollOffset.x,
+                event.getY(index) - state.value.scrollOffset.y
+            )
+            scrollDirection(amountOffset, Offset(event.getX(index), event.getY(index)), state)
+        }
+
+        MotionEvent.ACTION_UP -> {
+            state.update { it ->
+                it.copy(
+                    scrollOffset = Offset(event.x, event.y)
+                )
+            }
+            true
+        }
+    }
 }
