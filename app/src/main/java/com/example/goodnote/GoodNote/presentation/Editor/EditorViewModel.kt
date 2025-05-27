@@ -27,12 +27,14 @@ import com.example.goodnote.goodNote.presentation.editor.core.undoWriteHandle
 import com.example.goodnote.goodNote.presentation.editor.repository.ImageRepository
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.popBehavior
+import com.example.goodnote.goodNote.repository.PageRepository
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import redoEraseHandle
 import redoWriteHandle
 import kotlin.collections.toList
@@ -40,7 +42,8 @@ import kotlin.math.abs
 import kotlin.math.roundToInt
 
 class EditorViewModel(
-    private val imageRepository: ImageRepository
+    private val imageRepository: ImageRepository,
+    private val pageRepository: PageRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
     val state = _state
@@ -49,6 +52,17 @@ class EditorViewModel(
             SharingStarted.Eagerly,
             EditorState()
         )
+
+    init {
+        savePage()
+    }
+
+    //save current state into local database
+    fun savePage() {
+        viewModelScope.launch {
+            pageRepository.insertPage(state.value.toPage())
+        }
+    }
 
     fun adjustPageSize(layoutCoordinates: LayoutCoordinates) {
         if (_state.value.rootRegion == null) {
@@ -354,7 +368,7 @@ class EditorViewModel(
     fun onBackgroundColorChange(code: Long) {
         _state.update { it ->
             it.copy(
-                backgroundColor = Color(code)
+                backgroundColor = code
             )
         }
     }

@@ -150,7 +150,7 @@ fun EditorScreen() {
                             state.value.rootRegion?.boundary?.actualHeight ?: 100f
                         ) * state.value.scale
                     )
-                    .background(state.value.backgroundColor)) {
+                    .background(Color(state.value.backgroundColor))) {
                 clipRect {
                     //draw images
                     state.value.imageManager.images.forEach { image ->

@@ -3,6 +3,7 @@ package com.example.goodnote.goodNote.presentation.editor
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import com.example.goodnote.domain.Page
 import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
@@ -10,9 +11,11 @@ import com.example.goodnote.goodNote.domain.Stroke
 import com.example.goodnote.goodNote.presentation.model.StrokeBehaviors
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
+import java.util.UUID
 
 @Immutable
 data class EditorState(
+    val id: String = UUID.randomUUID().toString(),
     //file + canvas
     var name: String = AppConst.PAGE_NAME,
     var scale: Float = 1f,
@@ -71,6 +74,19 @@ data class EditorState(
     var isShowSettingPopupMenu: Boolean = false,
 
     //background
-    var backgroundColor: Color = Color.Black,
+    var backgroundColor: Long = 0xFF000000,
     var isShowBackgroundColorPicker: Boolean = false
 )
+
+fun EditorState.toPage(): Page {
+    return Page(
+        id = this.id,
+        name = this.name,
+        size = this.size,
+        rootRegion = this.rootRegion,
+        oversizeStrokes = this.oversizeStrokes,
+        removedStrokes = this.removedStrokes,
+        imageManager = this.imageManager,
+        backgroundColor = this.backgroundColor
+    )
+}

@@ -1,19 +1,37 @@
 package com.example.goodnote.domain
 
-import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.Color
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.goodnote.goodNote.domain.Image
+import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.domain.Stroke
-import com.example.goodnote.goodNote.utils.AppConst
+import com.example.goodnote.goodNote.presentation.editor.EditorState
 import java.util.UUID
 
-@Immutable
+@Entity(tableName = "pages")
 data class Page(
-    val id: UUID = UUID.randomUUID(),
-    var name: String = AppConst.PAGE_NAME,
-    var scale: Float = 1f,
-    var size: List<Offset> = emptyList(),
-    var currentViewOffsets: List<Offset> = emptyList(),
-    var rootRegion: Region? = null,
-    var latestStroke: Stroke = Stroke()
+    @PrimaryKey
+    val id: String = UUID.randomUUID().toString(),
+    val name: String,
+    val size: List<Offset>,
+    val rootRegion: Region?,
+    val oversizeStrokes: List<Stroke> = emptyList(),
+    val removedStrokes: List<Stroke> = emptyList(),
+    var imageManager: ImageManager = ImageManager(emptyList()),
+    val backgroundColor: Long = 0xFF000000,
 )
+
+fun Page.toState(): EditorState {
+    val editorState: EditorState = EditorState(id = this.id)
+    editorState.name = this.name
+    editorState.size = this.size
+    editorState.rootRegion = this.rootRegion
+    editorState.oversizeStrokes = this.oversizeStrokes
+    editorState.removedStrokes = this.removedStrokes
+    editorState.imageManager = this.imageManager
+    editorState.backgroundColor = this.backgroundColor
+    return editorState
+}
