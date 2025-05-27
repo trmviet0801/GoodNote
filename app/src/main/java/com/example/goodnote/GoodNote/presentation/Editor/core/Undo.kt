@@ -1,7 +1,7 @@
 package com.example.goodnote.goodNote.presentation.editor.core
 
 import com.example.goodnote.goodNote.action.StrokeAction
-import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.domain.Stroke
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.pushBehavior

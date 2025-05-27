@@ -1,4 +1,4 @@
-package com.example.goodnote.database
+package com.example.goodnote.database.dao
 
 import androidx.room.Dao
 import androidx.room.Delete
@@ -7,12 +7,14 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.example.goodnote.domain.Page
+import com.example.goodnote.domain.RegionEntity
+import com.example.goodnote.domain.Stroke
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 
 @Dao
 interface PageDAO {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    //Page
+    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
     suspend fun insertPage(page: Page)
     @Update
     suspend fun updatePage(page: Page)

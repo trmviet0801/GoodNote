@@ -1,6 +1,7 @@
 package com.example.goodnote.goodNote.domain
 
 import androidx.compose.ui.geometry.Offset
+import com.example.goodnote.domain.Stroke
 
 data class Boundary(
     var x: Float,

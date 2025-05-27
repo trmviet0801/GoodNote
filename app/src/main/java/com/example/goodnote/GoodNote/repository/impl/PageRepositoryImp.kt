@@ -1,7 +1,8 @@
-package com.example.goodnote.goodNote.repository
+package com.example.goodnote.goodNote.repository.impl
 
-import com.example.goodnote.database.PageDAO
+import com.example.goodnote.database.dao.PageDAO
 import com.example.goodnote.domain.Page
+import com.example.goodnote.goodNote.repository.PageRepository
 import kotlinx.coroutines.flow.Flow
 
 class PageRepositoryImp(

@@ -2,10 +2,17 @@ package com.example.goodnote.goodNote.domain
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
+import com.example.goodnote.domain.Stroke
+import com.example.goodnote.domain.contains
+import com.example.goodnote.domain.findDownestDot
+import com.example.goodnote.domain.findRightestDot
+import com.example.goodnote.domain.updateScaledPositions
 import com.example.goodnote.goodNote.action.InsertAction
+import java.util.UUID
 
 @Immutable
 data class Region(
+    val regionId: String = UUID.randomUUID().toString(),
     var primaryStroke: Stroke? = null,
     var boundary: Boundary? = null,
     var overlapsStrokes: List<Stroke> = emptyList(),

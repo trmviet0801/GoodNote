@@ -4,9 +4,9 @@ import android.view.MotionEvent
 import com.example.goodnote.goodNote.action.InsertAction
 import com.example.goodnote.goodNote.action.StrokeAction
 import com.example.goodnote.goodNote.domain.Dot
-import com.example.goodnote.goodNote.domain.Stroke
-import com.example.goodnote.goodNote.domain.getDownest
-import com.example.goodnote.goodNote.domain.getRightest
+import com.example.goodnote.domain.Stroke
+import com.example.goodnote.domain.getDownest
+import com.example.goodnote.domain.getRightest
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.pushBehavior

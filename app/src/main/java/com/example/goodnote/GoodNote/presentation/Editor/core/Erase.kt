@@ -1,11 +1,10 @@
 package com.example.goodnote.goodNote.presentation.editor.core
 
 import android.view.MotionEvent
-import androidx.compose.runtime.MutableState
 import com.example.goodnote.goodNote.action.StrokeAction
 import com.example.goodnote.goodNote.domain.Dot
-import com.example.goodnote.goodNote.domain.Stroke
-import com.example.goodnote.goodNote.domain.contains
+import com.example.goodnote.domain.Stroke
+import com.example.goodnote.domain.contains
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.pushBehavior

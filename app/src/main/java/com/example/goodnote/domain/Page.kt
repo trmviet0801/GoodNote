@@ -1,18 +1,14 @@
 package com.example.goodnote.domain
 
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import coil3.size.Scale
-import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
-import com.example.goodnote.goodNote.domain.Stroke
 import com.example.goodnote.goodNote.presentation.editor.EditorState
-import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
+//EditorStateEntity
 @Entity(tableName = "pages")
 data class Page(
     @PrimaryKey

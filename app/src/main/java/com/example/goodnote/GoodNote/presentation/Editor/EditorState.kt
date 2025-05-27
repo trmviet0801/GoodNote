@@ -2,12 +2,11 @@ package com.example.goodnote.goodNote.presentation.editor
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import com.example.goodnote.domain.Page
 import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
-import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.domain.Stroke
 import com.example.goodnote.goodNote.presentation.model.StrokeBehaviors
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst

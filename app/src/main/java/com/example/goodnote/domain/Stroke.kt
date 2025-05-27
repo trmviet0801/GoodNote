@@ -1,11 +1,19 @@
-package com.example.goodnote.goodNote.domain
+package com.example.goodnote.domain
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Path
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.example.goodnote.goodNote.domain.Dot
+import com.example.goodnote.goodNote.domain.calScaledPosition
 import com.example.goodnote.goodNote.utils.PenConst
+import java.util.UUID
 import kotlin.math.abs
 
+@Entity(tableName = "strokes")
 data class Stroke(
+    @PrimaryKey
+    val strokeId: String = UUID.randomUUID().toString(),
     var dots: List<Dot> = emptyList(),
     var bold: Float = 5f,
     var timestamp: Long = System.currentTimeMillis(),

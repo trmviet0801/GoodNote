@@ -2,12 +2,13 @@ package com.example.goodnote.utils
 
 import android.net.Uri
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
 import androidx.room.TypeConverter
+import com.example.goodnote.goodNote.domain.Dot
 import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
-import com.example.goodnote.goodNote.domain.Stroke
+import com.example.goodnote.domain.Stroke
+import com.example.goodnote.goodNote.domain.Boundary
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
@@ -43,6 +44,15 @@ class PageTypeConverters {
         return gson.fromJson(json, type)
     }
     @TypeConverter
+    fun toDots(json: String): List<Dot> {
+        val type: Type = object: TypeToken<List<Dot>>() {}.type
+        return gson.fromJson(json, type)
+    }
+    @TypeConverter
+    fun fromDots(dots: List<Dot>): String {
+        return gson.toJson(dots)
+    }
+    @TypeConverter
     fun fromImageManager(imageManager: ImageManager): String {
         return gson.toJson(imageManager)
     }
@@ -50,14 +60,6 @@ class PageTypeConverters {
     fun toImageManager(json: String): ImageManager {
         return gson.fromJson(json, ImageManager::class.java)
     }
-//    @TypeConverter
-//    fun fromColor(color: Color): String {
-//        return gson.toJson(color)
-//    }
-//    @TypeConverter
-//    fun toColor(json: String): Color {
-//        return gson.fromJson(json, Color::class.java)
-//    }
     @TypeConverter
     fun fromUri(uri: Uri): String {
         return uri.toString()
@@ -80,10 +82,34 @@ class PageTypeConverters {
         // Serialize as JSON array [x, y]
         return gson.toJson(listOf(offset.x, offset.y))
     }
-
     @TypeConverter
     fun toOffset(json: String): Offset {
         val list: List<Float> = gson.fromJson(json, object : TypeToken<List<Float>>() {}.type)
         return Offset(list[0], list[1])
+    }
+    @TypeConverter
+    fun fromDot(dot: Dot): String {
+        return gson.toJson(dot)
+    }
+    @TypeConverter
+    fun toDot(json: String): Dot {
+        return gson.fromJson(json, Dot::class.java)
+    }
+    @TypeConverter
+    fun toBoundary(json: String): Boundary {
+        return gson.fromJson(json, Boundary::class.java)
+    }
+    @TypeConverter
+    fun fromBoundary(boundary: Boundary): String {
+        return gson.toJson(boundary)
+    }
+    @TypeConverter
+    fun fromListString(list: List<String>): String {
+        return gson.toJson(list)
+    }
+    @TypeConverter
+    fun toListString(json: String): List<String> {
+        val type: Type = object : TypeToken<List<String>>() {}.type
+        return gson.fromJson(json, type)
     }
 }

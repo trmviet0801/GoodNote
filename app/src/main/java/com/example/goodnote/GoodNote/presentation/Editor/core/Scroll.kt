@@ -4,8 +4,8 @@ import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.action.ScrollAction
 import com.example.goodnote.goodNote.domain.Image
-import com.example.goodnote.goodNote.domain.getDownest
-import com.example.goodnote.goodNote.domain.getRightest
+import com.example.goodnote.domain.getDownest
+import com.example.goodnote.domain.getRightest
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.AppConvertor
