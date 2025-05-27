@@ -9,5 +9,4 @@ interface PageRepository {
     suspend fun deletePage(page: Page)
     fun selectPageWithId(uuid: String): Flow<Page?>
     fun selectAllPages(): Flow<List<Page?>>
-
 }

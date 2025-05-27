@@ -85,7 +85,9 @@ dependencies {
     testImplementation("androidx.room:room-testing:$room_version")
     // optional - Paging 3 Integration
     implementation("androidx.room:room-paging:$room_version")
-
     // https://mvnrepository.com/artifact/com.google.code.gson/gson
     implementation("com.google.code.gson:gson:2.13.0")
+
+    //navigation
+    implementation("androidx.navigation:navigation-compose:2.7.7")
 }

@@ -11,6 +11,8 @@ import androidx.compose.ui.layout.LayoutCoordinates
 import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.goodnote.domain.Page
+import com.example.goodnote.domain.toState
 import com.example.goodnote.goodNote.action.ScrollAction
 import com.example.goodnote.goodNote.action.StrokeAction
 import com.example.goodnote.goodNote.domain.Boundary
@@ -32,6 +34,7 @@ import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -53,14 +56,14 @@ class EditorViewModel(
             EditorState()
         )
 
-    init {
-        savePage()
+    suspend fun loadState(pageId: String) {
+        val page: Page = pageRepository.selectPageWithId(pageId).first() ?: EditorState().toPage()
+        _state.value = page.toState()
     }
 
-    //save current state into local database
-    fun savePage() {
+    fun updatePage() {
         viewModelScope.launch {
-            pageRepository.insertPage(state.value.toPage())
+            pageRepository.updatePage(state.value.toPage())
         }
     }
 
@@ -117,12 +120,15 @@ class EditorViewModel(
         } else {
             for (i in 0 until motionEvent.pointerCount) {
                 when (motionEvent.getToolType(i)) {
-                    MotionEvent.TOOL_TYPE_STYLUS -> stylusHandle(motionEvent, _state)
+                    MotionEvent.TOOL_TYPE_STYLUS -> {
+                        stylusHandle(motionEvent, _state)
+                    }
                     MotionEvent.TOOL_TYPE_FINGER -> fingerHandle(motionEvent, i, _state)
                     else -> {}
                 }
             }
         }
+        updatePage()
     }
 
     //change file name
@@ -132,6 +138,7 @@ class EditorViewModel(
                 name = newFileName
             )
         }
+        updatePage()
     }
 
     fun onFullScreenChange() {
@@ -324,13 +331,14 @@ class EditorViewModel(
             it.copy(
                 imageManager = it.imageManager
                     .insertImage(
-                        Image(uri)
+                        Image(uri.toString())
                             //.loadBitmap(imageRepository)
                             .setActualPosition(it.canvasRelativePosition, it.scale)
                     ),
                 isShowImagePicker = !it.isShowImagePicker
             )
         }
+        updatePage()
     }
 
     fun showImagePicker() {

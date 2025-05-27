@@ -31,6 +31,7 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavController
 import com.example.goodnote.ui.theme.GoodNoteTheme
 import com.example.goodnote.R
 import com.example.goodnote.goodNote.presentation.editor.EditorViewModel
@@ -38,7 +39,10 @@ import com.example.goodnote.goodNote.utils.AppConst
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun TopBar(focusRequester: FocusRequester) {
+fun TopBar(
+    focusRequester: FocusRequester,
+    navController: NavController
+) {
     val viewModel = koinViewModel<EditorViewModel>()
     val state = viewModel.state.collectAsState()
 
@@ -66,7 +70,13 @@ fun TopBar(focusRequester: FocusRequester) {
                     contentDescription = R.string.arrow_left.toString(),
                     modifier = Modifier
                         .size(AppConst.ICON_SIZE)
-                        .padding(4.dp),
+                        .padding(4.dp)
+                        .clickable(
+                            enabled = true,
+                            onClick = {
+                                navController.popBackStack()
+                            }
+                        ),
                     tint = Color.White
                 )
                 BasicTextField(
@@ -129,10 +139,10 @@ fun TopBar(focusRequester: FocusRequester) {
     }
 }
 
-@PreviewLightDark
-@Composable
-private fun TopBarPreview() {
-    GoodNoteTheme {
-        TopBar(FocusRequester())
-    }
-}
+//@PreviewLightDark
+//@Composable
+//private fun TopBarPreview() {
+//    GoodNoteTheme {
+//        TopBar(FocusRequester())
+//    }
+//}

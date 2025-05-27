@@ -25,6 +25,7 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,6 +59,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.core.net.toUri
+import androidx.navigation.NavController
 import coil3.compose.AsyncImage
 import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
@@ -76,7 +79,10 @@ import org.koin.androidx.compose.koinViewModel
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun EditorScreen() {
+fun EditorScreen(
+    navController: NavController,
+    pageId: String
+) {
     val editorViewModel = koinViewModel<EditorViewModel>()
     val state = editorViewModel.state.collectAsState()
 
@@ -85,6 +91,9 @@ fun EditorScreen() {
 
     var downTime = remember { mutableStateOf(0L) }
 
+    LaunchedEffect(pageId) {
+        editorViewModel.loadState(pageId)
+    }
 
     Column(
         modifier = Modifier
@@ -95,7 +104,7 @@ fun EditorScreen() {
             }
             .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
     ) {
-        TopBar(focusRequester)
+        TopBar(focusRequester, navController)
         PenSelection()
         Box(
             modifier = Modifier
@@ -155,7 +164,7 @@ fun EditorScreen() {
                     //draw images
                     state.value.imageManager.images.forEach { image ->
                         val imageBitMap: ImageBitmap =
-                            editorViewModel.getImageBitmap(image.uri).asImageBitmap()
+                            editorViewModel.getImageBitmap(image.uri.toUri()).asImageBitmap()
                         image.setSize(imageBitMap, state.value.scale)
                         drawImage(
                             image = imageBitMap,
@@ -277,6 +286,6 @@ fun EditorScreen() {
 @Composable
 private fun EditorScreenPreview() {
     GoodNoteTheme {
-        EditorScreen()
+       // EditorScreen()
     }
 }

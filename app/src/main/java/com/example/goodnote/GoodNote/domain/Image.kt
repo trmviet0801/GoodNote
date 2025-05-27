@@ -5,11 +5,12 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.unit.IntOffset
 import java.sql.Timestamp
+import androidx.core.net.toUri
 
 //left + top only used for checking if user touch image
 //actualTop + actualLeft -> image position
 data class Image(
-    val uri: Uri,
+    val uri: String,
     var left: Float = 300f,
     var top: Float = 300f,
     var width: Float = 0f,
@@ -19,8 +20,9 @@ data class Image(
     var actualTop: Float = 0f,
     var actualLeft: Float = 0f,
     var isSelected: Boolean = false,
-    val timestamp: Timestamp = Timestamp(System.currentTimeMillis())
+    val timestamp: Timestamp = Timestamp(System.currentTimeMillis()),
 ) {
+
     // called when new image is inserted
     fun setActualPosition(screenPosition: Offset, scale: Float): Image {
         return this.copy(

@@ -87,6 +87,8 @@ fun EditorState.toPage(): Page {
         oversizeStrokes = this.oversizeStrokes,
         removedStrokes = this.removedStrokes,
         imageManager = this.imageManager,
-        backgroundColor = this.backgroundColor
+        backgroundColor = this.backgroundColor,
+        canvasRelativePosition = this.canvasRelativePosition,
+        scale = this.scale
     )
 }

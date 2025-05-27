@@ -4,21 +4,20 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.zIndex
-import com.example.goodnote.di.appModule
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.example.goodnote.goodNote.navigation.Route
 import com.example.goodnote.goodNote.presentation.editor.EditorScreen
-import com.example.goodnote.goodNote.presentation.editor.components.AddResourceMenu
+import com.example.goodnote.goodNote.presentation.home.HomeScreen
 import com.example.goodnote.ui.theme.GoodNoteTheme
-import org.koin.android.ext.koin.androidContext
-import org.koin.core.context.startKoin
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +25,22 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             GoodNoteTheme {
+                val navController: NavHostController = rememberNavController()
                 Box(modifier = Modifier.fillMaxSize()) {
-                    EditorScreen()
+                    NavHost(
+                        navController = navController,
+                        startDestination = Route.Home.route
+                    ) {
+                        composable (Route.Home.route) {
+                            HomeScreen(navController)
+                        }
+                        composable(
+                            route = Route.Editor.route,
+                            arguments = listOf(navArgument("pageId") { type = NavType.StringType })
+                        ) {
+                            EditorScreen(navController, it.arguments?.getString("pageId") ?: "")
+                        }
+                    }
                 }
             }
         }

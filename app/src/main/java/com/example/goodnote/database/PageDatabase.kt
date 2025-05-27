@@ -8,7 +8,7 @@ import androidx.room.TypeConverters
 import com.example.goodnote.domain.Page
 import com.example.goodnote.utils.PageTypeConverters
 
-@Database(entities = [Page::class], version = 1)
+@Database(entities = [Page::class], version = 4)
 @TypeConverters(PageTypeConverters::class)
 abstract class PageDatabase: RoomDatabase() {
     abstract fun pageDao(): PageDAO
@@ -24,7 +24,10 @@ abstract class PageDatabase: RoomDatabase() {
                     context,
                     PageDatabase::class.java,
                     "page_database"
-                ).build().also { Instance = it }
+                )
+                    .fallbackToDestructiveMigration(dropAllTables = true)
+                    .build()
+                    .also { Instance = it }
             }
         }
     }
