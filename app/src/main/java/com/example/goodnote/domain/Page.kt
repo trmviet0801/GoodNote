@@ -15,22 +15,26 @@ data class Page(
     val id: String = UUID.randomUUID().toString(),
     val name: String,
     val size: List<Offset>,
-    val rootRegion: Region?,
-    val oversizeStrokes: List<Stroke> = emptyList(),
-    val removedStrokes: List<Stroke> = emptyList(),
+    val rootRegionId: String?,
+    val oversizeStrokeIds: List<String> = emptyList(),
+    val removedStrokeIds: List<String> = emptyList(),
     var imageManager: ImageManager = ImageManager(emptyList()),
     val backgroundColor: Long = 0xFF000000,
     var canvasRelativePosition: Offset,
     var scale: Float
 )
 
-fun Page.toState(): EditorState {
+fun Page.toState(
+    rootRegion: Region? = null,
+    oversizeStrokes: List<Stroke> = emptyList(),
+    removedStrokes: List<Stroke> = emptyList()
+): EditorState {
     val editorState: EditorState = EditorState(id = this.id)
     editorState.name = this.name
     editorState.size = this.size
-    editorState.rootRegion = this.rootRegion
-    editorState.oversizeStrokes = this.oversizeStrokes
-    editorState.removedStrokes = this.removedStrokes
+    editorState.rootRegion = rootRegion
+    editorState.oversizeStrokes = oversizeStrokes
+    editorState.removedStrokes = removedStrokes
     editorState.imageManager = this.imageManager
     editorState.backgroundColor = this.backgroundColor
     editorState.canvasRelativePosition = this.canvasRelativePosition

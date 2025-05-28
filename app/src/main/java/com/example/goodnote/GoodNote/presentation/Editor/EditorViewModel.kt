@@ -12,9 +12,9 @@ import androidx.compose.ui.layout.positionOnScreen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goodnote.domain.Page
-import com.example.goodnote.domain.toState
 import com.example.goodnote.goodNote.action.ScrollAction
 import com.example.goodnote.goodNote.action.StrokeAction
+import com.example.goodnote.goodNote.assemblers.pageToState
 import com.example.goodnote.goodNote.domain.Boundary
 import com.example.goodnote.goodNote.domain.Image
 import com.example.goodnote.goodNote.domain.Region
@@ -30,6 +30,8 @@ import com.example.goodnote.goodNote.presentation.editor.repository.ImageReposit
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.popBehavior
 import com.example.goodnote.goodNote.repository.PageRepository
+import com.example.goodnote.goodNote.repository.RegionRepository
+import com.example.goodnote.goodNote.repository.StrokeRepository
 import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -46,7 +48,9 @@ import kotlin.math.roundToInt
 
 class EditorViewModel(
     private val imageRepository: ImageRepository,
-    private val pageRepository: PageRepository
+    private val pageRepository: PageRepository,
+    private val regionRepository: RegionRepository,
+    private val strokeRepository: StrokeRepository
 ) : ViewModel() {
     private val _state = MutableStateFlow(EditorState())
     val state = _state
@@ -58,7 +62,7 @@ class EditorViewModel(
 
     suspend fun loadState(pageId: String) {
         val page: Page = pageRepository.selectPageWithId(pageId).first() ?: EditorState().toPage()
-        _state.value = page.toState()
+        _state.value = pageToState(page, regionRepository, strokeRepository)
     }
 
     fun updatePage() {

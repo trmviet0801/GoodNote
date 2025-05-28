@@ -27,6 +27,6 @@ fun appModule() = module {
     //in-program image cache
     single { ImageRepository(androidApplication()) }
 
-    viewModel { EditorViewModel(get(), get()) }
+    viewModel { EditorViewModel(get(), get(), get(), get()) }
     viewModel { HomeViewModel(get()) }
 }
