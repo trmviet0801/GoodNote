@@ -21,13 +21,19 @@ data class Page(
     var imageManager: ImageManager = ImageManager(emptyList()),
     val backgroundColor: Long = 0xFF000000,
     var canvasRelativePosition: Offset,
-    var scale: Float
+    var scale: Float,
+    var screenWidth: Int = 0,
+    var screenHeight: Int = 0,
+    var rightestId: String? = null,
+    var downestId: String? = null,
 )
 
 fun Page.toState(
     rootRegion: Region? = null,
     oversizeStrokes: List<Stroke> = emptyList(),
-    removedStrokes: List<Stroke> = emptyList()
+    removedStrokes: List<Stroke> = emptyList(),
+    rightest: Stroke?,
+    downest: Stroke?
 ): EditorState {
     val editorState: EditorState = EditorState(id = this.id)
     editorState.name = this.name
@@ -39,5 +45,9 @@ fun Page.toState(
     editorState.backgroundColor = this.backgroundColor
     editorState.canvasRelativePosition = this.canvasRelativePosition
     editorState.scale = this.scale
+    editorState.screenWidth = this.screenWidth
+    editorState.screenHeight = this.screenHeight
+    editorState.rightest = rightest
+    editorState.downest = downest
     return editorState
 }

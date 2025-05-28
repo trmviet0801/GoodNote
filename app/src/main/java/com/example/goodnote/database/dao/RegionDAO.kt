@@ -12,8 +12,12 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RegionDAO {
     //Region
-    @Insert(onConflict = OnConflictStrategy.Companion.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertRegionEntities(regionEntities: List<RegionEntity>)
+    @Insert(onConflict = OnConflictStrategy.Companion.REPLACE)
     suspend fun insertRegionEntity(regionEntity: RegionEntity)
+    @Update
+    suspend fun updateRegionEntities(regionEntities: List<RegionEntity>)
     @Update
     suspend fun updateRegionEntity(regionEntity: RegionEntity)
     @Delete

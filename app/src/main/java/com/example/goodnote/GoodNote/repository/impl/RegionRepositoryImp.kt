@@ -28,4 +28,12 @@ class RegionRepositoryImp(
     override fun selectAllRegionEntities(): Flow<List<RegionEntity?>> {
         return regionDAO.selectAllRegionEntities()
     }
+
+    override suspend fun insertRegionEntities(regionEntities: List<RegionEntity>) {
+        regionDAO.insertRegionEntities(regionEntities)
+    }
+
+    override suspend fun updateRegionEntities(regionEntities: List<RegionEntity>) {
+        regionDAO.updateRegionEntities(regionEntities)
+    }
 }

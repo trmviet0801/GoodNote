@@ -28,5 +28,5 @@ fun appModule() = module {
     single { ImageRepository(androidApplication()) }
 
     viewModel { EditorViewModel(get(), get(), get(), get()) }
-    viewModel { HomeViewModel(get()) }
+    viewModel { HomeViewModel(get(), get(), get()) }
 }

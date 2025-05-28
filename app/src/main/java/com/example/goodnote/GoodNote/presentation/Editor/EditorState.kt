@@ -88,6 +88,10 @@ fun EditorState.toPage(): Page {
         imageManager = this.imageManager,
         backgroundColor = this.backgroundColor,
         canvasRelativePosition = this.canvasRelativePosition,
-        scale = this.scale
+        scale = this.scale,
+        screenHeight = this.screenHeight,
+        screenWidth = this.screenWidth,
+        rightestId = this.rightest?.strokeId,
+        downestId = this.downest?.strokeId
     )
 }

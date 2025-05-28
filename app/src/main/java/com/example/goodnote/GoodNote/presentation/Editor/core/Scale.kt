@@ -1,5 +1,6 @@
 package com.example.goodnote.goodNote.presentation.editor.core
 
+import android.util.Log
 import android.view.MotionEvent
 import androidx.compose.ui.geometry.Offset
 import com.example.goodnote.goodNote.presentation.editor.EditorState
@@ -63,6 +64,7 @@ fun adjustScale(isIncrease: Boolean, state: MutableStateFlow<EditorState>) {
 }
 
 fun canvasFillScreen(state: MutableStateFlow<EditorState>) {
+    Log.d("fillScreen", "hehehehe")
     val extraX =
         state.value.screenWidth -
                 (state.value.rootRegion!!.boundary!!.actualWidth * state.value.scale)

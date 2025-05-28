@@ -23,11 +23,24 @@ suspend fun pageToState(
     }
     val oversizeStrokes: List<Stroke> = loadStrokesByIds(page.oversizeStrokeIds, strokeRepository)
     val removedStrokes: List<Stroke> = loadStrokesByIds(page.removedStrokeIds, strokeRepository)
+
+    val rightest: Stroke? = page.rightestId?.let { loadStrokeById(it, strokeRepository) }
+    val downest: Stroke? = page.downestId?.let { loadStrokeById(it, strokeRepository) }
+
     return page.toState(
         rootRegion,
         oversizeStrokes,
-        removedStrokes
+        removedStrokes,
+        rightest,
+        downest
     )
+}
+
+suspend fun loadStrokeById(
+    id: String,
+    strokeRepository: StrokeRepository
+): Stroke? {
+    return strokeRepository.selectStrokeWithId(id).first()
 }
 
 suspend fun loadStrokesByIds(

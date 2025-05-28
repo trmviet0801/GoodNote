@@ -75,10 +75,10 @@ data class Region(
     }
 
     private fun insertToAllSubDivines(stroke: Stroke) {
-        topLeftRegion!!.insert(stroke)
-        topRightRegion!!.insert(stroke)
-        bottomLeftRegion!!.insert(stroke)
-        bottomRightRegion!!.insert(stroke)
+        topLeftRegion?.let { it.insert(stroke) }
+        topRightRegion?.let { it.insert(stroke) }
+        bottomLeftRegion?.let { it.insert(stroke) }
+        bottomRightRegion?.let { it.insert(stroke) }
     }
 
     private fun updateOverlapsStrokes(stroke: Stroke): Unit {

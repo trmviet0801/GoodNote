@@ -27,6 +27,7 @@ import com.example.goodnote.goodNote.presentation.editor.core.stylusHandle
 import com.example.goodnote.goodNote.presentation.editor.core.undoEraseHandle
 import com.example.goodnote.goodNote.presentation.editor.core.undoWriteHandle
 import com.example.goodnote.goodNote.presentation.editor.repository.ImageRepository
+import com.example.goodnote.goodNote.presentation.editor.usecase.updateCurrentPage
 import com.example.goodnote.goodNote.presentation.model.StrokeBehavior
 import com.example.goodnote.goodNote.presentation.model.popBehavior
 import com.example.goodnote.goodNote.repository.PageRepository
@@ -65,9 +66,15 @@ class EditorViewModel(
         _state.value = pageToState(page, regionRepository, strokeRepository)
     }
 
+    //update page + region + state
     fun updatePage() {
         viewModelScope.launch {
-            pageRepository.updatePage(state.value.toPage())
+            updateCurrentPage(
+                _state.value,
+                pageRepository,
+                regionRepository,
+                strokeRepository
+            )
         }
     }
 

@@ -7,7 +7,10 @@ import androidx.lifecycle.viewModelScope
 import com.example.goodnote.domain.Page
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.editor.toPage
+import com.example.goodnote.goodNote.presentation.editor.usecase.saveCurrentPage
 import com.example.goodnote.goodNote.repository.PageRepository
+import com.example.goodnote.goodNote.repository.RegionRepository
+import com.example.goodnote.goodNote.repository.StrokeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
@@ -18,6 +21,8 @@ import java.util.UUID
 
 class HomeViewModel(
     private val pageRepository: PageRepository,
+    private val regionRepository: RegionRepository,
+    private val strokeRepository: StrokeRepository
 ): ViewModel() {
     private val _state = MutableStateFlow<HomeState>(HomeState())
     val state = _state.stateIn(
@@ -34,7 +39,12 @@ class HomeViewModel(
         val editorState: EditorState = EditorState(id = UUID.randomUUID().toString())
         val page: Page = editorState.toPage()
         viewModelScope.launch {
-            pageRepository.insertPage(page)
+            saveCurrentPage(
+                editorState,
+                pageRepository,
+                regionRepository,
+                strokeRepository
+            )
         }
         _state.update {
             it.copy(
