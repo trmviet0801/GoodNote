@@ -2,6 +2,7 @@ package com.example.goodnote.goodNote.repository.impl
 
 import com.example.goodnote.database.dao.RegionDAO
 import com.example.goodnote.domain.RegionEntity
+import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.repository.RegionRepository
 import kotlinx.coroutines.flow.Flow
 

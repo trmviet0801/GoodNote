@@ -90,4 +90,8 @@ dependencies {
 
     //navigation
     implementation("androidx.navigation:navigation-compose:2.7.7")
+
+    //test
+    // https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.0-M3")
 }

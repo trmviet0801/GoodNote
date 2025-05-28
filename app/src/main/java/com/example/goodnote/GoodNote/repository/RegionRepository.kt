@@ -2,6 +2,7 @@ package com.example.goodnote.goodNote.repository
 
 import com.example.goodnote.domain.Page
 import com.example.goodnote.domain.RegionEntity
+import com.example.goodnote.goodNote.domain.Region
 import kotlinx.coroutines.flow.Flow
 
 interface RegionRepository {

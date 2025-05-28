@@ -15,25 +15,11 @@ data class RegionEntity(
     var overlapsStrokesId: List<String> = emptyList(),
     var isDivided: Boolean = false,
     var isRoot: Boolean = false,
-    var topLeftRegion: String? = null,
-    var topRightRegion: String? = null,
-    var bottomLeftRegion: String? = null,
-    var bottomRightRegion: String? = null
+    var topLeftRegionId: String? = null,
+    var topRightRegionId: String? = null,
+    var bottomLeftRegionId: String? = null,
+    var bottomRightRegionId: String? = null
 )
-fun RegionEntity.toRegion(): Region {
-    return Region(
-        regionId = this.regionId!!,
-        primaryStroke = null,
-        boundary = this.boundary,
-        overlapsStrokes = emptyList(),
-        isDivided = this.isDivided,
-        isRoot = this.isRoot,
-        topLeftRegion = null,
-        topRightRegion = null,
-        bottomLeftRegion = null,
-        bottomRightRegion = null
-    )
-}
 
 fun Region.toEntity(): RegionEntity {
     return RegionEntity(
@@ -43,9 +29,28 @@ fun Region.toEntity(): RegionEntity {
         overlapsStrokesId = this.overlapsStrokes.map { stroke -> stroke.strokeId },
         isDivided = this.isDivided,
         isRoot = this.isRoot,
-        topLeftRegion = this.topLeftRegion?.regionId,
-        topRightRegion = this.topRightRegion?.regionId,
-        bottomLeftRegion = this.bottomLeftRegion?.regionId,
-        bottomRightRegion = this.bottomRightRegion?.regionId
+        topLeftRegionId = this.topLeftRegion?.regionId,
+        topRightRegionId = this.topRightRegion?.regionId,
+        bottomLeftRegionId = this.bottomLeftRegion?.regionId,
+        bottomRightRegionId = this.bottomRightRegion?.regionId
+    )
+}
+
+fun RegionEntity.toRegion(
+    primaryStroke: Stroke?,
+    overlapsStrokes: List<Stroke>,
+    subRegions: Map<String, Region?>
+): Region {
+    return Region(
+        regionId = this.regionId,
+        primaryStroke = primaryStroke,
+        boundary = this.boundary,
+        overlapsStrokes = overlapsStrokes,
+        isDivided = this.isDivided,
+        isRoot = this.isRoot,
+        topLeftRegion = subRegions[this.topLeftRegionId],
+        topRightRegion = subRegions[this.topRightRegionId],
+        bottomLeftRegion = subRegions[this.bottomLeftRegionId],
+        bottomRightRegion = subRegions[this.bottomRightRegionId]
     )
 }
