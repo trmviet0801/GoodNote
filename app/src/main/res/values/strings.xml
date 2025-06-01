@@ -14,7 +14,8 @@
     <string name="add_image">Add image</string>
     <string name="goodNotesAndroid">GoodNotes Android</string>
     <string name="search">search</string>
-    <string name="canvases">Canvases</string>
+    <string name="canvases">canvases</string>
     <string name="recent">Recent</string>
     <string name="my_canvases">My Canvases</string>
+    <string name="canvas">canvas</string>
 </resources>

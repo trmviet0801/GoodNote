@@ -56,17 +56,18 @@ fun Canvases(
                     contentDescription = null,
                 )
                 Text(
-                    text = "${state.value.pages.size} canvases",
+                    text = "${state.value.pages.size} ${if (state.value.pages.size > 1) stringResource(R.string.canvases) else stringResource(R.string.canvas)}",
                     fontSize = 12.sp
                 )
             }
         }
         FlowRow(
             modifier = Modifier
-                .fillMaxWidth()
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             state.value.pages.forEach { page ->
-                Page(page.name, page.id, navController)
+                Page(page, navController)
             }
         }
     }

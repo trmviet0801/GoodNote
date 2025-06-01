@@ -6,6 +6,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goodnote.domain.Page
+import com.example.goodnote.domain.RegionEntity
+import com.example.goodnote.domain.Stroke
+import com.example.goodnote.domain.toRegion
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.editor.toPage
 import com.example.goodnote.goodNote.presentation.editor.usecase.saveCurrentPage
@@ -15,6 +18,7 @@ import com.example.goodnote.goodNote.repository.StrokeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -67,8 +71,6 @@ class HomeViewModel(
         }
     }
 
-
-
     fun onToggleButtonActive() {
         _state.update { state ->
             state.copy(
@@ -84,4 +86,26 @@ class HomeViewModel(
             )
         }
     }
+
+    suspend fun getMiniStrokesOfPage(rootRegionId: String?): List<Stroke> {
+        if (rootRegionId == null) return emptyList()
+
+        val regionEntity = regionRepository.selectRegionEntityWithId(rootRegionId).firstOrNull()
+            ?: return emptyList()
+
+        val strokes = mutableListOf<Stroke>()
+
+        regionEntity.primaryStrokeId?.let { id ->
+            strokeRepository.selectStrokeWithId(id).firstOrNull()?.let { strokes.add(it) }
+        }
+
+        regionEntity.overlapsStrokesId
+            .filterNotNull()
+            .forEach { id ->
+                strokeRepository.selectStrokeWithId(id).firstOrNull()?.let { strokes.add(it) }
+            }
+
+        return strokes
+    }
+
 }

@@ -6,6 +6,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.goodnote.goodNote.domain.Dot
 import com.example.goodnote.goodNote.domain.calScaledPosition
+import com.example.goodnote.goodNote.utils.AppConst
 import com.example.goodnote.goodNote.utils.PenConst
 import java.util.UUID
 import kotlin.math.abs
@@ -42,6 +43,21 @@ fun Stroke.toPath(virtualCamera: Offset): Path {
         result.lineTo(dot.scaledX - virtualCamera.x, dot.scaledY - virtualCamera.y)
     }
     return result
+}
+
+//return mini-path -> for homepage
+fun Stroke.toPath(miniPath: Boolean): Path {
+    if (miniPath) {
+        if (dots.isEmpty()) return Path()
+
+        val result = Path()
+        result.moveTo((dots[0].x * AppConst.STROKE_MINI_VER_SCALE).toFloat(), (dots[0].y * AppConst.STROKE_MINI_VER_SCALE).toFloat())
+        dots.forEach { dot ->
+            result.lineTo((dot.x * AppConst.STROKE_MINI_VER_SCALE).toFloat(), (dot.y * AppConst.STROKE_MINI_VER_SCALE).toFloat())
+        }
+        return result
+    }
+    return Path()
 }
 
 fun Stroke.updateScaledPositions(scale: Float): Stroke {

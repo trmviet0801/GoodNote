@@ -19,7 +19,7 @@ data class Page(
     val oversizeStrokeIds: List<String> = emptyList(),
     val removedStrokeIds: List<String> = emptyList(),
     var imageManager: ImageManager = ImageManager(emptyList()),
-    val backgroundColor: Long = 0xFF000000,
+    var backgroundColor: Long = 0xFF000000,
     var canvasRelativePosition: Offset,
     var scale: Float,
     var screenWidth: Int = 0,

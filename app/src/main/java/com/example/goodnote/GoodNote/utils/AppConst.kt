@@ -3,6 +3,7 @@ package com.example.goodnote.goodNote.utils
 import androidx.compose.ui.unit.dp
 
 object AppConst {
+    const val STROKE_MINI_VER_SCALE: Float = 0.1f
     const val PAGE_NAME: String = "New file"
     const val SCALE_LEVEL: Float = 0.003f
     const val SCROLL_LEVEL: Float = 40f

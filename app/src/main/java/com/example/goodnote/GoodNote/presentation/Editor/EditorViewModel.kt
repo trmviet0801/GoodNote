@@ -390,6 +390,7 @@ class EditorViewModel(
                 backgroundColor = code
             )
         }
+        updatePage()
     }
 
     fun onShowBackgroundColorPicker() {
