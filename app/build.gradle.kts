@@ -96,4 +96,5 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.13.0-M3")
 
     implementation("com.google.accompanist:accompanist-systemuicontroller:0.30.1") // use latest version
+
 }
