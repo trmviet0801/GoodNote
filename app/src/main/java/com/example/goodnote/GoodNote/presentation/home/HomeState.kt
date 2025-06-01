@@ -4,4 +4,5 @@ import com.example.goodnote.domain.Page
 
 data class HomeState(
     val pages: List<Page> = emptyList(),
+    val isCanvasSelected: Boolean = true
 )

@@ -9,6 +9,11 @@ object AppConst {
     const val SCROLL_MINIMUM: Float = 2.5f
     const val SCROLL_AXIS_DOMINANT = 2
     const val MIN_FREE_SPACE = 500f
+    const val HOME_BACKGROUND_PRIMARY_COLOR = 0xFFF5F7FA
+    const val HOME_BACKGROUND_SECONDARY_COLOR = 0xFFFFFFFF
+    const val TEXT_PRIMARY_COLOR = 0xFF000000
+    const val TEXT_IN_CONTRAST_COLOR = 0xFFFFFFFF
+    const val TEXT_DISABLE_COLOR = 0xFF9AA0A6
     val ICON_SIZE = 24.dp
     val BARs_HEIGHT = 50.dp
     val PEN_COLORS = listOf(

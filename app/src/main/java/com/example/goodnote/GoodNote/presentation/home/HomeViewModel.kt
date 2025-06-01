@@ -1,6 +1,7 @@
 package com.example.goodnote.goodNote.presentation.home
 
 import android.util.Log
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -63,6 +64,24 @@ class HomeViewModel(
                     pages = dbPages as List<Page>
                 )
             }
+        }
+    }
+
+
+
+    fun onToggleButtonActive() {
+        _state.update { state ->
+            state.copy(
+                isCanvasSelected = true
+            )
+        }
+    }
+
+    fun onToggleButtonInactive() {
+        _state.update { state ->
+            state.copy(
+                isCanvasSelected = false
+            )
         }
     }
 }

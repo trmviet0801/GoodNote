@@ -1,0 +1,306 @@
+kotlin version: 2.0.21
+error message: org.jetbrains.kotlin.backend.common.BackendException: Backend Internal error: Exception during IR lowering
+File being compiled: D:/2025_PetProject_GoodNote/app/src/main/java/com/example/goodnote/goodNote/presentation/home/HomeScreen.kt
+The root cause java.lang.RuntimeException was thrown at: org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.common.CodegenUtil.reportBackendException(CodegenUtil.kt:253)
+	at org.jetbrains.kotlin.backend.common.CodegenUtil.reportBackendException$default(CodegenUtil.kt:236)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invokeSequential(performByIrFile.kt:65)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invoke(performByIrFile.kt:52)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invoke(performByIrFile.kt:38)
+	at org.jetbrains.kotlin.backend.common.phaser.NamedCompilerPhase.phaseBody(CompilerPhase.kt:166)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:27)
+	at org.jetbrains.kotlin.backend.common.phaser.CompositePhase.invoke(PhaseBuilders.kt:14)
+	at org.jetbrains.kotlin.backend.common.phaser.NamedCompilerPhase.phaseBody(CompilerPhase.kt:166)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.CompilerPhaseKt.invokeToplevel(CompilerPhase.kt:62)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.invokeCodegen(JvmIrCodegenFactory.kt:371)
+	at org.jetbrains.kotlin.codegen.CodegenFactory.generateModule(CodegenFactory.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.JvmIrCodegenFactory.generateModuleInFrontendIRMode(JvmIrCodegenFactory.kt:433)
+	at org.jetbrains.kotlin.cli.jvm.compiler.pipeline.JvmCompilerPipelineKt.generateCodeFromIr(jvmCompilerPipeline.kt:246)
+	at org.jetbrains.kotlin.cli.jvm.compiler.pipeline.JvmCompilerPipelineKt.compileModulesUsingFrontendIrAndLightTree(jvmCompilerPipeline.kt:142)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecute(K2JVMCompiler.kt:148)
+	at org.jetbrains.kotlin.cli.jvm.K2JVMCompiler.doExecute(K2JVMCompiler.kt:43)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:103)
+	at org.jetbrains.kotlin.cli.common.CLICompiler.execImpl(CLICompiler.kt:49)
+	at org.jetbrains.kotlin.cli.common.CLITool.exec(CLITool.kt:101)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunner.runCompiler(IncrementalJvmCompilerRunner.kt:464)
+	at org.jetbrains.kotlin.incremental.IncrementalJvmCompilerRunner.runCompiler(IncrementalJvmCompilerRunner.kt:73)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.doCompile(IncrementalCompilerRunner.kt:506)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compileImpl(IncrementalCompilerRunner.kt:423)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally$lambda$9$compile(IncrementalCompilerRunner.kt:249)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.tryCompileIncrementally(IncrementalCompilerRunner.kt:267)
+	at org.jetbrains.kotlin.incremental.IncrementalCompilerRunner.compile(IncrementalCompilerRunner.kt:120)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.execIncrementalCompiler(CompileServiceImpl.kt:675)
+	at org.jetbrains.kotlin.daemon.CompileServiceImplBase.access$execIncrementalCompiler(CompileServiceImpl.kt:92)
+	at org.jetbrains.kotlin.daemon.CompileServiceImpl.compile(CompileServiceImpl.kt:1660)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at java.rmi/sun.rmi.server.UnicastServerRef.dispatch(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport$1.run(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.Transport.serviceCall(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport.handleMessages(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run0(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.lambda$run$0(Unknown Source)
+	at java.base/java.security.AccessController.doPrivileged(Unknown Source)
+	at java.rmi/sun.rmi.transport.tcp.TCPTransport$ConnectionHandler.run(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(Unknown Source)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(Unknown Source)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.RuntimeException: Exception while generating code for:
+FUN name:HomeScreen visibility:public modality:FINAL <> (navController:androidx.navigation.NavController, $composer:androidx.compose.runtime.Composer?, $changed:kotlin.Int) returnType:kotlin.Unit
+  annotations:
+    Composable
+    ComposableTarget(applier = "androidx.compose.ui.UiComposable")
+  VALUE_PARAMETER name:navController index:0 type:androidx.navigation.NavController
+  VALUE_PARAMETER name:$composer index:1 type:androidx.compose.runtime.Composer? [assignable]
+  VALUE_PARAMETER name:$changed index:2 type:kotlin.Int
+  BLOCK_BODY
+    BLOCK type=kotlin.Unit origin=null
+      SET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Unit origin=null
+        CALL 'public abstract fun startRestartGroup (key: kotlin.Int): androidx.compose.runtime.Composer declared in androidx.compose.runtime.Composer' type=androidx.compose.runtime.Composer origin=null
+          $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+          key: CONST Int type=kotlin.Int value=-596029541
+      CALL 'public final fun sourceInformation (composer: androidx.compose.runtime.Composer, sourceInformation: kotlin.String): kotlin.Unit declared in androidx.compose.runtime.ComposerKt' type=kotlin.Unit origin=null
+        composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+        sourceInformation: CONST String type=kotlin.String value="C(HomeScreen)30@1255L30,31@1322L16,33@1365L43,33@1344L64,43@1649L10,43@1660L17,39@1475L413:HomeScreen.kt#ntvugy"
+    VAR name:$dirty type:kotlin.Int [val]
+      GET_VAR '$changed: kotlin.Int declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+    WHEN type=kotlin.Unit origin=IF
+      BRANCH
+        if: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=null
+          arg0: CALL 'public final fun and (other: kotlin.Int): kotlin.Int [infix] declared in kotlin.Int' type=kotlin.Int origin=null
+            $this: GET_VAR '$changed: kotlin.Int declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+            other: CONST Int type=kotlin.Int value=6
+          arg1: CONST Int type=kotlin.Int value=0
+        then: SET_VAR 'val $dirty: kotlin.Int [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Unit origin=null
+          CALL 'public final fun or (other: kotlin.Int): kotlin.Int [infix] declared in kotlin.Int' type=kotlin.Int origin=null
+            $this: GET_VAR 'val $dirty: kotlin.Int [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+            other: WHEN type=kotlin.Int origin=IF
+              BRANCH
+                if: CALL 'public open fun changedInstance (value: kotlin.Any?): kotlin.Boolean declared in androidx.compose.runtime.Composer' type=kotlin.Boolean origin=null
+                  $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                  value: GET_VAR 'navController: androidx.navigation.NavController declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.navigation.NavController origin=null
+                then: CONST Int type=kotlin.Int value=4
+              BRANCH
+                if: CONST Boolean type=kotlin.Boolean value=true
+                then: CONST Int type=kotlin.Int value=2
+    WHEN type=kotlin.Unit origin=IF
+      BRANCH
+        if: CALL 'public final fun OROR (arg0: kotlin.Boolean, arg1: kotlin.Boolean): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=null
+          arg0: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=null
+            $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=null
+              arg0: CALL 'public final fun and (other: kotlin.Int): kotlin.Int [infix] declared in kotlin.Int' type=kotlin.Int origin=null
+                $this: GET_VAR 'val $dirty: kotlin.Int [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+                other: CONST Int type=kotlin.Int value=3
+              arg1: CONST Int type=kotlin.Int value=2
+          arg1: CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=null
+            $this: CALL 'public abstract fun <get-skipping> (): kotlin.Boolean declared in androidx.compose.runtime.Composer' type=kotlin.Boolean origin=null
+              $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+        then: BLOCK type=kotlin.Unit origin=null
+          WHEN type=kotlin.Unit origin=IF
+            BRANCH
+              if: CALL 'public final fun isTraceInProgress (): kotlin.Boolean declared in androidx.compose.runtime.ComposerKt' type=kotlin.Boolean origin=null
+              then: CALL 'public final fun traceEventStart (key: kotlin.Int, dirty1: kotlin.Int, dirty2: kotlin.Int, info: kotlin.String): kotlin.Unit declared in androidx.compose.runtime.ComposerKt' type=kotlin.Unit origin=null
+                key: CONST Int type=kotlin.Int value=-596029541
+                dirty1: GET_VAR 'val $dirty: kotlin.Int [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+                dirty2: CONST Int type=kotlin.Int value=-1
+                info: CONST String type=kotlin.String value="com.example.goodnote.goodNote.presentation.home.HomeScreen (HomeScreen.kt:29)"
+          VAR name:homeViewModel type:com.example.goodnote.goodNote.presentation.home.HomeViewModel [val]
+            CALL 'public final fun koinViewModel <T> (qualifier: org.koin.core.qualifier.Qualifier?, viewModelStoreOwner: androidx.lifecycle.ViewModelStoreOwner?, key: kotlin.String?, extras: androidx.lifecycle.viewmodel.CreationExtras?, scope: org.koin.core.scope.Scope?, parameters: kotlin.Function0<org.koin.core.parameter.ParametersHolder>?, $composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int, $default: kotlin.Int): T of org.koin.androidx.compose.ViewModelKt.koinViewModel [inline] declared in org.koin.androidx.compose.ViewModelKt' type=com.example.goodnote.goodNote.presentation.home.HomeViewModel origin=null
+              <T>: com.example.goodnote.goodNote.presentation.home.HomeViewModel
+              qualifier: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              viewModelStoreOwner: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              key: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              extras: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              scope: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              parameters: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              $composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+              $changed: CONST Int type=kotlin.Int value=0
+              $default: CONST Int type=kotlin.Int value=63
+          VAR name:state type:androidx.compose.runtime.State<com.example.goodnote.goodNote.presentation.home.HomeState> [val]
+            CALL 'public final fun collectAsState <T> (context: kotlin.coroutines.CoroutineContext?, $composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int, $default: kotlin.Int): androidx.compose.runtime.State<T of androidx.compose.runtime.SnapshotStateKt.collectAsState> declared in androidx.compose.runtime.SnapshotStateKt' type=androidx.compose.runtime.State<com.example.goodnote.goodNote.presentation.home.HomeState> origin=null
+              <T>: com.example.goodnote.goodNote.presentation.home.HomeState
+              $receiver: CALL 'public final fun <get-state> (): kotlinx.coroutines.flow.StateFlow<com.example.goodnote.goodNote.presentation.home.HomeState> declared in com.example.goodnote.goodNote.presentation.home.HomeViewModel' type=kotlinx.coroutines.flow.StateFlow<com.example.goodnote.goodNote.presentation.home.HomeState> origin=GET_PROPERTY
+                $this: GET_VAR 'val homeViewModel: com.example.goodnote.goodNote.presentation.home.HomeViewModel [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=com.example.goodnote.goodNote.presentation.home.HomeViewModel origin=null
+              context: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+                CONST Null type=kotlin.Nothing? value=null
+              $composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+              $changed: CONST Int type=kotlin.Int value=0
+              $default: CONST Int type=kotlin.Int value=1
+          CALL 'public final fun LaunchedEffect (key1: kotlin.Any?, block: @[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit>, $composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int): kotlin.Unit declared in androidx.compose.runtime.EffectsKt' type=kotlin.Unit origin=null
+            key1: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:kotlin.Unit visibility:public [final,static] declared in kotlin.Unit' type=kotlin.Unit origin=null
+            block: BLOCK type=@[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit> origin=null
+              BLOCK type=kotlin.Unit origin=null
+                CALL 'public abstract fun startReplaceGroup (key: kotlin.Int): kotlin.Unit declared in androidx.compose.runtime.Composer' type=kotlin.Unit origin=null
+                  $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                  key: CONST Int type=kotlin.Int value=-2108713022
+                CALL 'public final fun sourceInformation (composer: androidx.compose.runtime.Composer, sourceInformation: kotlin.String): kotlin.Unit declared in androidx.compose.runtime.ComposerKt' type=kotlin.Unit origin=null
+                  composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                  sourceInformation: CONST String type=kotlin.String value="CC(remember):HomeScreen.kt#9igjgp"
+              VAR IR_TEMPORARY_VARIABLE name:tmp0_group type:@[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit> [val]
+                CALL 'public final fun cache <T> (invalid: kotlin.Boolean, block: @[DisallowComposableCalls] kotlin.Function0<T of androidx.compose.runtime.ComposerKt.cache>): T of androidx.compose.runtime.ComposerKt.cache [inline] declared in androidx.compose.runtime.ComposerKt' type=@[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit> origin=null
+                  <T>: @[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit>
+                  $receiver: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                  invalid: CALL 'public open fun changedInstance (value: kotlin.Any?): kotlin.Boolean declared in androidx.compose.runtime.Composer' type=kotlin.Boolean origin=null
+                    $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                    value: GET_VAR 'val homeViewModel: com.example.goodnote.goodNote.presentation.home.HomeViewModel [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=com.example.goodnote.goodNote.presentation.home.HomeViewModel origin=null
+                  block: BLOCK type=kotlin.Function0<@[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit>> origin=LAMBDA
+                    COMPOSITE type=kotlin.Unit origin=null
+                    FUNCTION_REFERENCE 'private final fun HomeScreen$lambda$0 ($homeViewModel: com.example.goodnote.goodNote.presentation.home.HomeViewModel): @[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit> declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt' type=kotlin.Function0<@[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit>> origin=INLINE_LAMBDA reflectionTarget=null
+                      $homeViewModel: GET_VAR 'val homeViewModel: com.example.goodnote.goodNote.presentation.home.HomeViewModel [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=com.example.goodnote.goodNote.presentation.home.HomeViewModel origin=null
+              CALL 'public abstract fun endReplaceGroup (): kotlin.Unit declared in androidx.compose.runtime.Composer' type=kotlin.Unit origin=null
+                $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+              GET_VAR 'val tmp0_group: @[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit> [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=@[ExtensionFunctionType] kotlin.coroutines.SuspendFunction1<kotlinx.coroutines.CoroutineScope, kotlin.Unit> origin=null
+            $composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+            $changed: CONST Int type=kotlin.Int value=6
+          SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:APPEARANCE_LIGHT_STATUS_BARS type:kotlin.Int visibility:public [final,static] declared in android.view.WindowInsetsController' type=kotlin.Unit superQualifierSymbol=android.view.WindowInsetsController origin=EQ
+            value: CONST Int type=kotlin.Int value=2
+          CALL 'public final fun Column (modifier: androidx.compose.ui.Modifier?, verticalArrangement: androidx.compose.foundation.layout.Arrangement.Vertical?, horizontalAlignment: androidx.compose.ui.Alignment.Horizontal?, content: @[ExtensionFunctionType] kotlin.Function3<androidx.compose.foundation.layout.ColumnScope, androidx.compose.runtime.Composer, kotlin.Int, kotlin.Unit>, $composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int, $default: kotlin.Int): kotlin.Unit [inline] declared in androidx.compose.foundation.layout.ColumnKt' type=kotlin.Unit origin=null
+            modifier: CALL 'public final fun padding-qDBjuR0$default (start: androidx.compose.ui.unit.Dp, top: androidx.compose.ui.unit.Dp, end: androidx.compose.ui.unit.Dp, bottom: androidx.compose.ui.unit.Dp, $mask0: kotlin.Int, $handler: kotlin.Any?): androidx.compose.ui.Modifier declared in androidx.compose.foundation.layout.PaddingKt' type=androidx.compose.ui.Modifier origin=DEFAULT_DISPATCH_CALL
+              $receiver: CALL 'public final fun background-bw27NRU$default (color: androidx.compose.ui.graphics.Color, shape: androidx.compose.ui.graphics.Shape?, $mask0: kotlin.Int, $handler: kotlin.Any?): androidx.compose.ui.Modifier declared in androidx.compose.foundation.BackgroundKt' type=androidx.compose.ui.Modifier origin=DEFAULT_DISPATCH_CALL
+                $receiver: CALL 'public final fun fillMaxSize$default (fraction: kotlin.Float, $mask0: kotlin.Int, $handler: kotlin.Any?): androidx.compose.ui.Modifier declared in androidx.compose.foundation.layout.SizeKt' type=androidx.compose.ui.Modifier origin=DEFAULT_DISPATCH_CALL
+                  $receiver: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:Companion type:androidx.compose.ui.Modifier.Companion visibility:public [final,static] declared in androidx.compose.ui.Modifier' type=androidx.compose.ui.Modifier.Companion origin=null
+                  fraction: COMPOSITE type=kotlin.Float origin=DEFAULT_VALUE
+                    CONST Float type=kotlin.Float value=0.0
+                  $mask0: CONST Int type=kotlin.Int value=1
+                  $handler: CONST Null type=kotlin.Any? value=null
+                color: CALL 'public final fun Color (color: kotlin.Long): androidx.compose.ui.graphics.Color declared in androidx.compose.ui.graphics.ColorKt' type=androidx.compose.ui.graphics.Color origin=null
+                  color: CALL 'public final fun <get-HOME_BACKGROUND_PRIMARY_COLOR> (): kotlin.Long declared in com.example.goodnote.goodNote.utils.AppConst' type=kotlin.Long origin=GET_PROPERTY
+                    $this: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:INSTANCE type:com.example.goodnote.goodNote.utils.AppConst visibility:public [final,static] declared in com.example.goodnote.goodNote.utils.AppConst' type=com.example.goodnote.goodNote.utils.AppConst origin=null
+                shape: COMPOSITE type=androidx.compose.ui.graphics.Shape? origin=DEFAULT_VALUE
+                  CONST Null type=androidx.compose.ui.graphics.Shape? value=null
+                $mask0: CONST Int type=kotlin.Int value=2
+                $handler: CONST Null type=kotlin.Any? value=null
+              start: COMPOSITE type=androidx.compose.ui.unit.Dp origin=DEFAULT_VALUE
+                CALL 'public final fun <unsafe-coerce> <T, R> (v: T of kotlin.jvm.internal.<unsafe-coerce>): R of kotlin.jvm.internal.<unsafe-coerce> declared in kotlin.jvm.internal' type=androidx.compose.ui.unit.Dp origin=null
+                  <T>: kotlin.Float
+                  <R>: androidx.compose.ui.unit.Dp
+                  v: CONST Float type=kotlin.Float value=0.0
+              top: CALL 'public abstract fun calculateTopPadding-D9Ej5fM (): androidx.compose.ui.unit.Dp declared in androidx.compose.foundation.layout.PaddingValues' type=androidx.compose.ui.unit.Dp origin=null
+                $this: CALL 'public final fun asPaddingValues ($composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int): androidx.compose.foundation.layout.PaddingValues declared in androidx.compose.foundation.layout.WindowInsetsKt' type=androidx.compose.foundation.layout.PaddingValues origin=null
+                  $receiver: CALL 'public final fun <get-statusBars> ($composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int): androidx.compose.foundation.layout.WindowInsets declared in androidx.compose.foundation.layout.WindowInsets_androidKt' type=androidx.compose.foundation.layout.WindowInsets origin=GET_PROPERTY
+                    $receiver: GET_FIELD 'FIELD FIELD_FOR_OBJECT_INSTANCE name:Companion type:androidx.compose.foundation.layout.WindowInsets.Companion visibility:public [final,static] declared in androidx.compose.foundation.layout.WindowInsets' type=androidx.compose.foundation.layout.WindowInsets.Companion origin=null
+                    $composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                    $changed: CONST Int type=kotlin.Int value=6
+                  $composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+                  $changed: CONST Int type=kotlin.Int value=0
+              end: COMPOSITE type=androidx.compose.ui.unit.Dp origin=DEFAULT_VALUE
+                CALL 'public final fun <unsafe-coerce> <T, R> (v: T of kotlin.jvm.internal.<unsafe-coerce>): R of kotlin.jvm.internal.<unsafe-coerce> declared in kotlin.jvm.internal' type=androidx.compose.ui.unit.Dp origin=null
+                  <T>: kotlin.Float
+                  <R>: androidx.compose.ui.unit.Dp
+                  v: CONST Float type=kotlin.Float value=0.0
+              bottom: COMPOSITE type=androidx.compose.ui.unit.Dp origin=DEFAULT_VALUE
+                CALL 'public final fun <unsafe-coerce> <T, R> (v: T of kotlin.jvm.internal.<unsafe-coerce>): R of kotlin.jvm.internal.<unsafe-coerce> declared in kotlin.jvm.internal' type=androidx.compose.ui.unit.Dp origin=null
+                  <T>: kotlin.Float
+                  <R>: androidx.compose.ui.unit.Dp
+                  v: CONST Float type=kotlin.Float value=0.0
+              $mask0: CONST Int type=kotlin.Int value=13
+              $handler: CONST Null type=kotlin.Any? value=null
+            verticalArrangement: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+              CONST Null type=kotlin.Nothing? value=null
+            horizontalAlignment: COMPOSITE type=kotlin.Nothing? origin=DEFAULT_VALUE
+              CONST Null type=kotlin.Nothing? value=null
+            content: BLOCK type=@[ExtensionFunctionType] kotlin.Function3<androidx.compose.foundation.layout.ColumnScope, androidx.compose.runtime.Composer, kotlin.Int, kotlin.Unit> origin=LAMBDA
+              COMPOSITE type=kotlin.Unit origin=null
+              FUNCTION_REFERENCE 'private final fun HomeScreen$lambda$2 ($state: androidx.compose.runtime.State<com.example.goodnote.goodNote.presentation.home.HomeState>, $navController: androidx.navigation.NavController, $$dirty: kotlin.Int, $composer: androidx.compose.runtime.Composer?, $changed: kotlin.Int): kotlin.Unit declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt' type=@[ExtensionFunctionType] kotlin.Function3<androidx.compose.foundation.layout.ColumnScope, androidx.compose.runtime.Composer, kotlin.Int, kotlin.Unit> origin=INLINE_LAMBDA reflectionTarget=null
+                $state: GET_VAR 'val state: androidx.compose.runtime.State<com.example.goodnote.goodNote.presentation.home.HomeState> [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.State<com.example.goodnote.goodNote.presentation.home.HomeState> origin=null
+                $navController: GET_VAR 'navController: androidx.navigation.NavController declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.navigation.NavController origin=null
+                $$dirty: GET_VAR 'val $dirty: kotlin.Int [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+            $composer: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+            $changed: CONST Int type=kotlin.Int value=0
+            $default: CONST Int type=kotlin.Int value=6
+          WHEN type=kotlin.Unit origin=IF
+            BRANCH
+              if: CALL 'public final fun isTraceInProgress (): kotlin.Boolean declared in androidx.compose.runtime.ComposerKt' type=kotlin.Boolean origin=null
+              then: CALL 'public final fun traceEventEnd (): kotlin.Unit declared in androidx.compose.runtime.ComposerKt' type=kotlin.Unit origin=null
+      BRANCH
+        if: CONST Boolean type=kotlin.Boolean value=true
+        then: CALL 'public abstract fun skipToGroupEnd (): kotlin.Unit declared in androidx.compose.runtime.Composer' type=kotlin.Unit origin=null
+          $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+    BLOCK type=kotlin.Unit origin=null
+      BLOCK type=kotlin.Unit origin=FOLDED_SAFE_CALL
+        WHEN type=kotlin.Unit origin=FOLDED_SAFE_CALL
+          BRANCH
+            if: COMPOSITE type=kotlin.Boolean origin=null
+              VAR IR_TEMPORARY_VARIABLE name:tmp1_safe_receiver type:androidx.compose.runtime.ScopeUpdateScope? [val]
+                CALL 'public abstract fun endRestartGroup (): androidx.compose.runtime.ScopeUpdateScope? declared in androidx.compose.runtime.Composer' type=androidx.compose.runtime.ScopeUpdateScope? origin=null
+                  $this: GET_VAR '$composer: androidx.compose.runtime.Composer? [assignable] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.Composer? origin=null
+              CALL 'public final fun not (): kotlin.Boolean [operator] declared in kotlin.Boolean' type=kotlin.Boolean origin=null
+                $this: CALL 'public final fun EQEQ (arg0: kotlin.Any?, arg1: kotlin.Any?): kotlin.Boolean declared in kotlin.internal.ir' type=kotlin.Boolean origin=null
+                  arg0: GET_VAR 'val tmp1_safe_receiver: androidx.compose.runtime.ScopeUpdateScope? [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.ScopeUpdateScope? origin=null
+                  arg1: CONST Null type=kotlin.Nothing? value=null
+            then: CALL 'public abstract fun updateScope (block: kotlin.Function2<androidx.compose.runtime.Composer, kotlin.Int, kotlin.Unit>): kotlin.Unit declared in androidx.compose.runtime.ScopeUpdateScope' type=kotlin.Unit origin=null
+              $this: GET_VAR 'val tmp1_safe_receiver: androidx.compose.runtime.ScopeUpdateScope? [val] declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.compose.runtime.ScopeUpdateScope? origin=null
+              block: BLOCK type=kotlin.Function2<androidx.compose.runtime.Composer?, kotlin.Int, kotlin.Unit> origin=LAMBDA
+                COMPOSITE type=kotlin.Unit origin=null
+                CALL 'public final fun <jvm-indy> <T> (dynamicCall: T of kotlin.jvm.internal.<jvm-indy>, bootstrapMethodHandle: kotlin.Any, vararg bootstrapMethodArguments: kotlin.Any): T of kotlin.jvm.internal.<jvm-indy> declared in kotlin.jvm.internal' type=kotlin.Function2<androidx.compose.runtime.Composer?, kotlin.Int, kotlin.Unit> origin=null
+                  <T>: kotlin.Function2<androidx.compose.runtime.Composer?, kotlin.Int, kotlin.Unit>
+                  dynamicCall: CALL 'public final fun invoke (p0: androidx.navigation.NavController, p1: kotlin.Int): kotlin.Function2<androidx.compose.runtime.Composer?, kotlin.Int, kotlin.Unit> declared in kotlin.jvm.internal.invokeDynamic' type=kotlin.Function2<androidx.compose.runtime.Composer?, kotlin.Int, kotlin.Unit> origin=null
+                    p0: GET_VAR 'navController: androidx.navigation.NavController declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=androidx.navigation.NavController origin=null
+                    p1: GET_VAR '$changed: kotlin.Int declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt.HomeScreen' type=kotlin.Int origin=null
+                  bootstrapMethodHandle: CALL 'public final fun <jvm-method-handle> (tag: kotlin.Int, owner: kotlin.String, name: kotlin.String, descriptor: kotlin.String, isInterface: kotlin.Boolean): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                    tag: CONST Int type=kotlin.Int value=6
+                    owner: CONST String type=kotlin.String value="java/lang/invoke/LambdaMetafactory"
+                    name: CONST String type=kotlin.String value="metafactory"
+                    descriptor: CONST String type=kotlin.String value="(Ljava/lang/invoke/MethodHandles$Lookup;Ljava/lang/String;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodType;Ljava/lang/invoke/MethodHandle;Ljava/lang/invoke/MethodType;)Ljava/lang/invoke/CallSite;"
+                    isInterface: CONST Boolean type=kotlin.Boolean value=false
+                  bootstrapMethodArguments: VARARG type=kotlin.Array<kotlin.Any> varargElementType=kotlin.Any
+                    CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                      method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: P1 of kotlin.Function2, p2: P2 of kotlin.Function2): R of kotlin.Function2 [operator] declared in kotlin.Function2' type=kotlin.Any
+                    RAW_FUNCTION_REFERENCE 'private final fun HomeScreen$lambda$3 ($navController: androidx.navigation.NavController, $$changed: kotlin.Int, $composer: androidx.compose.runtime.Composer?, $force: kotlin.Int): kotlin.Unit? declared in com.example.goodnote.goodNote.presentation.home.HomeScreenKt' type=kotlin.Any
+                    CALL 'public final fun <jvm-original-method-type> (method: kotlin.Any): kotlin.Any declared in kotlin.jvm.internal' type=kotlin.Any origin=null
+                      method: RAW_FUNCTION_REFERENCE 'public abstract fun invoke (p1: androidx.compose.runtime.Composer?, p2: kotlin.Int?): kotlin.Unit? [fake_override,operator] declared in kotlin.jvm.internal.invokeDynamic.<fake>' type=kotlin.Any
+          BRANCH
+            if: CONST Boolean type=kotlin.Boolean value=true
+            then: CONST Null type=kotlin.Any? value=null
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:47)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate$default(FunctionCodegen.kt:40)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethodNode(ClassCodegen.kt:406)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generateMethod(ClassCodegen.kt:423)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ClassCodegen.generate(ClassCodegen.kt:168)
+	at org.jetbrains.kotlin.backend.jvm.FileCodegen.lower(JvmPhases.kt:39)
+	at org.jetbrains.kotlin.backend.common.phaser.PhaseFactoriesKt.createFilePhase$lambda$4(PhaseFactories.kt:71)
+	at org.jetbrains.kotlin.backend.common.phaser.PhaseBuildersKt$createSimpleNamedCompilerPhase$1.phaseBody(PhaseBuilders.kt:69)
+	at org.jetbrains.kotlin.backend.common.phaser.SimpleNamedCompilerPhase.phaseBody(CompilerPhase.kt:226)
+	at org.jetbrains.kotlin.backend.common.phaser.AbstractNamedCompilerPhase.invoke(CompilerPhase.kt:113)
+	at org.jetbrains.kotlin.backend.common.phaser.PerformByIrFilePhase.invokeSequential(performByIrFile.kt:62)
+	... 44 more
+Caused by: java.lang.AssertionError: access of const val: SET_FIELD 'FIELD IR_EXTERNAL_JAVA_DECLARATION_STUB name:APPEARANCE_LIGHT_STATUS_BARS type:kotlin.Int visibility:public [final,static] declared in android.view.WindowInsetsController' type=kotlin.Unit superQualifierSymbol=android.view.WindowInsetsController origin=EQ
+  value: CONST Int type=kotlin.Int value=2
+
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:861)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitFieldAccess(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.visitors.IrElementVisitor$DefaultImpls.visitSetField(IrElementVisitor.kt:206)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:908)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitSetField(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrSetField.accept(IrSetField.kt:21)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:579)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitContainerExpression(ExpressionCodegen.kt:593)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitContainerExpression(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.visitors.IrElementVisitor$DefaultImpls.visitBlock(IrElementVisitor.kt:122)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlock(ExpressionCodegen.kt:413)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlock(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrBlock.accept(IrBlock.kt:18)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitWhen(ExpressionCodegen.kt:1101)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitWhen(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrWhen.accept(IrWhen.kt:24)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitStatementContainer(ExpressionCodegen.kt:579)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:584)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.visitBlockBody(ExpressionCodegen.kt:138)
+	at org.jetbrains.kotlin.ir.expressions.IrBlockBody.accept(IrBlockBody.kt:20)
+	at org.jetbrains.kotlin.backend.jvm.codegen.ExpressionCodegen.generate(ExpressionCodegen.kt:240)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.doGenerate(FunctionCodegen.kt:123)
+	at org.jetbrains.kotlin.backend.jvm.codegen.FunctionCodegen.generate(FunctionCodegen.kt:44)
+	... 54 more
+
+
