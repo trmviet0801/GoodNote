@@ -24,7 +24,11 @@ class PageRepositoryImp(
         return pageDAO.selectPageWithId(uuid)
     }
 
-    override fun selectAllPages(): Flow<List<Page?>> {
-        return pageDAO.selectAllPages()
+    override fun selectAllPagesOrderByName(): Flow<List<Page?>> {
+        return pageDAO.selectAllPagesOrderByName()
+    }
+
+    override fun selectAllPagesOrderByLatestTimeStamp(): Flow<List<Page?>> {
+        return pageDAO.selectAllPagesOrderByLatestTimeStamp()
     }
 }

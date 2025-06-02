@@ -53,16 +53,28 @@ class EditorViewModel(
     private val regionRepository: RegionRepository,
     private val strokeRepository: StrokeRepository
 ) : ViewModel() {
-    private val _state = MutableStateFlow(EditorState())
+    private val _state = MutableStateFlow(
+        EditorState(
+            timeStamps = System.currentTimeMillis(),
+            latestTimeStamp = System.currentTimeMillis()
+        )
+    )
     val state = _state
         .stateIn(
             viewModelScope,
             SharingStarted.Eagerly,
-            EditorState()
+            EditorState(
+                timeStamps = System.currentTimeMillis(),
+                latestTimeStamp = System.currentTimeMillis()
+                )
         )
 
     suspend fun loadState(pageId: String) {
-        val page: Page = pageRepository.selectPageWithId(pageId).first() ?: EditorState().toPage()
+        val page: Page = pageRepository.selectPageWithId(pageId).first() ?: EditorState(
+            timeStamps = System.currentTimeMillis(),
+            latestTimeStamp = System.currentTimeMillis()
+        ).toPage()
+        page.latestTimeStamp = System.currentTimeMillis()
         _state.value = pageToState(page, regionRepository, strokeRepository)
     }
 

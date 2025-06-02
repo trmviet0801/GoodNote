@@ -9,7 +9,7 @@ object AppConst {
     const val SCROLL_LEVEL: Float = 40f
     const val SCROLL_MINIMUM: Float = 2.5f
     const val SCROLL_AXIS_DOMINANT = 2
-    const val MIN_FREE_SPACE = 500f
+    const val MIN_FREE_SPACE = 1000f
     const val HOME_BACKGROUND_PRIMARY_COLOR = 0xFFF5F7FA
     const val HOME_BACKGROUND_SECONDARY_COLOR = 0xFFFFFFFF
     const val TEXT_PRIMARY_COLOR = 0xFF000000

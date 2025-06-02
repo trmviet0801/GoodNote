@@ -8,5 +8,6 @@ interface PageRepository {
     suspend fun updatePage(page: Page)
     suspend fun deletePage(page: Page)
     fun selectPageWithId(uuid: String): Flow<Page?>
-    fun selectAllPages(): Flow<List<Page?>>
+    fun selectAllPagesOrderByName(): Flow<List<Page?>>
+    fun selectAllPagesOrderByLatestTimeStamp(): Flow<List<Page?>>
 }

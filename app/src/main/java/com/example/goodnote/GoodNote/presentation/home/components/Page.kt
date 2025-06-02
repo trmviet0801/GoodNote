@@ -28,6 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.goodnote.domain.Page
 import com.example.goodnote.domain.Stroke
+import com.example.goodnote.domain.timeStampToDateTime
 import com.example.goodnote.domain.toPath
 import com.example.goodnote.domain.toState
 import com.example.goodnote.goodNote.presentation.editor.EditorState
@@ -82,10 +83,18 @@ fun Page(
             modifier = Modifier.fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            Text(
-                text = page.name,
-                color = Color(AppConst.TEXT_PRIMARY_COLOR)
-            )
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = page.name,
+                    color = Color(AppConst.TEXT_PRIMARY_COLOR)
+                )
+                Text(
+                    text = page.timeStampToDateTime(),
+                    color = Color(AppConst.TEXT_PRIMARY_COLOR)
+                )
+            }
         }
     }
 }

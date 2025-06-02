@@ -1,11 +1,16 @@
 package com.example.goodnote.domain
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.ui.geometry.Offset
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.goodnote.goodNote.domain.ImageManager
 import com.example.goodnote.goodNote.domain.Region
 import com.example.goodnote.goodNote.presentation.editor.EditorState
+import java.time.Instant
+import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.util.UUID
 
 //EditorStateEntity
@@ -26,6 +31,8 @@ data class Page(
     var screenHeight: Int = 0,
     var rightestId: String? = null,
     var downestId: String? = null,
+    val timeStamps: Long,
+    var latestTimeStamp: Long
 )
 
 fun Page.toState(
@@ -35,7 +42,11 @@ fun Page.toState(
     rightest: Stroke?,
     downest: Stroke?
 ): EditorState {
-    val editorState: EditorState = EditorState(id = this.id)
+    val editorState: EditorState = EditorState(
+        id = this.id,
+        timeStamps = this.timeStamps,
+        latestTimeStamp = this.latestTimeStamp
+    )
     editorState.name = this.name
     editorState.size = this.size
     editorState.rootRegion = rootRegion
@@ -50,4 +61,19 @@ fun Page.toState(
     editorState.rightest = rightest
     editorState.downest = downest
     return editorState
+}
+
+@RequiresApi(Build.VERSION_CODES.O)
+fun Page.timeStampToDateTime(): String {
+    val instant = Instant.ofEpochMilli(this.timeStamps)
+    val zdt = instant.atZone(ZoneId.systemDefault())
+
+    val day = zdt.dayOfMonth
+    val year = zdt.year
+    val hourMinute = zdt.format(DateTimeFormatter.ofPattern("HH:mm"))
+
+    // Map month number to "ThX"
+    val monthTh = "Th${zdt.monthValue}"
+
+    return "$day $monthTh, $year $hourMinute"
 }

@@ -15,6 +15,7 @@ import java.util.UUID
 @Immutable
 data class EditorState(
     val id: String = UUID.randomUUID().toString(),
+    val timeStamps: Long,
     //file + canvas
     var name: String = AppConst.PAGE_NAME,
     var scale: Float = 1f,
@@ -30,6 +31,7 @@ data class EditorState(
     var rightest: Stroke? = null,
     var downest: Stroke? = null,
     var removedStrokes: List<Stroke> = emptyList(),
+    var latestTimeStamp: Long,
 
     //scroll
     var scrollOffset: Offset = Offset.Zero,
@@ -92,6 +94,8 @@ fun EditorState.toPage(): Page {
         screenHeight = this.screenHeight,
         screenWidth = this.screenWidth,
         rightestId = this.rightest?.strokeId,
-        downestId = this.downest?.strokeId
+        downestId = this.downest?.strokeId,
+        timeStamps = this.timeStamps,
+        latestTimeStamp = this.latestTimeStamp
     )
 }

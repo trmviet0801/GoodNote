@@ -1,14 +1,9 @@
 package com.example.goodnote.goodNote.presentation.home
 
-import android.util.Log
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.goodnote.domain.Page
-import com.example.goodnote.domain.RegionEntity
 import com.example.goodnote.domain.Stroke
-import com.example.goodnote.domain.toRegion
 import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.editor.toPage
 import com.example.goodnote.goodNote.presentation.editor.usecase.saveCurrentPage
@@ -27,8 +22,8 @@ import java.util.UUID
 class HomeViewModel(
     private val pageRepository: PageRepository,
     private val regionRepository: RegionRepository,
-    private val strokeRepository: StrokeRepository
-): ViewModel() {
+    private val strokeRepository: StrokeRepository,
+) : ViewModel() {
     private val _state = MutableStateFlow<HomeState>(HomeState())
     val state = _state.stateIn(
         viewModelScope,
@@ -41,7 +36,12 @@ class HomeViewModel(
     }
 
     fun createPage() {
-        val editorState: EditorState = EditorState(id = UUID.randomUUID().toString())
+        val editorState: EditorState =
+            EditorState(
+                id = UUID.randomUUID().toString(),
+                timeStamps = System.currentTimeMillis(),
+                latestTimeStamp = System.currentTimeMillis()
+            )
         val page: Page = editorState.toPage()
         viewModelScope.launch {
             saveCurrentPage(
@@ -61,8 +61,9 @@ class HomeViewModel(
     fun getAllPages() {
         viewModelScope.launch {
             _state.update { it ->
-                var dbPages: List<Page?> = pageRepository.selectAllPages().first()
-                Log.d("hehehe", "${dbPages.size}")
+                var dbPages: List<Page?> =
+                    if (it.isCanvasSelected) pageRepository.selectAllPagesOrderByName()
+                        .first() else pageRepository.selectAllPagesOrderByLatestTimeStamp().first()
                 if (dbPages.isEmpty()) dbPages = emptyList()
                 it.copy(
                     pages = dbPages as List<Page>
@@ -72,18 +73,26 @@ class HomeViewModel(
     }
 
     fun onToggleButtonActive() {
-        _state.update { state ->
-            state.copy(
-                isCanvasSelected = true
-            )
+        viewModelScope.launch {
+            _state.update { state ->
+                val currentPages: List<Page?> = if (!state.isCanvasSelected) pageRepository.selectAllPagesOrderByName().first() else state.pages
+                state.copy(
+                    isCanvasSelected = true,
+                    pages = currentPages as List<Page>
+                )
+            }
         }
     }
 
     fun onToggleButtonInactive() {
-        _state.update { state ->
-            state.copy(
-                isCanvasSelected = false
-            )
+        viewModelScope.launch {
+            _state.update { state ->
+                val currentPages: List<Page?> = if (state.isCanvasSelected) pageRepository.selectAllPagesOrderByLatestTimeStamp().first() else state.pages
+                state.copy(
+                    isCanvasSelected = false,
+                    pages =  currentPages as List<Page>
+                )
+            }
         }
     }
 

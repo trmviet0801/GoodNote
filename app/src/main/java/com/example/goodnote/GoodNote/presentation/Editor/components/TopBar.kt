@@ -74,6 +74,7 @@ fun TopBar(
                         .clickable(
                             enabled = true,
                             onClick = {
+                                viewModel.updatePage()
                                 navController.popBackStack()
                             }
                         ),
