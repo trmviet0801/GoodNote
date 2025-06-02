@@ -1,10 +1,9 @@
 package com.example.goodnote.goodNote.presentation.home.components
 
-import android.R
-import android.util.Log
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,7 +19,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.clipRect
@@ -30,12 +28,11 @@ import com.example.goodnote.domain.Page
 import com.example.goodnote.domain.Stroke
 import com.example.goodnote.domain.timeStampToDateTime
 import com.example.goodnote.domain.toPath
-import com.example.goodnote.domain.toState
-import com.example.goodnote.goodNote.presentation.editor.EditorState
 import com.example.goodnote.goodNote.presentation.home.HomeViewModel
 import com.example.goodnote.goodNote.utils.AppConst
 import org.koin.androidx.compose.koinViewModel
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun Page(
     page: Page,

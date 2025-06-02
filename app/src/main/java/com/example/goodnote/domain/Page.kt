@@ -26,7 +26,7 @@ data class Page(
     var imageManager: ImageManager = ImageManager(emptyList()),
     var backgroundColor: Long = 0xFF000000,
     var canvasRelativePosition: Offset,
-    var scale: Float,
+    //var scale: Float,
     var screenWidth: Int = 0,
     var screenHeight: Int = 0,
     var rightestId: String? = null,
@@ -55,7 +55,7 @@ fun Page.toState(
     editorState.imageManager = this.imageManager
     editorState.backgroundColor = this.backgroundColor
     editorState.canvasRelativePosition = this.canvasRelativePosition
-    editorState.scale = this.scale
+    //editorState.scale = this.scale
     editorState.screenWidth = this.screenWidth
     editorState.screenHeight = this.screenHeight
     editorState.rightest = rightest

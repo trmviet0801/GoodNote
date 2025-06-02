@@ -48,6 +48,7 @@ import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.example.goodnote.R
 import com.example.goodnote.domain.toPath
+import com.example.goodnote.domain.updateScaledPositions
 import com.example.goodnote.goodNote.presentation.editor.components.BackgroundColorPicker
 import com.example.goodnote.goodNote.presentation.editor.components.ImagePicker
 import com.example.goodnote.goodNote.presentation.editor.components.PenPicker
@@ -197,7 +198,7 @@ fun EditorScreen(
                         }
                     }
                     drawPath(
-                        path = state.value.latestStroke.toPath(
+                        path = state.value.latestStroke.updateScaledPositions(state.value.scale).toPath(
                             state.value.canvasRelativePosition
                         ),
                         color = Color(state.value.latestStroke.color),
@@ -209,7 +210,7 @@ fun EditorScreen(
                     )
 
                     drawPath(
-                        path = (state.value.rootRegion?.primaryStroke?.toPath(
+                        path = (state.value.rootRegion?.primaryStroke?.updateScaledPositions(state.value.scale)?.toPath(
                             state.value.canvasRelativePosition
                         )
                             ?: Path()),
@@ -224,7 +225,7 @@ fun EditorScreen(
 
                     state.value.rootRegion?.overlapsStrokes?.forEach { stroke ->
                         drawPath(
-                            path = stroke.toPath(
+                            path = stroke.updateScaledPositions(state.value.scale).toPath(
                                 state.value.canvasRelativePosition
                             ),
                             color = Color(stroke.color),
