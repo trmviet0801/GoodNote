@@ -24,4 +24,6 @@ interface PageDAO {
     fun selectAllPagesOrderByName(): Flow<List<Page?>>
     @Query("SELECT * FROM pages ORDER BY latestTimeStamp DESC")
     fun selectAllPagesOrderByLatestTimeStamp(): Flow<List<Page?>>
+    @Query("SELECT * FROM pages WHERE name LIKE '%' || :keyword || '%'")
+    fun selectPageWithKeyword(keyword: String): Flow<List<Page?>>
 }

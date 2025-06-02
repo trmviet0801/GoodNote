@@ -10,4 +10,5 @@ interface PageRepository {
     fun selectPageWithId(uuid: String): Flow<Page?>
     fun selectAllPagesOrderByName(): Flow<List<Page?>>
     fun selectAllPagesOrderByLatestTimeStamp(): Flow<List<Page?>>
+    fun selectPageWithKeyword(keyword: String): Flow<List<Page?>>
 }

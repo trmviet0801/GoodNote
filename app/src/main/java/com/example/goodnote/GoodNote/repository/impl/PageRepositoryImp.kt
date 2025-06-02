@@ -31,4 +31,8 @@ class PageRepositoryImp(
     override fun selectAllPagesOrderByLatestTimeStamp(): Flow<List<Page?>> {
         return pageDAO.selectAllPagesOrderByLatestTimeStamp()
     }
+
+    override fun selectPageWithKeyword(keyword: String): Flow<List<Page?>> {
+        return pageDAO.selectPageWithKeyword(keyword)
+    }
 }

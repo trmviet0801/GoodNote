@@ -58,15 +58,29 @@ class HomeViewModel(
         }
     }
 
+    //load page with different orders
     fun getAllPages() {
         viewModelScope.launch {
             _state.update { it ->
                 var dbPages: List<Page?> =
                     if (it.isCanvasSelected) pageRepository.selectAllPagesOrderByName()
                         .first() else pageRepository.selectAllPagesOrderByLatestTimeStamp().first()
-                if (dbPages.isEmpty()) dbPages = emptyList()
+                //if (dbPages.isEmpty()) dbPages = emptyList()
                 it.copy(
-                    pages = dbPages as List<Page>
+                    pages = dbPages.filterNotNull(),
+                    isShowSearchBox = false,
+                    keyword = null
+                )
+            }
+        }
+    }
+
+    fun loadPagesBasedOnSearchKeyword(keyword: String) {
+        viewModelScope.launch {
+            _state.update {
+                val result: List<Page?> = pageRepository.selectPageWithKeyword(keyword).first()
+                it.copy(
+                    pages = result.filterNotNull()
                 )
             }
         }
@@ -117,4 +131,22 @@ class HomeViewModel(
         return strokes
     }
 
+    fun onSearchKeywordChange(keyword: String) {
+        _state.update {
+            it.copy(
+                keyword = keyword
+            )
+        }
+        loadPagesBasedOnSearchKeyword(keyword)
+    }
+
+    fun onSearchBoxTap() {
+        _state.update {
+            it.copy(
+                isShowSearchBox = !it.isShowSearchBox,
+                keyword = if (it.isShowSearchBox) null else it.keyword
+            )
+        }
+        if (!state.value.isShowSearchBox) getAllPages()
+    }
 }

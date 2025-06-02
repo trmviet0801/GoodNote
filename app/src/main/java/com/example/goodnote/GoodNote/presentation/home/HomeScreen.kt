@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.WindowInsetsController
 import android.widget.Space
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
@@ -15,8 +16,11 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.goodnote.goodNote.presentation.home.components.AddPage
@@ -33,6 +37,9 @@ fun HomeScreen(
 ) {
     val homeViewModel: HomeViewModel = koinViewModel<HomeViewModel>()
     val state = homeViewModel.state.collectAsState()
+
+    val focusRequest = remember { FocusRequester() }
+    val focusManager = LocalFocusManager.current
 
     val systemUiController = rememberSystemUiController()
     val useDarkIcons = true
@@ -51,8 +58,14 @@ fun HomeScreen(
             .fillMaxSize()
             .background(Color(AppConst.HOME_BACKGROUND_PRIMARY_COLOR))
             .padding(top = WindowInsets.statusBars.asPaddingValues().calculateTopPadding())
+            .clickable(
+                enabled = true,
+                onClick = {
+                    focusManager.clearFocus()
+                }
+            )
     ) {
-        TopBar()
+        TopBar(focusRequest)
         Canvases(navController)
     }
 }
