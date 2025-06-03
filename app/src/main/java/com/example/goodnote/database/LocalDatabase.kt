@@ -13,7 +13,7 @@ import com.example.goodnote.domain.RegionEntity
 import com.example.goodnote.domain.Stroke
 import com.example.goodnote.utils.PageTypeConverters
 
-@Database(entities = [Page::class, Stroke::class, RegionEntity::class], version = 13)
+@Database(entities = [Page::class, Stroke::class, RegionEntity::class], version = 14)
 @TypeConverters(PageTypeConverters::class)
 abstract class LocalDatabase: RoomDatabase() {
     abstract fun pageDao(): PageDAO
